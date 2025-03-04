@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="350dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Справка:"
+                android:textColor="@color/text"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Суть:"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Крутим колеса с жанрами. Дальше каждый загадывает выпавшему человеку игру, выпавшего жанра, которую ему необходимо пройти. Выпавший жанр можно рерольнуть. потратив свой реролл. Рероллов у каждого максимум два, один восстанавливается за прохождение своей игры. Итого у каждого есть игра на прохождение. Когда каждый прошёл свою игру - выбираем новую ротацию и начинаем всё по новой. Кто сдастся - лох и заслуживает наказания. (проёб всех баллов)"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Правила:"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+            <TextView
+                android:id="@+id/text4_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. Не загадывать JRPG дрочильню на 100+ часов (ниер автомату можно)"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2. Загадывать адекватные играбельные игры, а не поломанное дно стима за 5 рублей"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3. Загадывать игры, которые можно пройти (бесконечные ритм дрочильни и т д не подходят)"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4. Загадывать то, что потянет (специально для димы правило)"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5. Стиль прохождения остаётся на усмотрения проходящего. То есть можно пробежать только основной сюжет если сильно душит игра. Или кайфовать с побочными заданиями."
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6. Игра считается пройденной, если человек прошёл какую-либо концовку и дошёл до титров. Концовки как в начале Ниер автоматы не считаются."
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7. Срок прохождения не ограничен, но не затягивайте на долгие месяца, если игра не настолько длинная"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8. Пройденные человеком игры не загадывать"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9. Загадываем игры на PC"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10. Можно загадывать выживание, типа сабнафтики, если проходится меньше чем за 40 часов"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="11. Нельзя загадывать то, что было в челлендже"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text4_12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12. За прохождение игры даются монетки, за первое прохождение в ротации 30 монет, за все последующие 20"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Памятка приложения:"
+                android:textColor="@color/text"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textAlignment="center"/>
+            <TextView
+                android:id="@+id/text6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Экран профиля:"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+            <TextView
+                android:id="@+id/text6_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Отображает текущую игру, жанр, аватарку и ник пользователя, количество монеток. Можно поменять аватарку на одну из предложенных вариантов, нажатием на аватарку. Ник редактируется, нажатием на него, пропускает любой набор символов длиной до 15. Предоставляет кнопки для отметки игры пройденной или дропнутой. Для подтверждения прохождения требуется написать отзыв на игру, для подтверждения дропа требуется нажать нужную кнопку в появившемся диалоговом окне."
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Экран ротации:"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+            <TextView
+                android:id="@+id/text7_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Отображает порядок текущей ротации (кто кому загадывает). Отображает каждого участника вместе с загаданными им играми и их статусом: жёлтый - проходит, зелёный - прошёл, красный - дропнул."
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Экран колеса фортуны:"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+            <TextView
+                android:id="@+id/text8_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='  Позволяет прокрутить колесо жанров кнопкой "Spin" при начале новой ротации. Сердечки олицетворяют реролы. Если вам не понравился выпавший жанр, то можно потратить рерол, нажав на сердечко. Тогда кнопка спина снова разблокируется. Серые кнопки - не активны.'
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Экран магазина:"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+            <TextView
+                android:id="@+id/text9_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Позволяет купить лот за монетки на вашем балансе. Эффекты лотов и кнопка купить содержатся в их описании, достаточно кликнуть на интересующее вас название."
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+            <TextView
+                android:id="@+id/text10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Экран отзывов:"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="bold|italic" />
+            <TextView
+                android:id="@+id/text10_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Отображает историю прохождений в виде отзывов участников. Самый верхний отзыв - самый новый."
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+
+
+            <Button
+                android:id="@+id/ok"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/buy_text"
+                android:textStyle="bold"
+                android:background="@drawable/proshol"
+                android:text="ОК" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

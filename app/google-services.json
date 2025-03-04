@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "675824311647",
+    "project_id": "abchihba123321",
+    "storage_bucket": "abchihba123321.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675824311647:android:b12a3c787c0e1de1aceaea",
+        "android_client_info": {
+          "package_name": "com.example.abchihba"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3VCvkFCj2LDEf55A8TpN9jqHugHqu7Pg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

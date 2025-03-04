@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Челленджеворот</string>
+    <string name="title_profile">Профиль</string>
+    <string name="title_rotation">Ротация</string>
+    <string name="title_wheel">Колесо</string>
+    <string name="title_shop">Магазин</string>
+    <string name="title_review">Отзывы</string>
+    <string name="signin">Войдите в свою учетную запись</string>
+    <string name="signup">Зарегистрируйтесь</string>
+
+
+</resources>

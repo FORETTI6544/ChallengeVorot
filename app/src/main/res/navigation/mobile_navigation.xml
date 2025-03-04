@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_profile">
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.abchihba.ui.profile.profile"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_rotation"
+        android:name="com.example.abchihba.ui.rotation.rotation"
+        android:label="@string/title_rotation"
+        tools:layout="@layout/fragment_review" />
+
+    <fragment
+        android:id="@+id/navigation_wheel"
+        android:name="com.example.abchihba.ui.wheel.wheel"
+        android:label="@string/title_wheel"
+        tools:layout="@layout/fragment_wheel" />
+    <fragment
+        android:id="@+id/navigation_shop"
+        android:name="com.example.abchihba.ui.shop.shop"
+        android:label="@string/title_shop"
+        tools:layout="@layout/fragment_shop" />
+    <fragment
+        android:id="@+id/navigation_review"
+        android:name="com.example.abchihba.ui.review.review"
+        android:label="@string/title_review"
+        tools:layout="@layout/fragment_review" />
+</navigation>
