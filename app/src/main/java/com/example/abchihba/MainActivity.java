@@ -48,48 +48,22 @@ public class MainActivity extends AppCompatActivity {
             navLayout.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
             navView.setLayoutParams(navLayout);
             navView.setItemIconTintList(null);
-            Menu menu = navView.getMenu();
-            viewModel.getRoom().observe(this, room -> {
-                        if (Objects.equals(viewModel.getRoom().getValue(), "0")) {
-                            menu.findItem(R.id.navigation_wheel).setVisible(false);
-                            menu.findItem(R.id.navigation_shop).setVisible(false);
-                            menu.findItem(R.id.navigation_review).setVisible(false);
-                            menu.findItem(R.id.navigation_rotation).setIcon(R.drawable.icon);
-                            menu.findItem(R.id.navigation_rotation).setTitle(R.string.title_rooms);
-                        } else {
-                            menu.findItem(R.id.navigation_wheel).setVisible(true);
-                            menu.findItem(R.id.navigation_shop).setVisible(true);
-                            menu.findItem(R.id.navigation_review).setVisible(true);
-                            menu.findItem(R.id.navigation_rotation).setIcon(R.drawable.icon_rotation);
-                            menu.findItem(R.id.navigation_rotation).setTitle(R.string.title_rotation);
-                        }
-                    });
-            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.navigation_profile,
-                    R.id.navigation_rotation,
-                    R.id.navigation_wheel,
-                    R.id.navigation_shop,
-                    R.id.navigation_review)
-                    .build();
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+            viewModel.getRoom().observe(this, room -> {
+                // Очищаем текущее меню
+                navView.getMenu().clear();
+                // В зависимости от значения room загружаем нужный файл меню
+                if ("0".equals(room)) {
+                    navView.inflateMenu(R.menu.bottom_nav_menu_cut);
+                } else {
+                    navView.inflateMenu(R.menu.bottom_nav_menu);
+                }
+                // Повторно привязываем navController к меню BottomNavigationView
+                NavigationUI.setupWithNavController(navView, navController);
+            });
 
             if (getIntent().getStringExtra("tag") != null) {
                 NavigationUI.setupWithNavController(binding.navView, navController);
-                navView.setOnItemSelectedListener(item -> {
-                    if (item.getItemId() == R.id.navigation_rotation) {
-                        // Проверяем значение из ViewModel
-                        if (Objects.equals(viewModel.getRoom().getValue(), "0")) {
-                            // Если room == 0 → открыть fragment_rooms
-                            navController.navigate(R.id.navigation_rooms);
-                        } else {
-                            // Иначе — обычный rotation
-                            navController.navigate(R.id.navigation_rotation);
-                        }
-                        return true;
-
-                    }
-                    return NavigationUI.onNavDestinationSelected(item, navController);
-                });
             } else {
                 Toast.makeText(MainActivity.this, "Вход не выполнен", Toast.LENGTH_SHORT).show();
             }

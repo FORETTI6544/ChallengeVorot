@@ -22,6 +22,11 @@
         android:label="@string/title_rooms"
         tools:layout="@layout/fragment_rooms" />
     <fragment
+        android:id="@+id/navigation_choose_room"
+        android:name="com.example.abchihba.ui.rooms.chooseRoom"
+        android:label="@string/title_rooms"
+        tools:layout="@layout/fragment_choose_room" />
+    <fragment
         android:id="@+id/navigation_wheel"
         android:name="com.example.abchihba.ui.wheel.wheel"
         android:label="@string/title_wheel"

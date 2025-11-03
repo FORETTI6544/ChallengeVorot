@@ -25,6 +25,4 @@
         android:id="@+id/navigation_review"
         android:icon="@drawable/icon_review"
         android:title="@string/title_review" />
-
-
 </menu>
