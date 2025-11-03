@@ -1,21 +1,11 @@
 package com.example.abchihba.ui;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.abchihba.MainActivity;
-import com.example.abchihba.R;
-import com.example.abchihba.SteamGameSearcher;
-import com.example.abchihba.signin;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -38,22 +28,23 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private final MutableLiveData<String> status;
     private final MutableLiveData<String> preview;
     private final MutableLiveData<String> tag;
+    private final MutableLiveData<String> room;
     private final MutableLiveData<String> rotationType;
-    private final MutableLiveData<List<Items>> itemsList;
     private final MutableLiveData<List<String>> genres;
     private final MutableLiveData<List<Users>> usersList;
-    private final MutableLiveData<Boolean> rotationStatus;
     private final MutableLiveData<List<Reviews>> reviewsList;
+    public final MutableLiveData<Boolean> rotationStarted;
+
+    public final MutableLiveData<Boolean> nobodySpecifiedGame;
+    public final MutableLiveData<Boolean> everybodySpecifiedGame;
+    public final MutableLiveData<Boolean> targetUserGameIsEmpty;
+    public final MutableLiveData<Boolean> iDontHaveGenre;
+    public final MutableLiveData<Boolean> myStatusIsPlaying;
 
     public ViewModel() {
-        //SHOP============================================================
-        itemsList = new MutableLiveData<>();
-        getItems();
         //WHEEL===========================================================
         rotationType = new MutableLiveData<>();
         rotationType.setValue("game");
-
-
         genres = new MutableLiveData<>();
         genres.setValue(getGenres().getValue());
         //PROFILE=========================================================
@@ -76,15 +67,26 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         status.setValue("done");
         preview = new MutableLiveData<>();
         preview.setValue("0");
-
+        room = new MutableLiveData<>();
+        room.setValue("0");
 
         //TAG=============================================================
         tag = new MutableLiveData<>();
         //ROTATION========================================================
         usersList = new MutableLiveData<>();
         getUsers();
-        rotationStatus = new MutableLiveData<>();
-        setRotationStatus();
+        nobodySpecifiedGame = new MutableLiveData<>();
+        nobodySpecifiedGame.setValue(true);
+        everybodySpecifiedGame = new MutableLiveData<>();
+        everybodySpecifiedGame.setValue(false);
+        targetUserGameIsEmpty = new MutableLiveData<>();
+        targetUserGameIsEmpty.setValue(false);
+        iDontHaveGenre = new MutableLiveData<>();
+        iDontHaveGenre.setValue(false);
+        myStatusIsPlaying = new MutableLiveData<>();
+        myStatusIsPlaying.setValue(false);
+        rotationStarted = new MutableLiveData<>();
+        setRotationStarted();
         //REVIEWS=========================================================
         reviewsList = new MutableLiveData<>();
         getReviews();
@@ -95,7 +97,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public LiveData<String> getName() {
         return name;
     }
-
     public void setName(String newname) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -110,7 +111,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
 
     }
-
     public void setAvatar(String newavatar) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -120,15 +120,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("avatar", newavatar);
     }
-
     public LiveData<String> getAvatar() {
         return avatar;
     }
-
     public LiveData<String> getPreview() {
         return preview;
     }
-
     public void setPreview(String newpreview) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -139,11 +136,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("preview", newpreview);
     }
-
     public LiveData<String> getBalance() {
         return balance;
     }
-
     public void setBalance(String newbalance) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -155,36 +150,18 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("balance", newbalance);
     }
-
-    public LiveData<List<Items>> getItems() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("shop")
-                .addSnapshotListener((querySnapshot, e) -> {
-                    if (e != null) {
-                        return;
-                    }
-
-                    List<Items> items = new ArrayList<>();
-                    if (querySnapshot != null) {
-                        for (QueryDocumentSnapshot document : querySnapshot) {
-                            // Извлекаем поля из документа вручную
-                            String price = document.getString("price");
-                            String name = document.getString("name");
-                            String description = document.getString("description");
-                            // Дополнительно извлекаем другие поля, если нужно
-
-                            // Создаем объект класса Items вручную
-                            Items item = new Items(name, description, price); // Конструктор с параметрами
-
-                            // Добавляем объект в список
-                            items.add(item);
-                        }
-                    }
-                    itemsList.setValue(items);
-                });
-        return itemsList;
+    public LiveData<String> getRoom() {
+        return room;
     }
-
+    public void setRoom(String newRoom) {
+        String tagValue = tag.getValue();
+        if (tagValue == null || tagValue.isEmpty()) {
+            return;
+        }
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(tagValue)
+                .update("room", newRoom);
+    }
     public void setTag(String tag) {
         this.tag.setValue(tag);
         Log.d("ViewModel", "Tag set: " + tag);
@@ -229,17 +206,18 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 if (snapshot.getString("preview") != null) {
                     preview.setValue(snapshot.getString("preview"));
                 }
+                if (snapshot.getString("room") != null) {
+                    room.setValue(snapshot.getString("room"));
+                }
                 Log.d("ViewModel", "Snapshot data: " + snapshot.getData());
             } else {
                 Log.d("ViewModel", "Snapshot is null or does not exist");
             }
         });
     }
-
     public LiveData<String> getTag() {
         return tag;
     }
-
     public LiveData<String> getRotationType() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("wheel").document("rotation")
@@ -253,7 +231,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 });
         return rotationType;
     }
-
     public LiveData<List<String>> getGenres() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         getRotationType();
@@ -285,11 +262,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         }
         return genres;
     }
-
     public LiveData<String> getGenre() {
         return genre;
     }
-
     public void setGenre(String newgenre) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -303,7 +278,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnSuccessListener(aVoid -> Log.d("ViewModel", "Name updated successfully in Firestore."))
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
     }
-
     public void setRerolls(String newrerolls) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -315,11 +289,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("rerolls", newrerolls);
     }
-
     public LiveData<String> getRerolls() {
         return rerolls;
     }
-
     public void setAllow(String newallow) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -333,11 +305,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnSuccessListener(aVoid -> Log.d("ViewModel", "Name updated successfully in Firestore."))
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
     }
-
     public LiveData<String> getAllow() {
         return allow;
     }
-
     public LiveData<List<Users>> getUsers() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
@@ -363,18 +333,38 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                         }
                     }
                     usersList.setValue(users);
+                    int usersWithGame = 0;
+                    for (Users user : usersList.getValue()) {
+                        if (!user.getGame().equals("Игра отсутствует")) {
+                            nobodySpecifiedGame.setValue(false);
+                            usersWithGame++;
+                        }
+                    }
+                    if (usersWithGame == usersList.getValue().size()) {
+                        everybodySpecifiedGame.setValue(true);
+                    }
+                    for (Users user : usersList.getValue()) {
+                        if (Objects.equals(user.getTag(), to.getValue())) {
+                            if (user.getGame().equals("Игра отсутствует")) {
+                                targetUserGameIsEmpty.setValue(true);
+                            }
+                        }
+                    }
+                    if (Objects.equals(genre.getValue(), "Отсутствует")) {
+                        iDontHaveGenre.setValue(true);
+                    }
+                    if (Objects.equals(status.getValue(), "playing")) {
+                        myStatusIsPlaying.setValue(true);
+                    }
                 });
         return usersList;
     }
-
     public LiveData<String> getTo() {
         return to;
     }
-
     public LiveData<String> getGame() {
         return game;
     }
-
     public void setGame(String newgame) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -385,7 +375,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("game", newgame);
     }
-
     public void setTo(String tag, String newto) {
         if (tag == null || tag.isEmpty()) {
             Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
@@ -398,7 +387,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnSuccessListener(aVoid -> Log.d("ViewModel", "Name updated successfully in Firestore."))
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
     }
-
     public void setStatus(String newstatus) {
 
         String tagValue = tag.getValue();
@@ -411,18 +399,15 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("status", newstatus);
     }
-
     public LiveData<String> getStatus() {
         return status;
     }
-
-    public void updateRotationStatus(Boolean newstatus) {
+    public void updateRotationStarted(Boolean newstatus) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("rotation").document("rotation_status")
                 .update("started", newstatus);
     }
-
-    public void setRotationStatus() {
+    public void setRotationStarted() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("rotation").document("rotation_status")
                 .addSnapshotListener((querySnapshot, e) -> {
@@ -430,15 +415,13 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                         return;
                     }
                     if (querySnapshot != null) {
-                        rotationStatus.setValue(querySnapshot.getBoolean("started"));
+                        rotationStarted.setValue(querySnapshot.getBoolean("started"));
                     }
                 });
     }
-
-    public LiveData<Boolean> getRotationStatus() {
-        return rotationStatus;
+    public LiveData<Boolean> getRotationStarted() {
+        return rotationStarted;
     }
-
     public LiveData<List<Reviews>> getReviews() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("reviews")
@@ -473,7 +456,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 });
         return reviewsList;
     }
-
     public void addReview(String tag, String game, String preview, String review, String rating, String queue, String date) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

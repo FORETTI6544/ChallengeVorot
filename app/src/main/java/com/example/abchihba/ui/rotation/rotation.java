@@ -3,26 +3,16 @@ package com.example.abchihba.ui.rotation;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,7 +20,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.abchihba.R;
 import com.example.abchihba.SteamGameSearcher;
 import com.example.abchihba.databinding.FragmentRotationBinding;
-import com.example.abchihba.ui.Items;
 import com.example.abchihba.ui.Localusers;
 import com.example.abchihba.ui.Users;
 import com.example.abchihba.ui.ViewModel;
@@ -42,7 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class rotation extends Fragment {
@@ -124,9 +112,9 @@ public class rotation extends Fragment {
                     status.setBackgroundResource(R.drawable.design_window);
                 }
                 if (counter == users.size()) {
-                    viewModel.updateRotationStatus(false);
+                    viewModel.updateRotationStarted(false);
                 } else {
-                    viewModel.updateRotationStatus(true);
+                    viewModel.updateRotationStarted(true);
                 }
 
                 ConstraintLayout.LayoutParams statusLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
@@ -253,7 +241,7 @@ public class rotation extends Fragment {
                 name.setLayoutParams(nameLayout);
                 userView.addView(name);
                 ShapeableImageView newRotation = new ShapeableImageView(getContext());
-                viewModel.getRotationStatus().observe(getViewLifecycleOwner(), rotationStatus -> {
+                viewModel.getRotationStarted().observe(getViewLifecycleOwner(), rotationStatus -> {
                     if (!rotationStatus) {
                         ShapeAppearanceModel shape1 = ShapeAppearanceModel.builder()
                                 .setAllCornerSizes(ShapeAppearanceModel.PILL).build();
@@ -458,7 +446,7 @@ public class rotation extends Fragment {
             for (Localusers localuser : localusers) {
                 viewModel.setTo(localuser.getTag(), localuser.getTo());
             }
-            viewModel.updateRotationStatus(true);
+            viewModel.updateRotationStarted(true);
         }).start();
     }
 
