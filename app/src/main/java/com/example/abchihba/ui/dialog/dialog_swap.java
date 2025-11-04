@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,12 +16,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.abchihba.R;
 import com.example.abchihba.databinding.DialogSwapBinding;
 import com.example.abchihba.ui.ViewModel;
-import com.example.abchihba.databinding.DialogDropBinding;
 import com.example.abchihba.ui.Users;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.ShapeAppearanceModel;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -37,7 +33,7 @@ public class dialog_swap extends DialogFragment {
         View view = binding.getRoot();
 
         ViewModel viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
-        List<Users> users = viewModel.getUsers().getValue();
+        List<Users> users = viewModel.getRoomUsers().getValue();
 
         binding.linear.removeAllViews();
         for (Users user : users) {

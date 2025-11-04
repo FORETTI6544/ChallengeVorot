@@ -2,12 +2,16 @@ package com.example.abchihba.ui;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,11 +35,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private final MutableLiveData<String> room;
     private final MutableLiveData<String> rotationType;
     private final MutableLiveData<List<String>> genres;
-    private final MutableLiveData<List<Users>> usersList;
+    private final MutableLiveData<List<Users>> allUsersList;
+    private final MutableLiveData<List<Users>> roomUsersList;
     private final MutableLiveData<List<Reviews>> reviewsList;
     private final MutableLiveData<List<Rooms>> roomsList;
     public final MutableLiveData<Boolean> rotationStarted;
-
     public final MutableLiveData<Boolean> nobodySpecifiedGame;
     public final MutableLiveData<Boolean> everybodySpecifiedGame;
     public final MutableLiveData<Boolean> targetUserGameIsEmpty;
@@ -77,8 +81,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         //TAG=============================================================
         tag = new MutableLiveData<>();
         //ROTATION========================================================
-        usersList = new MutableLiveData<>();
-        getUsers();
+
+        roomUsersList = new MutableLiveData<>();
+        getRoomUsers();
         nobodySpecifiedGame = new MutableLiveData<>();
         nobodySpecifiedGame.setValue(true);
         everybodySpecifiedGame = new MutableLiveData<>();
@@ -90,11 +95,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         myStatusIsPlaying = new MutableLiveData<>();
         myStatusIsPlaying.setValue(false);
         rotationStarted = new MutableLiveData<>();
-        setRotationStarted();
         //REVIEWS=========================================================
         reviewsList = new MutableLiveData<>();
         getReviews();
         //================================================================
+        allUsersList = new MutableLiveData<>();
     }
 
 
@@ -174,6 +179,22 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(tagValue)
                 .update("room", newRoom);
+        db.collection("rooms")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                List<String> users = (List<String>) document.get("users");
+                                users.add(tagValue);
+                                db.collection("rooms").document(newRoom)
+                                        .update("users", users);
+                            }
+                        } else {
+                        }
+                    }
+                });
     }
 
     public void setTag(String tag) {
@@ -332,7 +353,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return allow;
     }
 
-    public LiveData<List<Users>> getUsers() {
+    public LiveData<List<Users>> getAllUsers() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
                 .addSnapshotListener((querySnapshot, e) -> {
@@ -356,18 +377,47 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                             users.add(user);
                         }
                     }
-                    usersList.setValue(users);
+                    allUsersList.setValue(users);
+                });
+        return allUsersList;
+    }
+    public LiveData<List<Users>> getRoomUsers() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .addSnapshotListener((querySnapshot, e) -> {
+                    if (e != null) {
+                        return;
+                    }
+                    List<Users> users = new ArrayList<>();
+                    if (querySnapshot != null) {
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            if (Objects.equals(document.getString("room"), getRoom().getValue())) {
+                                String name = document.getString("name");
+                                String avatar = document.getString("avatar");
+                                String genre = document.getString("genre");
+                                String game = document.getString("game");
+                                String preview = document.getString("preview");
+                                String status = document.getString("status");
+                                String tag = document.getId();
+                                String to = document.getString("to");
+
+                                Users user = new Users(name, avatar, genre, game, preview, status, tag, to);
+                                users.add(user);
+                            }
+                        }
+                    }
+                    roomUsersList.setValue(users);
                     int usersWithGame = 0;
-                    for (Users user : usersList.getValue()) {
+                    for (Users user : roomUsersList.getValue()) {
                         if (!user.getGame().equals("Игра отсутствует")) {
                             nobodySpecifiedGame.setValue(false);
                             usersWithGame++;
                         }
                     }
-                    if (usersWithGame == usersList.getValue().size()) {
+                    if (usersWithGame == roomUsersList.getValue().size()) {
                         everybodySpecifiedGame.setValue(true);
                     }
-                    for (Users user : usersList.getValue()) {
+                    for (Users user : roomUsersList.getValue()) {
                         if (Objects.equals(user.getTag(), to.getValue())) {
                             if (user.getGame().equals("Игра отсутствует")) {
                                 targetUserGameIsEmpty.setValue(true);
@@ -381,9 +431,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                         myStatusIsPlaying.setValue(true);
                     }
                 });
-        return usersList;
+        return roomUsersList;
     }
-
     public LiveData<String> getTo() {
         return to;
     }
@@ -431,29 +480,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public LiveData<String> getStatus() {
         return status;
-    }
-
-    public void updateRotationStarted(Boolean newstatus) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("rotation").document("rotation_status")
-                .update("started", newstatus);
-    }
-
-    public void setRotationStarted() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("rotation").document("rotation_status")
-                .addSnapshotListener((querySnapshot, e) -> {
-                    if (e != null) {
-                        return;
-                    }
-                    if (querySnapshot != null) {
-                        rotationStarted.setValue(querySnapshot.getBoolean("started"));
-                    }
-                });
-    }
-
-    public LiveData<Boolean> getRotationStarted() {
-        return rotationStarted;
     }
 
     public LiveData<List<Reviews>> getReviews() {
@@ -519,9 +545,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                         for (QueryDocumentSnapshot document : querySnapshot) {
                             String name = document.getId();
                             String password = document.getString("password");
+                            Boolean status = document.getBoolean("rotation_status");
+                            rotationStarted.setValue(status);
                             List<String> users = (List<String>) document.get("users");
 
-                            Rooms room = new Rooms(name, password, users);
+                            Rooms room = new Rooms(name, password, status, users);
                             rooms.add(room);
                         }
                     }
@@ -529,5 +557,13 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                     roomsList.setValue(rooms);
                 });
         return roomsList;
+    }
+    public void setRotationStarted(Boolean newStatus) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("rooms").document(room.getValue())
+                .update("rotation_status", newStatus);
+    }
+    public LiveData<Boolean> getRotationStarted() {
+        return rotationStarted;
     }
 }

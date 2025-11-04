@@ -2,15 +2,12 @@ package com.example.abchihba.ui.rooms;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.abchihba.R;
 import com.example.abchihba.databinding.FragmentChooseRoomBinding;
@@ -25,10 +23,7 @@ import com.example.abchihba.ui.Rooms;
 import com.example.abchihba.ui.Users;
 import com.example.abchihba.ui.ViewModel;
 import com.example.abchihba.ui.dialog.dialog_enter_room;
-import com.google.firebase.Firebase;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.List;
 import java.util.Objects;
 
 public class chooseRoom extends Fragment {
@@ -74,7 +69,7 @@ public class chooseRoom extends Fragment {
         roomPlayers.setOrientation(LinearLayout.VERTICAL);
         for (String userTag : room.getUsers()) {
             TextView player = new TextView(getContext());
-            for (Users user : viewModel.getUsers().getValue()) {
+            for (Users user : viewModel.getAllUsers().getValue()) {
                 if (Objects.equals(user.getTag(), userTag)) {
                     player.setText(user.getName());
                 }
@@ -91,11 +86,14 @@ public class chooseRoom extends Fragment {
             @Override
             public void onClick(View view) {
                 DialogFragment dialog_enter_room = new dialog_enter_room();
-                Bundle genre = new Bundle();
-                genre.putString("genre", "Phanthom Lancer");
-                dialog_enter_room.setArguments(genre);
+                Bundle bundle = new Bundle();
+                bundle.putString("name", room.getName());
+                bundle.putString("password", room.getPassword());
+                dialog_enter_room.setArguments(bundle);
+                getParentFragmentManager().setFragmentResultListener("dialog_enter_room_result", getViewLifecycleOwner(), (requestKey, result) -> {
+                    Navigation.findNavController(view).navigate(R.id.navigation_profile);
+                });
                 dialog_enter_room.show(getParentFragmentManager(), "dialog_enter_room");
-
             }
         });
 
@@ -108,16 +106,23 @@ public class chooseRoom extends Fragment {
 
         ConstraintLayout.LayoutParams roomPlayersLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         roomPlayersLayout.topToBottom = roomName.getId();
-        roomPlayersLayout.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
         roomPlayersLayout.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
         roomPlayersLayout.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+
+        ConstraintLayout.LayoutParams enterBtnLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        enterBtnLayout.topToBottom = roomPlayers.getId();
+        enterBtnLayout.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
+        enterBtnLayout.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
+        enterBtnLayout.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
 
         roomFrame.setLayoutParams(roomFrameLayout);
         roomName.setLayoutParams(roomNameLayout);
         roomPlayers.setLayoutParams(roomPlayersLayout);
+        enterBtn.setLayoutParams(enterBtnLayout);
 
         roomFrame.addView(roomName);
         roomFrame.addView(roomPlayers);
+        roomFrame.addView(enterBtn);
 
         return roomFrame;
     }
