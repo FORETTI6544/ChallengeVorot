@@ -24,6 +24,13 @@ import java.util.Map;
 public class dialog_enter_room extends DialogFragment {
     private DialogEnterRoomBinding binding;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // This removes black background below corners.
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogStyle);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

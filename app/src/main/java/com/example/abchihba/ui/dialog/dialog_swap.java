@@ -30,6 +30,13 @@ import java.util.List;
 public class dialog_swap extends DialogFragment {
     private DialogSwapBinding binding;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // This removes black background below corners.
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogStyle);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

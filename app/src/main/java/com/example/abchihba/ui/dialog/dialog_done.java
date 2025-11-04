@@ -10,11 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.abchihba.R;
 import com.example.abchihba.databinding.DialogDoneBinding;
 
 
 public class dialog_done extends DialogFragment {
     private DialogDoneBinding binding;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // This removes black background below corners.
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogStyle);
+    }
 
     @Nullable
     @Override

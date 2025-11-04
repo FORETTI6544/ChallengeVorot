@@ -11,12 +11,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.abchihba.R;
 import com.example.abchihba.databinding.DialogEditAvatarBinding;
 import com.example.abchihba.ui.ViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
 
 public class dialog_avatar extends DialogFragment {
     private DialogEditAvatarBinding binding;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // This removes black background below corners.
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogStyle);
+    }
 
     @Nullable
     @Override

@@ -25,6 +25,13 @@ import java.util.Objects;
 public class dialog_genre extends DialogFragment {
     private DialogGenreBinding binding;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // This removes black background below corners.
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogStyle);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
