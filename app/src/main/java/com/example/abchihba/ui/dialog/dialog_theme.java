@@ -12,11 +12,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.abchihba.R;
 import com.example.abchihba.databinding.DialogThemeBinding;
 import com.example.abchihba.ui.ViewModel;
 
 public class dialog_theme extends DialogFragment {
     private DialogThemeBinding binding;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // This removes black background below corners.
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogStyle);
+    }
 
     @Nullable
     @Override

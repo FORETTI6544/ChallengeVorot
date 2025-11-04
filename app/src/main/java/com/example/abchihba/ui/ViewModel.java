@@ -114,7 +114,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .update("name", newname)
                 .addOnSuccessListener(aVoid -> Log.d("ViewModel", "Name updated successfully in Firestore."))
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
-
     }
 
     public void setAvatar(String newavatar) {

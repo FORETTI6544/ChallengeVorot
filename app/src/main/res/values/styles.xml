@@ -9,4 +9,13 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="DialogStyle" parent="Theme.Abchihba">
+        <item name="android:background">@drawable/design_window</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:padding">5dp</item>
+        <item name="cornerRadius">5dp</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+    </style>
+
 </resources>

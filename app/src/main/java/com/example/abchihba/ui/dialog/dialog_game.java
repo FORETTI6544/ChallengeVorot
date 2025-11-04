@@ -1,5 +1,9 @@
 package com.example.abchihba.ui.dialog;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +27,13 @@ import java.util.Map;
 
 public class dialog_game extends DialogFragment {
     private DialogGameBinding binding;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // This removes black background below corners.
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogStyle);
+    }
 
     @Nullable
     @Override
@@ -76,7 +87,6 @@ public class dialog_game extends DialogFragment {
                 binding.preview.setText(url);
             }
         });
-
         return view;
     }
     @Override
@@ -84,4 +94,5 @@ public class dialog_game extends DialogFragment {
         super.onDestroyView();
         binding = null;
     }
+
 }
