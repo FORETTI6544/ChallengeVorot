@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.abchihba.R;
 import com.example.abchihba.databinding.DialogEnterRoomBinding;
 import com.example.abchihba.ui.ViewModel;
 

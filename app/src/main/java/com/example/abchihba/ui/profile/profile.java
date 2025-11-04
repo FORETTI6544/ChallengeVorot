@@ -261,6 +261,8 @@ public class profile extends Fragment {
                 dialog_info.show(getParentFragmentManager(), "dialog_info");
             }
         });
+
+        String hui = "";
         return root;
     }
 

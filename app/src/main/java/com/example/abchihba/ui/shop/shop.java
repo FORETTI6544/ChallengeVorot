@@ -139,31 +139,31 @@ public class shop extends Fragment {
                 }
                 if (Objects.equals(name, "Рогаликук")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    newrotation("Roguelike");
+                    viewModel.newRotation("Roguelike");
                 }
                 if (Objects.equals(name, "Фильмокук")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    newrotation("Фильмокук");
+                    viewModel.newRotation("Фильмокук");
                 }
                 if (Objects.equals(name, "Сериалокук")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    newrotation("Сериалокук");
+                    viewModel.newRotation("Сериалокук");
                 }
                 if (Objects.equals(name, "Геймпадокук")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    newrotation("Геймпадокук");
+                    viewModel.newRotation("Геймпадокук");
                 }
                 if (Objects.equals(name, "Выжикук")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    newrotation("Survival");
+                    viewModel.newRotation("Survival");
                 }
                 if (Objects.equals(name, "Музыкук")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    newrotation("Музыкук");
+                    viewModel.newRotation("Музыкук");
                 }
                 if (Objects.equals(name, "Анимекук")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    newrotation("Анимекук");
+                    viewModel.newRotation("Анимекук");
                 }
                 if (Objects.equals(name, "Тематическая ротация")) {
                     DialogFragment dialog_theme = new dialog_theme();
@@ -171,7 +171,7 @@ public class shop extends Fragment {
                     getParentFragmentManager().setFragmentResultListener("theme_result", getViewLifecycleOwner(), (requestKey, result) -> {
                         String theme = result.getString("theme");
                         if (theme != null) {
-                            newrotation(theme);
+                            viewModel.newRotation(theme);
                             viewModel.setBalance(String.valueOf(intBalance - intPrice));
                         }
                     });
@@ -336,52 +336,6 @@ public class shop extends Fragment {
         items.add(new Items("Скип", "Скипнуть свою игру. Можно купить если ещё не прошёл свою игру.", "60"));
         items.add(new Items("Музыкук", "Вместо игр все слушают музыку. Нужно прослушать все альбомы определённого артиста. Можно купить только до начала новой ротации.", "100"));
         items.add(new Items("Анимекук", "Вместо игр все смотрят аниме. Можно купить только до начала новой ротации.", "100"));
-    }
-
-    public void newrotation(String type) {
-        new Thread(() -> {
-            List<Users> users = viewModel.getRoomUsers().getValue();
-            for (Users user : users) {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("users").document(user.getTag())
-                        .update("game", "Игра отсутствует");
-                db.collection("users").document(user.getTag())
-                        .update("preview", "0");
-                db.collection("users").document(user.getTag())
-                        .update("status", "Новая ротация");
-                db.collection("users").document(user.getTag())
-                        .update("genre", type);
-                viewModel.setTo(user.getTag(), "0");
-            }
-
-            List<Localusers> localusers = new ArrayList<>();
-
-            for (int j = 0; j < users.size(); j++) {
-                localusers.add(new Localusers(users.get(j).getTag(), "0"));
-            }
-
-            List<Integer> indices = new ArrayList<>();
-            for (int i = 0; i < users.size(); i++) {
-                indices.add(i);
-            }
-            Collections.shuffle(indices);
-
-
-            for (int i = 0; i < users.size(); i++) {
-                int currentIndex = indices.get(i);
-                int nextIndex = indices.get((i + 1) % users.size());
-
-                String currentTag = users.get(currentIndex).getTag();
-                String nextTag = users.get(nextIndex).getTag();
-
-                localusers.get(currentIndex).setTo(nextTag);
-            }
-
-            for (Localusers localuser : localusers) {
-                viewModel.setTo(localuser.getTag(), localuser.getTo());
-            }
-            viewModel.setRotationStarted(true);
-        }).start();
     }
 
     public ConstraintLayout createItemFrame(Items item) {
