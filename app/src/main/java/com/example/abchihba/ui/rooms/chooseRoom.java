@@ -2,6 +2,7 @@ package com.example.abchihba.ui.rooms;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -22,6 +24,7 @@ import com.example.abchihba.databinding.FragmentChooseRoomBinding;
 import com.example.abchihba.ui.Rooms;
 import com.example.abchihba.ui.Users;
 import com.example.abchihba.ui.ViewModel;
+import com.example.abchihba.ui.dialog.dialog_enter_room;
 import com.google.firebase.Firebase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -78,6 +81,23 @@ public class chooseRoom extends Fragment {
             }
             roomPlayers.addView(player);
         }
+
+        Button enterBtn = new Button(getContext());
+        enterBtn.setId(View.generateViewId());
+        enterBtn.setBackgroundResource(R.drawable.proshol);
+        enterBtn.setText("Войти");
+        enterBtn.setTypeface(null, Typeface.BOLD);
+        enterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogFragment dialog_enter_room = new dialog_enter_room();
+                Bundle genre = new Bundle();
+                genre.putString("genre", "Phanthom Lancer");
+                dialog_enter_room.setArguments(genre);
+                dialog_enter_room.show(getParentFragmentManager(), "dialog_enter_room");
+
+            }
+        });
 
         ConstraintLayout.LayoutParams roomFrameLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
 
