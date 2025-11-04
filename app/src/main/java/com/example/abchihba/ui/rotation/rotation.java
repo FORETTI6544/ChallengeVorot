@@ -86,7 +86,7 @@ public class rotation extends Fragment {
 
         LinearLayout linearLayout = binding.frameLinear;
         LinearLayout rotationLinear = binding.rotationLinear;
-        viewModel.getUsers().observe(getViewLifecycleOwner(), users -> {
+        viewModel.getRoomUsers().observe(getViewLifecycleOwner(), users -> {
             if (users == null || users.isEmpty()) {
                 // Выводим сообщение или заполняем пустое состояние
                 TextView emptyView = new TextView(getContext());
@@ -112,9 +112,9 @@ public class rotation extends Fragment {
                     status.setBackgroundResource(R.drawable.design_window);
                 }
                 if (counter == users.size()) {
-                    viewModel.updateRotationStarted(false);
+                    viewModel.setRotationStarted(false);
                 } else {
-                    viewModel.updateRotationStarted(true);
+                    viewModel.setRotationStarted(true);
                 }
 
                 ConstraintLayout.LayoutParams statusLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
@@ -241,8 +241,8 @@ public class rotation extends Fragment {
                 name.setLayoutParams(nameLayout);
                 userView.addView(name);
                 ShapeableImageView newRotation = new ShapeableImageView(getContext());
-                viewModel.getRotationStarted().observe(getViewLifecycleOwner(), rotationStatus -> {
-                    if (!rotationStatus) {
+                viewModel.getRotationStarted().observe(getViewLifecycleOwner(), rotationStarted -> {
+                    if (!rotationStarted) {
                         ShapeAppearanceModel shape1 = ShapeAppearanceModel.builder()
                                 .setAllCornerSizes(ShapeAppearanceModel.PILL).build();
                         newRotation.setShapeAppearanceModel(shape1);
@@ -404,7 +404,7 @@ public class rotation extends Fragment {
 
     public void newrotation() {
         new Thread(() -> {
-            List<Users> users = viewModel.getUsers().getValue();
+            List<Users> users = viewModel.getRoomUsers().getValue();
             for (Users user : users) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("users").document(user.getTag())
@@ -446,7 +446,7 @@ public class rotation extends Fragment {
             for (Localusers localuser : localusers) {
                 viewModel.setTo(localuser.getTag(), localuser.getTo());
             }
-            viewModel.updateRotationStarted(true);
+            viewModel.setRotationStarted(true);
         }).start();
     }
 

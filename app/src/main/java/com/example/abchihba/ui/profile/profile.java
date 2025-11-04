@@ -1,15 +1,11 @@
 package com.example.abchihba.ui.profile;
 
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-import androidx.core.widget.AutoSizeableTextView;
-import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,14 +30,10 @@ import com.example.abchihba.ui.dialog.dialog_done;
 import com.example.abchihba.ui.dialog.dialog_info;
 import com.google.android.material.imageview.ShapeableImageView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
-import com.google.type.Date;
 import com.squareup.picasso.Picasso;
 
 
@@ -174,8 +164,8 @@ public class profile extends Fragment {
                         }
                         String newbalance = "0";
                         boolean flag = true;
-                        if (viewModel.getUsers().getValue() != null) {
-                            List<Users> users = viewModel.getUsers().getValue();
+                        if (viewModel.getRoomUsers().getValue() != null) {
+                            List<Users> users = viewModel.getRoomUsers().getValue();
                             for (Users user : users) {
                                 if (Objects.equals(user.getStatus(), "done")){
                                     flag = false;

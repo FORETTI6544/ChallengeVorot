@@ -96,7 +96,7 @@ public class shop extends Fragment {
 
     private void buy_click(String name, String price) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        List<Users> users = viewModel.getUsers().getValue();
+        List<Users> users = viewModel.getRoomUsers().getValue();
         int intPrice = Integer.parseInt(price);
         int intBalance = Integer.parseInt(viewModel.getBalance().getValue());
 
@@ -132,7 +132,7 @@ public class shop extends Fragment {
                                     Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
                                 }
                             }
-                            viewModel.updateRotationStarted(true);
+                            viewModel.setRotationStarted(true);
                             viewModel.setBalance(String.valueOf(intBalance - intPrice));
                         }
                     });
@@ -340,7 +340,7 @@ public class shop extends Fragment {
 
     public void newrotation(String type) {
         new Thread(() -> {
-            List<Users> users = viewModel.getUsers().getValue();
+            List<Users> users = viewModel.getRoomUsers().getValue();
             for (Users user : users) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("users").document(user.getTag())
@@ -380,7 +380,7 @@ public class shop extends Fragment {
             for (Localusers localuser : localusers) {
                 viewModel.setTo(localuser.getTag(), localuser.getTo());
             }
-            viewModel.updateRotationStarted(true);
+            viewModel.setRotationStarted(true);
         }).start();
     }
 
