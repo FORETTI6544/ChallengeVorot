@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,8 +21,6 @@ import com.example.abchihba.databinding.FragmentProfileBinding;
 import com.example.abchihba.ui.Reviews;
 import com.example.abchihba.ui.Users;
 import com.example.abchihba.ui.ViewModel;
-import com.example.abchihba.ui.dialog.dialog_name;
-import com.example.abchihba.ui.dialog.dialog_avatar;
 import com.example.abchihba.ui.dialog.dialog_drop;
 import com.example.abchihba.ui.dialog.dialog_done;
 import com.example.abchihba.ui.dialog.dialog_info;

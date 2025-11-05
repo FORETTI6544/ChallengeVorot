@@ -1,5 +1,7 @@
 package com.example.abchihba.ui.dialog;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import com.example.abchihba.ui.Users;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.ShapeAppearanceModel;
 
+import java.util.Base64;
 import java.util.List;
 
 
@@ -71,27 +74,7 @@ public class dialog_swap extends DialogFragment {
             ShapeAppearanceModel shape = ShapeAppearanceModel.builder()
                     .setAllCornerSizes(ShapeAppearanceModel.PILL).build();
             avatar.setShapeAppearanceModel(shape);
-            if ("1".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_1);
-            } else if ("2".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_2);
-            } else if ("3".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_3);
-            } else if ("4".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_4);
-            } else if ("5".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_5);
-            } else if ("6".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_6);
-            } else if ("7".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_7);
-            } else if ("8".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_8);
-            } else if ("9".equals(user.getAvatar())) {
-                avatar.setImageResource(R.mipmap.avatar_9);
-            } else {
-                avatar.setImageResource(R.drawable.avatar_add);
-            }
+            avatar.setImageBitmap(base64ToBitmap(user.getAvatar()));
             avatar.setId(View.generateViewId());
 
             TextView game = new TextView(getContext());
@@ -138,6 +121,17 @@ public class dialog_swap extends DialogFragment {
         return view;
     }
 
+    public static Bitmap base64ToBitmap(String base64String) {
+        try {
+            // Декодируем Base64 в массив байтов
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            // Конвертируем байты в Bitmap
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

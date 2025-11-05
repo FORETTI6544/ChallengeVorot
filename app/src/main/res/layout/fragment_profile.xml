@@ -75,7 +75,6 @@
             app:layout_constraintTop_toBottomOf="@+id/current_game"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:src="@mipmap/avatar_1"
             />
 
         <TextView

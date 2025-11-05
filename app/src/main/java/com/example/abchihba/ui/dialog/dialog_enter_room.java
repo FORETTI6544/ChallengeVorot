@@ -45,6 +45,7 @@ public class dialog_enter_room extends DialogFragment {
             @Override
             public void onClick(View view) {
                 if (Objects.equals(password, binding.password.getText().toString())) {
+                    viewModel.setStatus("new");
                     viewModel.setRoom("name");
                     Bundle result = new Bundle();
                     getParentFragmentManager().setFragmentResult("dialog_enter_room_result", result);

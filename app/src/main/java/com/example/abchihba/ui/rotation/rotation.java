@@ -1,5 +1,7 @@
 package com.example.abchihba.ui.rotation;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -74,32 +77,42 @@ public class rotation extends Fragment {
             rotationLinear.setPadding(32, 20, 20, 20);
             linearLayout.removeAllViews();
             for (Users user : users) {
-
                 linearLayout.addView(createUserFrame(user));
             }
 
             Map<String, Users> userMap = new HashMap<>();
             for (Users user : users) {
-                userMap.put(user.getTag(), user);
-            }
-
-            String firstUser = viewModel.getTag().getValue();
-            String currentUser = firstUser;
-            String nextUser = userMap.get(firstUser).getTo();
-            for (int i = 0; i < users.size(); i++) {
-                if (userMap.containsKey(currentUser)) {
-                    rotationLinear.addView(createUserAvatar(userMap.get(currentUser).getAvatar(), false));
-                    currentUser = nextUser;
-                    if ("0".equals(nextUser) || !userMap.containsKey(currentUser)) break;
-                    nextUser = userMap.get(currentUser).getTo();
+                if (user.getStatus()!="new") {
+                    userMap.put(user.getTag(), user);
                 }
             }
-            rotationLinear.addView(createUserAvatar(userMap.get(firstUser).getAvatar(), true));
-            if (counter == users.size()) {
-                viewModel.setRotationStarted(false);
-            } else {
-                viewModel.setRotationStarted(true);
+
+            String firstUser = "";
+            for (Users user : users){
+                if (user.getStatus()!="new"){
+                    firstUser = user.getTag();
+                }
             }
+            if (viewModel.getStatus().getValue() != "new") {
+                firstUser = viewModel.getTag().getValue();
+            }
+                String currentUser = firstUser;
+                String nextUser = userMap.get(firstUser).getTo();
+                for (int i = 0; i < users.size(); i++) {
+                    if (userMap.containsKey(currentUser)) {
+                        rotationLinear.addView(createUserAvatar(userMap.get(currentUser).getAvatar(), false));
+                        currentUser = nextUser;
+                        if ("0".equals(nextUser) || !userMap.containsKey(currentUser)) break;
+                        nextUser = userMap.get(currentUser).getTo();
+                    }
+                }
+                rotationLinear.addView(createUserAvatar(userMap.get(firstUser).getAvatar(), true));
+                if (counter == users.size()) {
+                    viewModel.setRotationStarted(false);
+                } else {
+                    viewModel.setRotationStarted(true);
+                }
+
         });
 
         binding.leaveRoom.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +135,10 @@ public class rotation extends Fragment {
             counter += 1;
         } else if ("drop".equals(user.getStatus())) {
             status.setBackgroundResource(R.drawable.dropnul);
+            counter += 1;
+
+        } else if ("new".equals(user.getStatus())) {
+            status.setBackgroundResource(R.drawable.design_window);
             counter += 1;
         } else {
             status.setBackgroundResource(R.drawable.design_window);
@@ -189,27 +206,7 @@ public class rotation extends Fragment {
         ShapeAppearanceModel shape = ShapeAppearanceModel.builder()
                 .setAllCornerSizes(ShapeAppearanceModel.PILL).build();
         avatar.setShapeAppearanceModel(shape);
-        if ("1".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_1);
-        } else if ("2".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_2);
-        } else if ("3".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_3);
-        } else if ("4".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_4);
-        } else if ("5".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_5);
-        } else if ("6".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_6);
-        } else if ("7".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_7);
-        } else if ("8".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_8);
-        } else if ("9".equals(user.getAvatar())) {
-            avatar.setImageResource(R.mipmap.avatar_9);
-        } else {
-            avatar.setImageResource(R.drawable.avatar_add);
-        }
+        avatar.setImageBitmap(base64ToBitmap(user.getAvatar()));
         avatar.setId(View.generateViewId());
 
         TextView game = new TextView(getContext());
@@ -282,27 +279,7 @@ public class rotation extends Fragment {
         ShapeAppearanceModel shape = ShapeAppearanceModel.builder()
                 .setAllCornerSizes(ShapeAppearanceModel.PILL).build();
         avatar.setShapeAppearanceModel(shape);
-        if ("1".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_1);
-        } else if ("2".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_2);
-        } else if ("3".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_3);
-        } else if ("4".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_4);
-        } else if ("5".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_5);
-        } else if ("6".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_6);
-        } else if ("7".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_7);
-        } else if ("8".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_8);
-        } else if ("9".equals(userAvatar)) {
-            avatar.setImageResource(R.mipmap.avatar_9);
-        } else {
-            avatar.setImageResource(R.drawable.avatar_add);
-        }
+        avatar.setImageBitmap(base64ToBitmap(userAvatar));
         avatar.setId(View.generateViewId());
         ConstraintLayout.LayoutParams avatarLayout = new ConstraintLayout.LayoutParams(150, 150);
         avatarLayout.setMargins(4, 4, 4, 4);
@@ -329,6 +306,17 @@ public class rotation extends Fragment {
         return AVATAR;
     }
 
+    public static Bitmap base64ToBitmap(String base64String) {
+        try {
+            // Декодируем Base64 в массив байтов
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            // Конвертируем байты в Bitmap
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

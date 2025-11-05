@@ -1,5 +1,7 @@
 package com.example.abchihba.ui.review;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,6 +23,8 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
+
+import java.util.Base64;
 
 public class review extends Fragment {
 
@@ -64,28 +68,8 @@ public class review extends Fragment {
                                 return;
                             }
                             if (querySnapshot != null) {
-                                String avatar_id = querySnapshot.getString("avatar");
-                                if ("1".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_1);
-                                } else if ("2".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_2);
-                                } else if ("3".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_3);
-                                } else if ("4".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_4);
-                                } else if ("5".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_5);
-                                } else if ("6".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_6);
-                                } else if ("7".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_7);
-                                } else if ("8".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_8);
-                                } else if ("9".equals(avatar_id)) {
-                                    avatar.setImageResource(R.mipmap.avatar_9);
-                                } else {
-                                    avatar.setImageResource(R.drawable.avatar_add);
-                                }
+                                String userAvatar = querySnapshot.getString("avatar");
+                                avatar.setImageBitmap(base64ToBitmap(userAvatar));
                             }
                         });
 
@@ -202,6 +186,17 @@ public class review extends Fragment {
         return root;
     }
 
+    public static Bitmap base64ToBitmap(String base64String) {
+        try {
+            // Декодируем Base64 в массив байтов
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            // Конвертируем байты в Bitmap
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

@@ -1,23 +1,25 @@
 package com.example.abchihba;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abchihba.ui.ViewModel;
-import com.example.abchihba.ui.dialog.dialog_avatar;
 import com.example.abchihba.ui.dialog.dialog_name;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.abchihba.databinding.ActivityMainBinding;
@@ -25,7 +27,11 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.Objects;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +44,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         ViewModel viewModel = new ViewModelProvider(MainActivity.this).get(ViewModel.class);
+        ActivityResultLauncher<String> pickImageLauncher;
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri uri) {
+                        if (uri != null) {
+                            try {
+                                InputStream inputStream = getContentResolver().openInputStream(uri);
+                                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                byte[] bytes = bitmapToByteArray(cropToSquare(bitmap), 50, Bitmap.CompressFormat.JPEG);
+                                String base64 = Base64.getEncoder().encodeToString(bytes);
+                                viewModel.setAvatar(base64);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
 
         if (getIntent().getStringExtra("tag") == null) {
             Intent intent = new Intent(MainActivity.this, signin.class);
@@ -49,44 +74,14 @@ public class MainActivity extends AppCompatActivity {
                 binding.name.setText(name);
             });
             viewModel.getAvatar().observe(this, avatar -> {
-
-                if ("1".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_1);
-                } else if ("2".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_2);
-                } else if ("3".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_3);
-                } else if ("4".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_4);
-                } else if ("5".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_5);
-                } else if ("6".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_6);
-                } else if ("7".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_7);
-                } else if ("8".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_8);
-                } else if ("9".equals(avatar)) {
-                    binding.avatar.setImageResource(R.mipmap.avatar_9);
-                } else {
-                    binding.avatar.setImageResource(R.drawable.avatar_add);
-                }
-
+                binding.avatar.setImageBitmap(base64ToBitmap(avatar));
             });
             viewModel.getBalance().observe(this, balance -> binding.balance.setText(balance));
             ShapeableImageView avatar = binding.avatar;
             avatar.setOnClickListener(view -> {
-                DialogFragment dialog_avatar = new dialog_avatar();
-                dialog_avatar.show(getSupportFragmentManager(), "dialog_edit_avatar");
+                pickImageLauncher.launch("image/*");
             });
 
-            getSupportFragmentManager().setFragmentResultListener("edit_avatar_result", this, (requestKey, result) -> {
-                String newAvatar = result.getString("new_avatar");
-                if (newAvatar != null) {
-                    viewModel.setAvatar(newAvatar);
-                    Toast.makeText(this, "Аватар изменён!", Toast.LENGTH_SHORT).show();
-                }
-            });
             TextView edit = binding.name;
             edit.setOnClickListener(view -> {
                 DialogFragment dialog_name = new dialog_name();
@@ -100,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Имя изменено на: " + newName, Toast.LENGTH_SHORT).show();
                 }
             });
+
+
+
 
             BottomNavigationView navView = findViewById(R.id.nav_view);
             navView.setBackgroundResource(R.drawable.design_window);
@@ -129,5 +127,48 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Вход не выполнен", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    public static byte[] bitmapToByteArray(Bitmap bitmap, int quality, Bitmap.CompressFormat format) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return new byte[0];
+        }
+        quality = Math.max(0, Math.min(quality, 100));
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            if (!bitmap.compress(format, quality, byteArrayOutputStream)) {
+                return new byte[0];
+            }
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception e) {
+            return new byte[0];
+        } finally {
+            try {
+                byteArrayOutputStream.close();
+            } catch (IOException ignored) {
+
+            }
+        }
+    }
+
+    public static Bitmap base64ToBitmap(String base64String) {
+        try {
+            // Декодируем Base64 в массив байтов
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            // Конвертируем байты в Bitmap
+            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public Bitmap cropToSquare(Bitmap originalBitmap) {
+        int width = originalBitmap.getWidth();
+        int height = originalBitmap.getHeight();
+        int size = Math.min(width, height);
+
+        int startX = (width - size) / 2;
+        int startY = (height - size) / 2;
+
+        return Bitmap.createBitmap(originalBitmap, startX, startY, size, size);
     }
 }
