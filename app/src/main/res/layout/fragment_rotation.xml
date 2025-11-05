@@ -57,5 +57,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:text="Выйти"
-        android:layout_marginBottom="70dp"/>
+        android:layout_marginBottom="70dp"
+        android:layout_marginLeft="10dp"/>
+    <Button
+        android:id="@+id/chat"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="Чат"
+        android:layout_marginBottom="70dp"
+        android:layout_marginRight="10dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

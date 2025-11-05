@@ -122,6 +122,12 @@ public class rotation extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.navigation_choose_room);
             }
         });
+        binding.chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.navigation_chat);
+            }
+        });
         return root;
     }
 

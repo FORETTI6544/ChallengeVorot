@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.abchihba.Chat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -48,6 +49,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public final MutableLiveData<Boolean> targetUserGameIsEmpty;
     public final MutableLiveData<Boolean> iDontHaveGenre;
     public final MutableLiveData<Boolean> myStatusIsPlaying;
+    public final MutableLiveData<List<Chat>> chatList;
 
     public ViewModel() {
         //WHEEL===========================================================
@@ -103,12 +105,15 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         //ROOMS===========================================================
         roomsList = new MutableLiveData<>();
         getRooms();
+        //CHAT============================================================
+        chatList = new MutableLiveData<>(new ArrayList<>());
     }
 
 
     public LiveData<String> getName() {
         return name;
     }
+
     public void setName(String newname) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -121,6 +126,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnSuccessListener(aVoid -> Log.d("ViewModel", "Name updated successfully in Firestore."))
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
     }
+
     public void setAvatar(String newavatar) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -130,12 +136,15 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("avatar", newavatar);
     }
+
     public LiveData<String> getAvatar() {
         return avatar;
     }
+
     public LiveData<String> getPreview() {
         return preview;
     }
+
     public void setPreview(String newpreview) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -146,9 +155,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("preview", newpreview);
     }
+
     public LiveData<String> getBalance() {
         return balance;
     }
+
     public void setBalance(String newbalance) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -160,9 +171,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("balance", newbalance);
     }
+
     public LiveData<String> getRoom() {
         return room;
     }
+
     public void setRoom(String newRoom) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -188,6 +201,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                     }
                 });
     }
+
     public void loadUser() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference doc = db.collection("users").document(tag.getValue());
@@ -230,6 +244,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 }
                 if (snapshot.getString("room") != null) {
                     room.setValue(snapshot.getString("room"));
+                    if (!Objects.equals(room.getValue(), "0")) {
+                        loadChat();
+                    }
                 }
                 Log.d("ViewModel", "Snapshot data: " + snapshot.getData());
             } else {
@@ -237,14 +254,17 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             }
         });
     }
+
     public void setTag(String tag) {
         this.tag.setValue(tag);
         Log.d("ViewModel", "Tag set: " + tag);
         loadUser();
     }
+
     public LiveData<String> getTag() {
         return tag;
     }
+
     public LiveData<String> getRotationType() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("wheel").document("rotation")
@@ -258,6 +278,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 });
         return rotationType;
     }
+
     public LiveData<List<String>> getGenres() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         getRotationType();
@@ -289,9 +310,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         }
         return genres;
     }
+
     public LiveData<String> getGenre() {
         return genre;
     }
+
     public void setGenre(String newgenre) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -305,6 +328,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnSuccessListener(aVoid -> Log.d("ViewModel", "Name updated successfully in Firestore."))
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
     }
+
     public void setRerolls(String newrerolls) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -316,9 +340,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("rerolls", newrerolls);
     }
+
     public LiveData<String> getRerolls() {
         return rerolls;
     }
+
     public void setAllow(String newallow) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -332,9 +358,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnSuccessListener(aVoid -> Log.d("ViewModel", "Name updated successfully in Firestore."))
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
     }
+
     public LiveData<String> getAllow() {
         return allow;
     }
+
     public LiveData<List<Users>> getAllUsers() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
@@ -363,6 +391,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 });
         return allUsersList;
     }
+
     public LiveData<List<Users>> getRoomUsers() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
@@ -415,12 +444,15 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 });
         return roomUsersList;
     }
+
     public LiveData<String> getTo() {
         return to;
     }
+
     public LiveData<String> getGame() {
         return game;
     }
+
     public void setGame(String newgame) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -431,6 +463,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("game", newgame);
     }
+
     public void setTo(String tag, String newto) {
         if (tag == null || tag.isEmpty()) {
             Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
@@ -443,6 +476,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnSuccessListener(aVoid -> Log.d("ViewModel", "Name updated successfully in Firestore."))
                 .addOnFailureListener(e -> Log.e("ViewModel", "Failed to update name in Firestore.", e));
     }
+
     public void setStatus(String newstatus) {
         String tagValue = tag.getValue();
         if (tagValue == null || tagValue.isEmpty()) {
@@ -454,9 +488,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("users").document(tagValue)
                 .update("status", newstatus);
     }
+
     public LiveData<String> getStatus() {
         return status;
     }
+
     public LiveData<List<Reviews>> getReviews() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("reviews")
@@ -491,6 +527,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 });
         return reviewsList;
     }
+
     public void addReview(String tag, String game, String preview, String review, String rating, String queue, String date) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -505,6 +542,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         db.collection("reviews").document(queue)
                 .set(reviewMap);
     }
+
     public LiveData<List<Rooms>> getRooms() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("rooms")
@@ -522,6 +560,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                             rotationStarted.setValue(status);
                             List<String> users = (List<String>) document.get("users");
 
+
                             Rooms room = new Rooms(name, password, status, users);
                             rooms.add(room);
                         }
@@ -531,14 +570,17 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 });
         return roomsList;
     }
+
     public void setRotationStarted(Boolean newStatus) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("rooms").document(room.getValue())
                 .update("rotation_status", newStatus);
     }
+
     public LiveData<Boolean> getRotationStarted() {
         return rotationStarted;
     }
+
     public void newRotation(String type) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         List<Users> users = getRoomUsers().getValue();
@@ -592,8 +634,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         });
 
 
-
     }
+
     public void leaveRoom() {
         String toMe = "";
         for (Users user : roomUsersList.getValue()) {
@@ -603,12 +645,52 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             }
         }
         setTo(toMe, to.getValue());
-        setStatus("drop");
-        setBalance("0");
+        if (!Objects.equals(status.getValue(), "done") || !Objects.equals(status.getValue(), "drop")) {
+            setStatus("drop");
+            setBalance("0");
+        }
         setRoom("0");
         setTo(tag.getValue(), "0");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("rooms").document(getRoom().getValue())
                 .update("users", FieldValue.arrayRemove(getTag().getValue()));
+    }
+
+    public LiveData<List<Chat>> loadChat() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("rooms").document(room.getValue())
+                .addSnapshotListener((querySnapshot, e) -> {
+                    if (e != null) {
+                        return;
+                    }
+
+                    List<Chat> chat = new ArrayList<>();
+                    if (querySnapshot != null) {
+                        List<String> rawChat = (List<String>) querySnapshot.get("chat");
+                        for (String rawMsg : rawChat) {
+                            String tag = rawMsg.substring(0, 20);
+                            String msg = rawMsg.substring(30);
+                            chat.add(new Chat(tag, msg));
+                        }
+                        chatList.setValue(chat);
+                    }
+                });
+        return chatList;
+    }
+    public void sendMessage(String rawMessage) {
+        long currentTime = System.currentTimeMillis() / 1000;
+        String tagValue = tag.getValue();
+        String message = tagValue + currentTime + rawMessage;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("rooms").document(room.getValue());
+
+// Добавление элемента в массив
+        docRef.update("chat", FieldValue.arrayUnion(message))
+                .addOnSuccessListener(aVoid -> {
+                    // Успешно добавлено
+                })
+                .addOnFailureListener(e -> {
+                    // Ошибка
+                });
     }
 }
