@@ -38,6 +38,6 @@
         android:layout_margin="10dp"
         android:text="Войти"
         android:textStyle="bold"
-        android:textColor="@color/buy_text"/>
+        android:textColor="@color/secondaryText"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

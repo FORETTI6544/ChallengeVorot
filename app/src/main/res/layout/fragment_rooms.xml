@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/backgroundPrimary"
     tools:context=".ui.rooms.rooms">
 
     <Space
@@ -28,7 +28,7 @@
         android:background="@drawable/prohodit"
         android:text="Создать новую комнату"
         android:textStyle="bold"
-        android:textColor="@color/buy_text"/>
+        android:textColor="@color/secondaryText"/>
 
     <Button
         android:id="@+id/chooseRoom"
@@ -42,7 +42,7 @@
         android:background="@drawable/prohodit"
         android:text="Присоединиться к существующей комнате"
         android:textStyle="bold"
-        android:textColor="@color/buy_text"/>
+        android:textColor="@color/secondaryText"/>
     <Space
         android:id="@+id/spacerBot"
         android:layout_width="wrap_content"

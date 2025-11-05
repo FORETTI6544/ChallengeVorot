@@ -75,7 +75,7 @@ public class profile extends Fragment {
                 done = new Button(getContext());
                 done.setId(View.generateViewId());
                 done.setText("Прошел");
-                done.setTextColor(ContextCompat.getColor(requireContext(), R.color.buy_text));
+                done.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondaryText));
                 done.setTextSize(20);
                 done.setTypeface(null, Typeface.BOLD);
                 done.setBackgroundResource(R.drawable.proshol);
@@ -156,7 +156,7 @@ public class profile extends Fragment {
                 drop = new Button(getContext());
                 drop.setId(View.generateViewId());
                 drop.setText("ДРОПНУТЬ");
-                drop.setTextColor(ContextCompat.getColor(requireContext(), R.color.buy_text));
+                drop.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondaryText));
                 drop.setTextSize(20);
                 drop.setTypeface(null, Typeface.BOLD);
                 drop.setBackgroundResource(R.drawable.dropnul);

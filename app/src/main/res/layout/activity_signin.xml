@@ -22,6 +22,8 @@
 
     <EditText
         android:id="@+id/emailin"
+        android:textColor="@color/text"
+        android:shadowColor="@color/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"

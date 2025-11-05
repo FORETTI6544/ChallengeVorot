@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.example.abchihba.R;
 import com.example.abchihba.databinding.FragmentShopBinding;
 import com.example.abchihba.ui.Items;
-import com.example.abchihba.ui.Localusers;
 import com.example.abchihba.ui.Users;
 import com.example.abchihba.ui.ViewModel;
 import com.example.abchihba.ui.dialog.dialog_genre;
@@ -35,7 +34,6 @@ import com.example.abchihba.ui.dialog.dialog_theme;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -327,7 +325,7 @@ public class shop extends Fragment {
         Button buyBtn = new Button(getContext());
         buyBtn.setText("Купить");
         buyBtn.setTextSize(18);
-        buyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.buy_text));
+        buyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.secondaryText));
         buyBtn.setTypeface(null, Typeface.BOLD);
         buyBtn.setBackgroundResource(R.drawable.button_buy);
         buyBtn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);

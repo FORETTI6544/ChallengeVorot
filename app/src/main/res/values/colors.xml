@@ -7,8 +7,8 @@
     <color name="primary">#FF2B2D30</color>
     <color name="secondary">#FF1E1F22</color>
     <color name="tertiary">#383838</color>
-    <color name="background">#383838</color>
+    <color name="backgroundPrimary">#292929</color>
     <color name="backgroundFrame">#232323</color>
-    <color name="text">#989898</color>
-    <color name="buy_text">#CFCFCF</color>
+    <color name="text">#EFEFEF</color>
+    <color name="secondaryText">#AFAFAF</color>
 </resources>

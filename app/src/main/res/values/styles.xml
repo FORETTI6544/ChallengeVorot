@@ -15,7 +15,9 @@
         <item name="android:padding">5dp</item>
         <item name="cornerRadius">5dp</item>
         <item name="android:windowBackground">@android:color/transparent</item>
-
     </style>
 
+    <style name="buttonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_default</item>
+    </style>
 </resources>

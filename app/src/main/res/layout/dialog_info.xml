@@ -255,7 +255,7 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:textColor="@color/buy_text"
+                android:textColor="@color/secondaryText"
                 android:textStyle="bold"
                 android:background="@drawable/proshol"
                 android:text="ОК" />
