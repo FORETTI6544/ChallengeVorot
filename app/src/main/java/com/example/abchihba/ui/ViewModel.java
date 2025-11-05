@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -539,49 +540,59 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return rotationStarted;
     }
     public void newRotation(String type) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         List<Users> users = getRoomUsers().getValue();
+        WriteBatch batch = db.batch();
         for (Users user : users) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("users").document(user.getTag())
-                    .update("game", "Игра отсутствует");
-            db.collection("users").document(user.getTag())
-                    .update("preview", "0");
-            db.collection("users").document(user.getTag())
-                    .update("status", "Новая ротация");
-            db.collection("users").document(user.getTag())
-                    .update("genre", type);
-            db.collection("users").document(user.getTag())
-                    .update("allow", "yes");
-            setTo(user.getTag(), "0");
+            batch.update(db.collection("users").document(user.getTag()), "game", "Игра отсутствует");
+            batch.update(db.collection("users").document(user.getTag()), "preview", "0");
+            batch.update(db.collection("users").document(user.getTag()), "status", "Новая ротация");
+            batch.update(db.collection("users").document(user.getTag()), "genre", type);
+            batch.update(db.collection("users").document(user.getTag()), "allow", "yes");
+            batch.update(db.collection("users").document(user.getTag()), "to", "0");
         }
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                List<Localusers> localusers = new ArrayList<>();
 
-        List<Localusers> localusers = new ArrayList<>();
+                for (int j = 0; j < users.size(); j++) {
+                    localusers.add(new Localusers(users.get(j).getTag(), "0"));
+                }
 
-        for (int j = 0; j < users.size(); j++) {
-            localusers.add(new Localusers(users.get(j).getTag(), "0"));
-        }
-
-        List<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < users.size(); i++) {
-            indices.add(i);
-        }
-        Collections.shuffle(indices);
+                List<Integer> indices = new ArrayList<>();
+                for (int i = 0; i < users.size(); i++) {
+                    indices.add(i);
+                }
+                Collections.shuffle(indices);
 
 
-        for (int i = 0; i < users.size(); i++) {
-            int currentIndex = indices.get(i);
-            int nextIndex = indices.get((i + 1) % users.size());
+                for (int i = 0; i < users.size(); i++) {
+                    int currentIndex = indices.get(i);
+                    int nextIndex = indices.get((i + 1) % users.size());
 
-            String currentTag = users.get(currentIndex).getTag();
-            String nextTag = users.get(nextIndex).getTag();
+                    String currentTag = users.get(currentIndex).getTag();
+                    String nextTag = users.get(nextIndex).getTag();
 
-            localusers.get(currentIndex).setTo(nextTag);
-        }
+                    localusers.get(currentIndex).setTo(nextTag);
+                }
 
-        for (Localusers localuser : localusers) {
-            setTo(localuser.getTag(), localuser.getTo());
-        }
-        setRotationStarted(true);
+                WriteBatch batch2 = db.batch();
+                for (Localusers localuser : localusers) {
+                    batch2.update(db.collection("users").document(localuser.getTag()), "to", localuser.getTo());
+                    batch2.update(db.collection("rooms").document(room.getValue()), "rotation_status", true);
+                }
+                batch2.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+            }
+        });
+
+
+
     }
     public void leaveRoom() {
         String toMe = "";
