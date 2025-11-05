@@ -82,23 +82,23 @@ public class rotation extends Fragment {
 
             Map<String, Users> userMap = new HashMap<>();
             for (Users user : users) {
-                if (user.getStatus()!="new") {
+                if (!Objects.equals(user.getStatus(), "new")) {
                     userMap.put(user.getTag(), user);
                 }
             }
 
             String firstUser = "";
             for (Users user : users){
-                if (user.getStatus()!="new"){
+                if (!Objects.equals(user.getStatus(), "new")){
                     firstUser = user.getTag();
                 }
             }
-            if (viewModel.getStatus().getValue() != "new") {
+            if (!Objects.equals(viewModel.getStatus().getValue(), "new")) {
                 firstUser = viewModel.getTag().getValue();
             }
                 String currentUser = firstUser;
                 String nextUser = userMap.get(firstUser).getTo();
-                for (int i = 0; i < users.size(); i++) {
+                for (int i = 0; i < userMap.size(); i++) {
                     if (userMap.containsKey(currentUser)) {
                         rotationLinear.addView(createUserAvatar(userMap.get(currentUser).getAvatar(), false));
                         currentUser = nextUser;
