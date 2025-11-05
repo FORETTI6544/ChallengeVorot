@@ -57,35 +57,7 @@ public class profile extends Fragment {
         View root = binding.getRoot();
 
 
-        viewModel.getName().observe(getViewLifecycleOwner(), name -> {
-            binding.name.setText(name);
-        });
-        viewModel.getAvatar().observe(getViewLifecycleOwner(), avatar -> {
 
-            if ("1".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_1);
-            } else if ("2".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_2);
-            } else if ("3".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_3);
-            } else if ("4".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_4);
-            } else if ("5".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_5);
-            } else if ("6".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_6);
-            } else if ("7".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_7);
-            } else if ("8".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_8);
-            } else if ("9".equals(avatar)) {
-                binding.avatar.setImageResource(R.mipmap.avatar_9);
-            } else {
-                binding.avatar.setImageResource(R.drawable.avatar_add);
-            }
-
-        });
-        viewModel.getBalance().observe(getViewLifecycleOwner(), balance -> binding.balance.setText(balance));
         viewModel.getGenre().observe(getViewLifecycleOwner(), genre -> binding.genre.setText("Жанр: " + genre));
         viewModel.getGame().observe(getViewLifecycleOwner(), game -> {
             binding.game.setText(game);
@@ -226,33 +198,6 @@ public class profile extends Fragment {
         });
 
 
-        ShapeableImageView avatar = binding.avatar;
-        avatar.setOnClickListener(view -> {
-            DialogFragment dialog_avatar = new dialog_avatar();
-            dialog_avatar.show(getParentFragmentManager(), "dialog_edit_avatar");
-        });
-
-        getParentFragmentManager().setFragmentResultListener("edit_avatar_result", this, (requestKey, result) -> {
-            String newAvatar = result.getString("new_avatar");
-            if (newAvatar != null) {
-                viewModel.setAvatar(newAvatar);
-                Toast.makeText(getContext(), "Аватар изменён!", Toast.LENGTH_SHORT).show();
-            }
-        });
-        TextView edit = binding.name;
-        edit.setOnClickListener(view -> {
-            DialogFragment dialog_name = new dialog_name();
-            dialog_name.show(getParentFragmentManager(), "dialog_edit_name");
-        });
-
-        getParentFragmentManager().setFragmentResultListener("edit_name_result", this, (requestKey, result) -> {
-            String newName = result.getString("new_name");
-            if (newName != null) {
-                viewModel.setName(newName);
-                Toast.makeText(getContext(), "Имя изменено на: " + newName, Toast.LENGTH_SHORT).show();
-            }
-        });
-
         ShapeableImageView info = binding.info;
         info.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,7 +207,7 @@ public class profile extends Fragment {
             }
         });
 
-        String hui = "";
+
         return root;
     }
 

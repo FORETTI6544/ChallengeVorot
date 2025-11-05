@@ -7,79 +7,13 @@
     tools:context=".ui.rotation.rotation"
     android:id="@+id/container">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topPanel"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/backgroundFrame">
-
-        <ImageView
-            android:id="@+id/coin"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/money"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintRight_toRightOf="parent"
-            />
-
-        <TextView
-            android:id="@+id/balance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="24dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.5"
-            app:layout_constraintRight_toLeftOf="@id/coin"/>
-
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:autoSizeMaxTextSize="30sp"
-            android:autoSizeMinTextSize="8sp"
-            android:autoSizeStepGranularity="4sp"
-            android:autoSizeTextType="uniform"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toRightOf="@+id/avatar"
-            app:layout_constraintRight_toLeftOf="@id/balance"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/avatar"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:shapeAppearanceOverlay="@style/CircularShape"
-            tools:src="@tools:sample/avatars" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <HorizontalScrollView
         android:id="@+id/rotation_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         tools:layout_editor_absoluteY="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/topPanel"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
 
