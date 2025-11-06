@@ -109,8 +109,6 @@ public class rotation extends Fragment {
                 rotationLinear.addView(createUserAvatar(userMap.get(firstUser).getAvatar(), true));
                 if (counter == users.size()) {
                     viewModel.setRotationStarted(false);
-                } else {
-                    viewModel.setRotationStarted(true);
                 }
 
         });

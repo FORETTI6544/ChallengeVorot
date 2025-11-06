@@ -31,8 +31,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.rpc.context.AttributeContext;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -103,6 +106,13 @@ public class chat extends Fragment {
         message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         message.setText(msg.getMessage());
 
+        TextView time = new TextView(getContext());
+        time.setId(View.generateViewId());
+        time.setTextColor(getResources().getColor(R.color.secondaryText));
+        time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+        time.setTextAlignment(TextView.TEXT_ALIGNMENT_TEXT_END);
+        time.setText(timeFormat(msg.getTime()));
+
         ConstraintLayout.LayoutParams messageFrameLayout = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         messageFrameLayout.setMargins(dpToPx(getContext(), 10), dpToPx(getContext(), 10), dpToPx(getContext(), 10), dpToPx(getContext(), 10));
         messageFrame.setLayoutParams(messageFrameLayout);
@@ -123,12 +133,18 @@ public class chat extends Fragment {
         messageLayout.topToBottom = name.getId();
         messageLayout.leftToLeft = messageFrame.getId();
         messageLayout.rightToRight = messageFrame.getId();
-        messageLayout.bottomToBottom = messageFrame.getId();
         message.setLayoutParams(messageLayout);
+
+        ConstraintLayout.LayoutParams timeLayout = new ConstraintLayout.LayoutParams(dpToPx(getContext(), 50), ViewGroup.LayoutParams.WRAP_CONTENT);
+        timeLayout.topToBottom = message.getId();
+        timeLayout.rightToRight = messageFrame.getId();
+        timeLayout.bottomToBottom = messageFrame.getId();
+        time.setLayoutParams(timeLayout);
 
         messageFrame.addView(avatar);
         messageFrame.addView(name);
         messageFrame.addView(message);
+        messageFrame.addView(time);
 
         return messageFrame;
     }
@@ -146,6 +162,10 @@ public class chat extends Fragment {
     public static int dpToPx(Context context, float dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
+    }
+    public static String timeFormat(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return sdf.format(new Date(time * 1000L));
     }
     @Override
     public void onDestroyView() {
