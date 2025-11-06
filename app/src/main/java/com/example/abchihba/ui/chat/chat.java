@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,8 +32,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.rpc.context.AttributeContext;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -63,6 +67,7 @@ public class chat extends Fragment {
             for (Chat msg : chat) {
                 binding.chat.addView(createMessageFrame(msg, userMap));
             }
+            binding.scrollable.fullScroll(ScrollView.FOCUS_DOWN);
         });
 
         binding.sendMessage.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +107,13 @@ public class chat extends Fragment {
         message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         message.setText(msg.getMessage());
 
+        TextView time = new TextView(getContext());
+        time.setId(View.generateViewId());
+        time.setTextColor(getResources().getColor(R.color.secondaryText));
+        time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+        time.setTextAlignment(TextView.TEXT_ALIGNMENT_TEXT_END);
+        time.setText(timeFormat(msg.getTime()));
+
         ConstraintLayout.LayoutParams messageFrameLayout = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         messageFrameLayout.setMargins(Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10));
         messageFrame.setLayoutParams(messageFrameLayout);
@@ -125,13 +137,23 @@ public class chat extends Fragment {
         messageLayout.bottomToBottom = messageFrame.getId();
         message.setLayoutParams(messageLayout);
 
+        ConstraintLayout.LayoutParams timeLayout = new ConstraintLayout.LayoutParams(dpToPx(getContext(), 50), ViewGroup.LayoutParams.WRAP_CONTENT);
+        timeLayout.topToBottom = message.getId();
+        timeLayout.rightToRight = messageFrame.getId();
+        timeLayout.bottomToBottom = messageFrame.getId();
+        time.setLayoutParams(timeLayout);
+
         messageFrame.addView(avatar);
         messageFrame.addView(name);
         messageFrame.addView(message);
+        messageFrame.addView(time);
 
         return messageFrame;
     }
-
+    public static String timeFormat(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return sdf.format(new Date(time * 1000L));
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

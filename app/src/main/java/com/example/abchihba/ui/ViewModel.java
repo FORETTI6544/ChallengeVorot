@@ -669,8 +669,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                         List<String> rawChat = (List<String>) querySnapshot.get("chat");
                         for (String rawMsg : rawChat) {
                             String tag = rawMsg.substring(0, 20);
+                            long time = Long.parseLong(rawMsg.substring(21, 30));
                             String msg = rawMsg.substring(30);
-                            chat.add(new Chat(tag, msg));
+                            chat.add(new Chat(tag, time, msg));
                         }
                         chatList.setValue(chat);
                     }
