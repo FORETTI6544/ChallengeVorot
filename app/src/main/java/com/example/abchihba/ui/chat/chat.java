@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -62,6 +63,7 @@ public class chat extends Fragment {
             for (Chat msg : chat) {
                 binding.chat.addView(createMessageFrame(msg, userMap));
             }
+            binding.scrollable.fullScroll(ScrollView.FOCUS_DOWN);
         });
 
         binding.sendMessage.setOnClickListener(new View.OnClickListener() {
