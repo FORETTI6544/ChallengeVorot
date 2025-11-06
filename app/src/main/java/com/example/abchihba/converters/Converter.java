@@ -4,7 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
+import java.util.Locale;
 
 public class Converter {
     public static Bitmap base64ToBitmap(String base64String) {
@@ -21,5 +24,10 @@ public class Converter {
     public static int dpToPx(Context context, float dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
+    }
+
+    public static String timeFormat(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return sdf.format(new Date(time * 1000L));
     }
 }

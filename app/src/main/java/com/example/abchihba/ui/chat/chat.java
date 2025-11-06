@@ -112,7 +112,7 @@ public class chat extends Fragment {
         time.setTextColor(getResources().getColor(R.color.secondaryText));
         time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
         time.setTextAlignment(TextView.TEXT_ALIGNMENT_TEXT_END);
-        time.setText(timeFormat(msg.getTime()));
+        time.setText(Converter.timeFormat(msg.getTime()));
 
         ConstraintLayout.LayoutParams messageFrameLayout = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         messageFrameLayout.setMargins(Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10));
@@ -137,7 +137,7 @@ public class chat extends Fragment {
         messageLayout.bottomToBottom = messageFrame.getId();
         message.setLayoutParams(messageLayout);
 
-        ConstraintLayout.LayoutParams timeLayout = new ConstraintLayout.LayoutParams(dpToPx(getContext(), 50), ViewGroup.LayoutParams.WRAP_CONTENT);
+        ConstraintLayout.LayoutParams timeLayout = new ConstraintLayout.LayoutParams(Converter.dpToPx(getContext(), 50), ViewGroup.LayoutParams.WRAP_CONTENT);
         timeLayout.topToBottom = message.getId();
         timeLayout.rightToRight = messageFrame.getId();
         timeLayout.bottomToBottom = messageFrame.getId();
@@ -150,10 +150,7 @@ public class chat extends Fragment {
 
         return messageFrame;
     }
-    public static String timeFormat(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        return sdf.format(new Date(time * 1000L));
-    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
