@@ -37,7 +37,10 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private final MutableLiveData<String> preview;
     private final MutableLiveData<String> tag;
     private final MutableLiveData<String> room;
-    private final MutableLiveData<String> rotationType;
+    private final MutableLiveData<Boolean> readiness;
+    private final MutableLiveData<String> nextRotationType;
+    private final MutableLiveData<String> nextGame;
+    private final MutableLiveData<String> nextGamePreview;
     private final MutableLiveData<List<String>> genres;
     private final MutableLiveData<List<Users>> allUsersList;
     private final MutableLiveData<List<Users>> roomUsersList;
@@ -53,8 +56,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public ViewModel() {
         //WHEEL===========================================================
-        rotationType = new MutableLiveData<>();
-        rotationType.setValue("game");
         genres = new MutableLiveData<>();
         genres.setValue(getGenres().getValue());
         //PROFILE=========================================================
@@ -79,9 +80,18 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         preview.setValue("0");
         room = new MutableLiveData<>();
         room.setValue("0");
+        readiness = new MutableLiveData<>();
+        readiness.setValue(true);
         //TAG=============================================================
         tag = new MutableLiveData<>();
         //ROTATION========================================================
+
+        nextRotationType = new MutableLiveData<>();
+        nextRotationType.setValue("Отсутствует");
+        nextGame = new MutableLiveData<>();
+        nextGame.setValue("Игра отсутствует");
+        nextGamePreview = new MutableLiveData<>();
+        nextGamePreview.setValue("0");
 
         roomUsersList = new MutableLiveData<>();
 
@@ -246,7 +256,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                     room.setValue(snapshot.getString("room"));
                     if (!Objects.equals(room.getValue(), "0")) {
                         loadChat();
+                        loadNextRotationType();
                     }
+                }
+                if (snapshot.get("readiness") != null){
+                    readiness.setValue(snapshot.getBoolean("readiness"));
                 }
                 Log.d("ViewModel", "Snapshot data: " + snapshot.getData());
             } else {
@@ -265,26 +279,37 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return tag;
     }
 
-    public LiveData<String> getRotationType() {
+    public void loadNextRotationType() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("wheel").document("rotation")
+        db.collection("rooms").document(room.getValue())
                 .addSnapshotListener((querySnapshot, e) -> {
                     if (e != null) {
                         return;
                     }
                     if (querySnapshot != null) {
-                        rotationType.setValue(querySnapshot.getString("current_rotation"));
+                        nextRotationType.setValue(querySnapshot.getString("next_rotation_type"));
+                        nextGame.setValue(querySnapshot.getString("next_game"));
+                        nextGamePreview.setValue(querySnapshot.getString("next_game_preview"));
                     }
                 });
-        return rotationType;
     }
-
+    public LiveData<String> getNextRotationType() {
+        return nextRotationType;
+    }
+    public void setNextRotationType(String type) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("rooms").document(room.getValue())
+                .update("next_rotation_type", type);
+    }
+    public void setNextGame(String game, String preview) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("rooms").document(room.getValue())
+                .update("next_game", game);
+        db.collection("rooms").document(room.getValue())
+                .update("next_game_preview", preview);
+    }
     public LiveData<List<String>> getGenres() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        getRotationType();
-        Log.d("Genres", "Тип ротации загрузился");
-        if ("game".equals(rotationType.getValue())) {
-            Log.d("Genres", "запустилось файербэйз");
             db.collection("wheel").document("game_genres")
                     .addSnapshotListener((querySnapshot, e) -> {
                         if (e != null) {
@@ -307,7 +332,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                             Log.d("Genres", "Жанр добавлен в лист");
                         }
                     });
-        }
         return genres;
     }
 
@@ -381,8 +405,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                             String status = document.getString("status");
                             String tag = document.getId();
                             String to = document.getString("to");
+                            Boolean readiness = document.getBoolean("readiness");
 
-                            Users user = new Users(name, avatar, genre, game, preview, status, tag, to);
+                            Users user = new Users(name, avatar, genre, game, preview, status, tag, to, readiness);
 
                             users.add(user);
                         }
@@ -411,8 +436,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                                 String status = document.getString("status");
                                 String tag = document.getId();
                                 String to = document.getString("to");
+                                Boolean readiness = document.getBoolean("readiness");
 
-                                Users user = new Users(name, avatar, genre, game, preview, status, tag, to);
+                                Users user = new Users(name, avatar, genre, game, preview, status, tag, to, readiness);
                                 users.add(user);
                             }
                         }
@@ -581,17 +607,23 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return rotationStarted;
     }
 
-    public void newRotation(String type) {
+    public void newRotation() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         List<Users> users = getRoomUsers().getValue();
         WriteBatch batch = db.batch();
         for (Users user : users) {
-            batch.update(db.collection("users").document(user.getTag()), "game", "Игра отсутствует");
-            batch.update(db.collection("users").document(user.getTag()), "preview", "0");
-            batch.update(db.collection("users").document(user.getTag()), "status", "Новая ротация");
-            batch.update(db.collection("users").document(user.getTag()), "genre", type);
-            batch.update(db.collection("users").document(user.getTag()), "allow", "yes");
+            batch.update(db.collection("users").document(user.getTag()), "game", nextGame.getValue());
+            batch.update(db.collection("users").document(user.getTag()), "preview", nextGamePreview.getValue());
+            batch.update(db.collection("users").document(user.getTag()), "genre", nextRotationType.getValue());
             batch.update(db.collection("users").document(user.getTag()), "to", "0");
+            batch.update(db.collection("users").document(user.getTag()), "readiness", false);
+            if (Objects.equals(nextRotationType.getValue(), "Phanthom Lancer")) {
+                batch.update(db.collection("users").document(user.getTag()), "status", "playing");
+                batch.update(db.collection("users").document(user.getTag()), "allow", "no");
+            } else {
+                batch.update(db.collection("users").document(user.getTag()), "status", "Новая ротация");
+                batch.update(db.collection("users").document(user.getTag()), "allow", "yes");
+            }
         }
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -622,8 +654,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 WriteBatch batch2 = db.batch();
                 for (Localusers localuser : localusers) {
                     batch2.update(db.collection("users").document(localuser.getTag()), "to", localuser.getTo());
-                    batch2.update(db.collection("rooms").document(room.getValue()), "rotation_status", true);
                 }
+                batch2.update(db.collection("rooms").document(room.getValue()), "rotation_status", true);
+                batch2.update(db.collection("rooms").document(room.getValue()), "next_rotation_type", "Отсутствует");
+                batch2.update(db.collection("rooms").document(room.getValue()), "next_game", "Игра отсутствует");
+                batch2.update(db.collection("rooms").document(room.getValue()), "next_game_preview", "0");
                 batch2.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -693,5 +728,13 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 .addOnFailureListener(e -> {
                     // Ошибка
                 });
+    }
+    public LiveData<Boolean> getReadiness() {
+        return readiness;
+    }
+    public void setReadiness() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(tag.getValue())
+                .update("readiness", true);
     }
 }

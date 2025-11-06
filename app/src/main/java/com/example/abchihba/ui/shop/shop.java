@@ -69,12 +69,11 @@ public class shop extends Fragment {
         int intPrice = Integer.parseInt(price);
         int intBalance = Integer.parseInt(viewModel.getBalance().getValue());
 
-
-        //==================ПРОВЕРКА БАЛАНСА========================================================
-        if (intBalance >= intPrice) {
-            //==============РОТАЦИЯ ЗАКОНЧИЛАСЬ, НО ЕЩЕ НЕ НАЧАЛАСЬ=================================
-
-            if (!viewModel.rotationStarted.getValue()) {
+        //======================ПРОВЕРКА ТИПА СЛЕДУЮЩЕЙ РОТАЦИИ=====================================
+        if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
+            //==================ПРОВЕРКА БАЛАНСА====================================================
+            if (intBalance >= intPrice) {
+                //==============СЛЕДУЮЩАЯ РОТАЦИЯ===================================================
                 if (Objects.equals(name, "Phanthom Lancer")) {
                     DialogFragment dialog_game = new dialog_game();
                     Bundle genre = new Bundle();
@@ -84,11 +83,126 @@ public class shop extends Fragment {
                     getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
                         String newGame = result.getString("new_game");
                         String preview = result.getString("preview");
-                        if (newGame != null) {
-                            for (Users user : users) {
-                                db.collection("users").document(user.getTag())
-                                        .update("genre", "Phanthom Lancer");
-                                String tagValue = user.getTag();
+                        if (newGame != null && preview != null) {
+                            viewModel.setNextRotationType(name);
+                            viewModel.setNextGame(newGame, preview);
+                            viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                        }
+                    });
+                }
+                if (Objects.equals(name, "Рогаликук")) {
+                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                    viewModel.setNextRotationType(name);
+                }
+                if (Objects.equals(name, "Фильмокук")) {
+                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                    viewModel.setNextRotationType(name);
+                }
+                if (Objects.equals(name, "Сериалокук")) {
+                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                    viewModel.setNextRotationType(name);
+                }
+                if (Objects.equals(name, "Геймпадокук")) {
+                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                    viewModel.setNextRotationType(name);
+                }
+                if (Objects.equals(name, "Выжикук")) {
+                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                    viewModel.setNextRotationType(name);
+                }
+                if (Objects.equals(name, "Музыкук")) {
+                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                    viewModel.setNextRotationType(name);
+                }
+                if (Objects.equals(name, "Анимекук")) {
+                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                    viewModel.setNextRotationType(name);
+                }
+                if (Objects.equals(name, "Тематическая ротация")) {
+                    DialogFragment dialog_theme = new dialog_theme();
+                    dialog_theme.show(getParentFragmentManager(), "dialog_theme");
+                    getParentFragmentManager().setFragmentResultListener("theme_result", getViewLifecycleOwner(), (requestKey, result) -> {
+                        String theme = result.getString("theme");
+                        if (theme != null) {
+                            viewModel.setNextRotationType(theme);
+                            viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                        }
+                    });
+                }
+
+                //=============ЕЩЕ НИ ОДНА ИГРА НЕ ЗАГАДАНА=============================================
+                if (viewModel.nobodySpecifiedGame.getValue()) {
+                }
+                //=============ВСЕ ИГРЫ ЗАГАДАНЫ========================================================
+                if (viewModel.everybodySpecifiedGame.getValue()) {
+                    if (Objects.equals(name, "Свап играми")) {
+                        if (Objects.equals(viewModel.getStatus().getValue(), "done")) {
+                            Toast.makeText(requireContext(), "Вы уже прошли свою игру", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        DialogFragment dialog_swap = new dialog_swap();
+                        dialog_swap.show(getParentFragmentManager(), "dialog_swap");
+
+                        getParentFragmentManager().setFragmentResultListener("drop_result", this, (requestKey, result) -> {
+                            if (!result.isEmpty()) {
+                                String swap = result.getString("result");
+                                for (Users user : users) {
+                                    if (Objects.equals(user.getTag(), swap)) {
+                                        if (user.getStatus().equals("done")) {
+                                            Toast.makeText(requireContext(), "Этот пользователь уже прошел свою игру", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                    }
+                                }
+
+
+                                String my_genre = viewModel.getGenre().getValue();
+                                String my_game = viewModel.getGame().getValue();
+                                String my_preview = viewModel.getPreview().getValue();
+
+                                String genre = "";
+                                String game = "";
+                                String preview = "";
+
+                                for (Users user : users) {
+                                    if (Objects.equals(user.getTag(), swap)) {
+                                        genre = user.getGenre();
+                                        game = user.getGame();
+                                        preview = user.getPreview();
+                                    }
+                                }
+                                db.collection("users").document(swap)
+                                        .update("genre", my_genre);
+                                db.collection("users").document(swap)
+                                        .update("game", my_game);
+                                db.collection("users").document(swap)
+                                        .update("preview", my_preview);
+                                db.collection("users").document(viewModel.getTag().getValue())
+                                        .update("genre", genre);
+                                db.collection("users").document(viewModel.getTag().getValue())
+                                        .update("game", game);
+                                db.collection("users").document(viewModel.getTag().getValue())
+                                        .update("preview", preview);
+                                viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                            }
+                        });
+                    }
+                }
+                //=============У ВЫПАВШЕГО ЧЕЛОВЕКА ЕЩЕ НЕ ЗАГАДАНА ИГРА================================
+                if (viewModel.targetUserGameIsEmpty.getValue()) {
+                    if (Objects.equals(name, "Загадываешь игру без колеса жанров.")) {
+                        DialogFragment dialog_game = new dialog_game();
+                        Bundle genre = new Bundle();
+                        genre.putString("genre", "Свободный");
+                        dialog_game.setArguments(genre);
+                        dialog_game.show(getParentFragmentManager(), "dialog_game");
+                        getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
+                            String newGame = result.getString("new_game");
+                            String preview = result.getString("preview");
+                            if (newGame != null) {
+                                db.collection("users").document(viewModel.getTo().getValue())
+                                        .update("genre", "Свободный");
+                                String tagValue = viewModel.getTo().getValue();
                                 if (tagValue == null || tagValue.isEmpty()) {
                                     Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
                                 } else {
@@ -101,192 +215,65 @@ public class shop extends Fragment {
                                     Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
                                 }
                             }
-                            viewModel.setRotationStarted(true);
                             viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                        }
-                    });
-                }
-                if (Objects.equals(name, "Рогаликук")) {
-                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    viewModel.newRotation("Roguelike");
-                }
-                if (Objects.equals(name, "Фильмокук")) {
-                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    viewModel.newRotation("Фильмокук");
-                }
-                if (Objects.equals(name, "Сериалокук")) {
-                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    viewModel.newRotation("Сериалокук");
-                }
-                if (Objects.equals(name, "Геймпадокук")) {
-                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    viewModel.newRotation("Геймпадокук");
-                }
-                if (Objects.equals(name, "Выжикук")) {
-                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    viewModel.newRotation("Survival");
-                }
-                if (Objects.equals(name, "Музыкук")) {
-                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    viewModel.newRotation("Музыкук");
-                }
-                if (Objects.equals(name, "Анимекук")) {
-                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    viewModel.newRotation("Анимекук");
-                }
-                if (Objects.equals(name, "Тематическая ротация")) {
-                    DialogFragment dialog_theme = new dialog_theme();
-                    dialog_theme.show(getParentFragmentManager(), "dialog_theme");
-                    getParentFragmentManager().setFragmentResultListener("theme_result", getViewLifecycleOwner(), (requestKey, result) -> {
-                        String theme = result.getString("theme");
-                        if (theme != null) {
-                            viewModel.newRotation(theme);
-                            viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                        }
-                    });
-                }
-            }
-            //=============ЕЩЕ НИ ОДНА ИГРА НЕ ЗАГАДАНА=============================================
-            if (viewModel.nobodySpecifiedGame.getValue()) {
-            }
-            //=============ВСЕ ИГРЫ ЗАГАДАНЫ========================================================
-            if (viewModel.everybodySpecifiedGame.getValue()) {
-                if (Objects.equals(name, "Свап играми")) {
-                    if (Objects.equals(viewModel.getStatus().getValue(), "done")) {
-                        Toast.makeText(requireContext(), "Вы уже прошли свою игру", Toast.LENGTH_SHORT).show();
-                        return;
+                        });
                     }
-                    DialogFragment dialog_swap = new dialog_swap();
-                    dialog_swap.show(getParentFragmentManager(), "dialog_swap");
-
-                    getParentFragmentManager().setFragmentResultListener("drop_result", this, (requestKey, result) -> {
-                        if (!result.isEmpty()) {
-                            String swap = result.getString("result");
-                            for (Users user : users) {
-                                if (Objects.equals(user.getTag(), swap)) {
-                                    if (user.getStatus().equals("done")) {
-                                        Toast.makeText(requireContext(), "Этот пользователь уже прошел свою игру", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
+                    if (Objects.equals(name, "100%")) {
+                        DialogFragment dialog_game = new dialog_game();
+                        Bundle genre = new Bundle();
+                        genre.putString("genre", "100%");
+                        dialog_game.setArguments(genre);
+                        dialog_game.show(getParentFragmentManager(), "dialog_game");
+                        getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
+                            String newGame = result.getString("new_game");
+                            String preview = result.getString("preview");
+                            if (newGame != null) {
+                                db.collection("users").document(viewModel.getTo().getValue())
+                                        .update("genre", "100%");
+                                String tagValue = viewModel.getTo().getValue();
+                                if (tagValue == null || tagValue.isEmpty()) {
+                                    Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
+                                } else {
+                                    db.collection("users").document(tagValue)
+                                            .update("game", newGame);
+                                    db.collection("users").document(tagValue)
+                                            .update("status", "playing");
+                                    db.collection("users").document(tagValue)
+                                            .update("preview", preview);
+                                    Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
                                 }
                             }
-
-
-                            String my_genre = viewModel.getGenre().getValue();
-                            String my_game = viewModel.getGame().getValue();
-                            String my_preview = viewModel.getPreview().getValue();
-
-                            String genre = "";
-                            String game = "";
-                            String preview = "";
-
-                            for (Users user : users) {
-                                if (Objects.equals(user.getTag(), swap)) {
-                                    genre = user.getGenre();
-                                    game = user.getGame();
-                                    preview = user.getPreview();
-                                }
-                            }
-                            db.collection("users").document(swap)
-                                    .update("genre", my_genre);
-                            db.collection("users").document(swap)
-                                    .update("game", my_game);
-                            db.collection("users").document(swap)
-                                    .update("preview", my_preview);
-                            db.collection("users").document(viewModel.getTag().getValue())
-                                    .update("genre", genre);
-                            db.collection("users").document(viewModel.getTag().getValue())
-                                    .update("game", game);
-                            db.collection("users").document(viewModel.getTag().getValue())
-                                    .update("preview", preview);
                             viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-            //=============У ВЫПАВШЕГО ЧЕЛОВЕКА ЕЩЕ НЕ ЗАГАДАНА ИГРА================================
-            if (viewModel.targetUserGameIsEmpty.getValue()) {
-                if (Objects.equals(name, "Загадываешь игру без колеса жанров.")) {
-                    DialogFragment dialog_game = new dialog_game();
-                    Bundle genre = new Bundle();
-                    genre.putString("genre", "Свободный");
-                    dialog_game.setArguments(genre);
-                    dialog_game.show(getParentFragmentManager(), "dialog_game");
-                    getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
-                        String newGame = result.getString("new_game");
-                        String preview = result.getString("preview");
-                        if (newGame != null) {
-                            db.collection("users").document(viewModel.getTo().getValue())
-                                    .update("genre", "Свободный");
-                            String tagValue = viewModel.getTo().getValue();
-                            if (tagValue == null || tagValue.isEmpty()) {
-                                Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
-                            } else {
-                                db.collection("users").document(tagValue)
-                                        .update("game", newGame);
-                                db.collection("users").document(tagValue)
-                                        .update("status", "playing");
-                                db.collection("users").document(tagValue)
-                                        .update("preview", preview);
-                                Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
+                //=============У МЕНЯ ЕЩЕ НЕТ ЖАНРА=====================================================
+                if (viewModel.iDontHaveGenre.getValue()) {
+                    if (Objects.equals(name, "Выбор жанра")) {
+                        DialogFragment dialog_genre = new dialog_genre();
+                        dialog_genre.show(getParentFragmentManager(), "dialog_genre");
+                        getParentFragmentManager().setFragmentResultListener("edit_genre_result", getViewLifecycleOwner(), (requestKey, result) -> {
+                            String newGenre = result.getString("new_genre");
+                            if (newGenre != null && !newGenre.equals("Жанр")) {
+                                viewModel.setGenre(newGenre);
+                                viewModel.setAllow("no");
+                                viewModel.setBalance(String.valueOf(intBalance - intPrice));
                             }
-                        }
+                        });
+                    }
+                }
+                //=============У МЕНЯ СТАТУС ПРОХОДИТ===================================================
+                if (viewModel.myStatusIsPlaying.getValue()) {
+                    if (Objects.equals(name, "Скип")) {
+                        viewModel.setStatus("done");
                         viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    });
+                    }
                 }
-                if (Objects.equals(name, "100%")) {
-                    DialogFragment dialog_game = new dialog_game();
-                    Bundle genre = new Bundle();
-                    genre.putString("genre", "100%");
-                    dialog_game.setArguments(genre);
-                    dialog_game.show(getParentFragmentManager(), "dialog_game");
-                    getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
-                        String newGame = result.getString("new_game");
-                        String preview = result.getString("preview");
-                        if (newGame != null) {
-                            db.collection("users").document(viewModel.getTo().getValue())
-                                    .update("genre", "100%");
-                            String tagValue = viewModel.getTo().getValue();
-                            if (tagValue == null || tagValue.isEmpty()) {
-                                Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
-                            } else {
-                                db.collection("users").document(tagValue)
-                                        .update("game", newGame);
-                                db.collection("users").document(tagValue)
-                                        .update("status", "playing");
-                                db.collection("users").document(tagValue)
-                                        .update("preview", preview);
-                                Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    });
-                }
-            }
-            //=============У МЕНЯ ЕЩЕ НЕТ ЖАНРА=====================================================
-            if (viewModel.iDontHaveGenre.getValue()) {
-                if (Objects.equals(name, "Выбор жанра")) {
-                    DialogFragment dialog_genre = new dialog_genre();
-                    dialog_genre.show(getParentFragmentManager(), "dialog_genre");
-                    getParentFragmentManager().setFragmentResultListener("edit_genre_result", getViewLifecycleOwner(), (requestKey, result) -> {
-                        String newGenre = result.getString("new_genre");
-                        if (newGenre != null && !newGenre.equals("Жанр")) {
-                            viewModel.setGenre(newGenre);
-                            viewModel.setAllow("no");
-                            viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                        }
-                    });
-                }
-            }
-            //=============У МЕНЯ СТАТУС ПРОХОДИТ===================================================
-            if (viewModel.myStatusIsPlaying.getValue()) {
-                if (Objects.equals(name, "Скип")) {
-                    viewModel.setStatus("done");
-                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                }
+            } else {
+                Toast.makeText(requireContext(), "Недостаточно средств", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(requireContext(), "Недостаточно средств", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -2,27 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.rotation.rotation"
-    android:id="@+id/container">
+    tools:context=".ui.rotation.rotation">
 
     <HorizontalScrollView
         android:id="@+id/rotation_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteY="50dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteY="50dp">
 
         <LinearLayout
             android:id="@+id/rotation_linear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
+            android:orientation="horizontal">
 
 
         </LinearLayout>
@@ -33,11 +32,11 @@
         android:id="@+id/framescroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/rotation_scroll"
+        android:layout_marginBottom="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="70dp"
+        app:layout_constraintTop_toBottomOf="@+id/rotation_scroll"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="51dp">
 
@@ -45,7 +44,7 @@
             android:id="@+id/frame_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
         </LinearLayout>
     </ScrollView>
@@ -54,18 +53,64 @@
         android:id="@+id/leaveRoom"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:text="Выйти"
+        android:layout_marginLeft="10dp"
         android:layout_marginBottom="70dp"
-        android:layout_marginLeft="10dp"/>
+        android:text="Выйти"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
     <Button
         android:id="@+id/chat"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="Чат"
+        android:layout_marginRight="10dp"
         android:layout_marginBottom="70dp"
-        android:layout_marginRight="10dp"/>
+        android:text="Чат"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/readyCheckFrame"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/leaveRoom"
+        app:layout_constraintRight_toLeftOf="@id/chat"
+        android:layout_marginBottom="70dp"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/readyCheckTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:textAlignment="center"
+            android:textColor="@color/text"
+            android:textStyle="bold"
+            android:text="Вы готовы?"/>
+        <Button
+            android:id="@+id/readyCheck"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toBottomOf="@id/readyCheckTextView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:textStyle="bold"
+            android:textColor="@color/text"
+            android:textSize="15sp"
+            android:text="Да" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/newRotationBtn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="70dp"
+        app:shapeAppearanceOverlay="@style/CircularShape"
+        android:src="@drawable/icon_rotation"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

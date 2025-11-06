@@ -9,10 +9,11 @@ public class Users {
     private String status;
     private String tag;
     private String to;
+    private Boolean readiness;
 
     public Users(){
     }
-    public Users(String name, String avatar, String genre, String game, String preview, String status, String tag, String to){
+    public Users(String name, String avatar, String genre, String game, String preview, String status, String tag, String to, Boolean readiness){
         this.name = name;
         this.avatar = avatar;
         this.genre = genre;
@@ -21,6 +22,7 @@ public class Users {
         this.status = status;
         this.tag = tag;
         this.to = to;
+        this.readiness = readiness;
     }
 
     public String getName() {
@@ -51,5 +53,8 @@ public class Users {
 
     public String getGenre() {
         return genre;
+    }
+    public Boolean getReadiness() {
+        return readiness;
     }
 }

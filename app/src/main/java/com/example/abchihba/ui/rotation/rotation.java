@@ -23,7 +23,6 @@ import androidx.navigation.Navigation;
 import com.example.abchihba.R;
 import com.example.abchihba.SteamGameSearcher;
 import com.example.abchihba.databinding.FragmentRotationBinding;
-import com.example.abchihba.ui.Localusers;
 import com.example.abchihba.ui.Users;
 import com.example.abchihba.ui.ViewModel;
 import com.example.abchihba.ui.dialog.dialog_game;
@@ -31,20 +30,17 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class rotation extends Fragment {
 
     private FragmentRotationBinding binding;
-
     private ViewModel viewModel;
-    private int counter = 0;
+    private int statusCounter = 0;
+    private int readinessCounter = 0;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -65,7 +61,8 @@ public class rotation extends Fragment {
         LinearLayout linearLayout = binding.frameLinear;
         LinearLayout rotationLinear = binding.rotationLinear;
         viewModel.getRoomUsers().observe(getViewLifecycleOwner(), users -> {
-            counter = 0;
+            statusCounter = 0;
+            readinessCounter = 0;
             if (users == null || users.isEmpty()) {
                 // Выводим сообщение или заполняем пустое состояние
                 TextView emptyView = new TextView(getContext());
@@ -85,33 +82,58 @@ public class rotation extends Fragment {
                 if (!Objects.equals(user.getStatus(), "new")) {
                     userMap.put(user.getTag(), user);
                 }
+                if (Objects.equals(user.getTag(), viewModel.getTag().getValue())) {
+                    if (!user.getReadiness()){
+                        binding.readyCheckFrame.setVisibility(ConstraintLayout.VISIBLE);
+                    } else {
+                        binding.readyCheckFrame.setVisibility(ConstraintLayout.GONE);
+                    }
+                }
             }
 
             String firstUser = "";
-            for (Users user : users){
-                if (!Objects.equals(user.getStatus(), "new")){
+            for (Users user : users) {
+                if (!Objects.equals(user.getStatus(), "new")) {
                     firstUser = user.getTag();
                 }
             }
             if (!Objects.equals(viewModel.getStatus().getValue(), "new")) {
                 firstUser = viewModel.getTag().getValue();
             }
-                String currentUser = firstUser;
-                String nextUser = userMap.get(firstUser).getTo();
-                for (int i = 0; i < userMap.size(); i++) {
-                    if (userMap.containsKey(currentUser)) {
-                        rotationLinear.addView(createUserAvatar(userMap.get(currentUser).getAvatar(), false));
-                        currentUser = nextUser;
-                        if ("0".equals(nextUser) || !userMap.containsKey(currentUser)) break;
-                        nextUser = userMap.get(currentUser).getTo();
+            String currentUser = firstUser;
+            String nextUser = userMap.get(firstUser).getTo();
+            for (int i = 0; i < userMap.size(); i++) {
+                if (userMap.containsKey(currentUser)) {
+                    rotationLinear.addView(createUserAvatar(userMap.get(currentUser).getAvatar(), false));
+                    currentUser = nextUser;
+                    if ("0".equals(nextUser) || !userMap.containsKey(currentUser)) break;
+                    nextUser = userMap.get(currentUser).getTo();
+                }
+            }
+            rotationLinear.addView(createUserAvatar(userMap.get(firstUser).getAvatar(), true));
+            if (statusCounter == users.size()) {
+                viewModel.setRotationStarted(false);
+            } else {
+                binding.readyCheckFrame.setVisibility(ConstraintLayout.GONE);
+            }
+            if (readinessCounter == users.size() && statusCounter == users.size()) {
+                binding.newRotationBtn.setVisibility(ShapeableImageView.VISIBLE);
+                binding.newRotationBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        viewModel.newRotation();
                     }
-                }
-                rotationLinear.addView(createUserAvatar(userMap.get(firstUser).getAvatar(), true));
-                if (counter == users.size()) {
-                    viewModel.setRotationStarted(false);
-                }
-
+                });
+            } else {
+                binding.newRotationBtn.setVisibility(ShapeableImageView.GONE);
+            }
         });
+        viewModel.getRotationStarted().observe(getViewLifecycleOwner(), rotationStarted ->{
+            if (rotationStarted) {
+                binding.newRotationBtn.setVisibility(ShapeableImageView.GONE);
+            }
+        });
+
 
         binding.leaveRoom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +148,12 @@ public class rotation extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.navigation_chat);
             }
         });
+        binding.readyCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewModel.setReadiness();
+            }
+        });
         return root;
     }
 
@@ -136,18 +164,20 @@ public class rotation extends Fragment {
             status.setBackgroundResource(R.drawable.prohodit);
         } else if ("done".equals(user.getStatus())) {
             status.setBackgroundResource(R.drawable.proshol);
-            counter += 1;
+            statusCounter += 1;
         } else if ("drop".equals(user.getStatus())) {
             status.setBackgroundResource(R.drawable.dropnul);
-            counter += 1;
+            statusCounter += 1;
 
         } else if ("new".equals(user.getStatus())) {
             status.setBackgroundResource(R.drawable.design_window);
-            counter += 1;
+            statusCounter += 1;
         } else {
             status.setBackgroundResource(R.drawable.design_window);
         }
-
+        if (user.getReadiness()) {
+            readinessCounter += 1;
+        }
 
         ConstraintLayout.LayoutParams statusLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
         statusLayout.setMargins(15, 20, 15, 20);
@@ -245,34 +275,11 @@ public class rotation extends Fragment {
         nameLayout.leftMargin = 20;
         name.setLayoutParams(nameLayout);
         userView.addView(name);
-        ShapeableImageView newRotation = new ShapeableImageView(getContext());
-        viewModel.getRotationStarted().observe(getViewLifecycleOwner(), rotationStarted -> {
-            if (!rotationStarted) {
-                ShapeAppearanceModel shape1 = ShapeAppearanceModel.builder()
-                        .setAllCornerSizes(ShapeAppearanceModel.PILL).build();
-                newRotation.setShapeAppearanceModel(shape1);
-                newRotation.setBackgroundResource(R.drawable.proshol);
-                newRotation.setImageResource(R.mipmap.refresh_foreground);
-                ConstraintLayout.LayoutParams newRotationLayout = new ConstraintLayout.LayoutParams(180, 180);
-                newRotationLayout.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
-                newRotationLayout.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID;
-                newRotationLayout.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
-                newRotationLayout.bottomMargin = 220;
-                newRotation.setLayoutParams(newRotationLayout);
-                newRotation.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        viewModel.newRotation("Отсутствует");
-                    }
-                });
-                binding.container.addView(newRotation);
-            } else {
-                binding.container.removeView(newRotation);
-            }
-        });
+
         status.addView(userView);
         return status;
     }
+
     public ConstraintLayout createUserAvatar(String userAvatar, Boolean last) {
 
         ConstraintLayout AVATAR = new ConstraintLayout(getContext());
@@ -321,6 +328,7 @@ public class rotation extends Fragment {
             return null;
         }
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
