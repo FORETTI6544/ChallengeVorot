@@ -3,11 +3,10 @@
     <style name="Theme.Abchihba" parent="Theme.AppCompat.DayNight.NoActionBar">
 
         <item name="android:windowBackground">@color/backgroundPrimary</item>
-        <item name="backgroundColor">@color/white</item>
-        <item name="background">@color/white</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textColorHint">@color/secondaryText</item>
         <item name="android:buttonStyle">@style/buttonStyle</item>
+        <item name="autoCompleteTextViewStyle">@style/AutoCompleteTextViewStyle</item>
     </style>
 
 </resources>

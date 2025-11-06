@@ -18,6 +18,7 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.DialogFragment;
 import com.example.abchihba.R;
 import com.example.abchihba.SteamGameSearcher;
+import com.example.abchihba.converters.Converter;
 import com.example.abchihba.databinding.DialogGameBinding;
 
 import java.util.ArrayList;
@@ -73,6 +74,8 @@ public class dialog_game extends DialogFragment {
         Log.d("AutoComplete", "Data size: " + csvDataName.size());
         ArrayAdapter<String> adapter = new ArrayAdapter (requireContext(), R.layout.adapter, csvDataName);
         autoComplete.setAdapter(adapter);
+//        autoComplete.setDropDownWidth(Converter.dpToPx(getContext(), 50));
+//        autoComplete.setDropDownHeight(Converter.dpToPx(getContext(), 100));
         autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

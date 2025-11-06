@@ -20,4 +20,14 @@
     <style name="buttonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_default</item>
     </style>
+    <style name="AutoCompleteTextViewStyle" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="popupWindowStyle">@style/windowStyle</item>
+        <item name="popupMenuBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="windowStyle" parent="Widget.AppCompat.PopupWindow">
+        <item name="background">@android:color/transparent</item>
+    </style>
+
 </resources>

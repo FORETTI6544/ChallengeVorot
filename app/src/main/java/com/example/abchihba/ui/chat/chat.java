@@ -1,4 +1,5 @@
 package com.example.abchihba.ui.chat;
+import com.example.abchihba.converters.Converter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -77,7 +78,7 @@ public class chat extends Fragment {
     public ConstraintLayout createMessageFrame(Chat msg, Map<String, Users> userMap){
         ConstraintLayout messageFrame = new ConstraintLayout(getContext());
         messageFrame.setId(View.generateViewId());
-        messageFrame.setPadding(dpToPx(getContext(), 5), dpToPx(getContext(), 5), dpToPx(getContext(), 5), dpToPx(getContext(), 5));
+        messageFrame.setPadding(Converter.dpToPx(getContext(), 5), Converter.dpToPx(getContext(), 5), Converter.dpToPx(getContext(), 5), Converter.dpToPx(getContext(), 5));
         messageFrame.setBackgroundResource(R.drawable.design_window);
 
         ShapeableImageView avatar = new ShapeableImageView(getContext());
@@ -85,7 +86,7 @@ public class chat extends Fragment {
                 .setAllCornerSizes(ShapeAppearanceModel.PILL).build();
         avatar.setShapeAppearanceModel(shape);
         avatar.setId(View.generateViewId());
-        avatar.setImageBitmap(base64ToBitmap(userMap.get(msg.getUserTag()).getAvatar()));
+        avatar.setImageBitmap(Converter.base64ToBitmap(userMap.get(msg.getUserTag()).getAvatar()));
 
         TextView name = new TextView(getContext());
         name.setId(View.generateViewId());
@@ -102,16 +103,16 @@ public class chat extends Fragment {
         message.setText(msg.getMessage());
 
         ConstraintLayout.LayoutParams messageFrameLayout = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        messageFrameLayout.setMargins(dpToPx(getContext(), 10), dpToPx(getContext(), 10), dpToPx(getContext(), 10), dpToPx(getContext(), 10));
+        messageFrameLayout.setMargins(Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10), Converter.dpToPx(getContext(), 10));
         messageFrame.setLayoutParams(messageFrameLayout);
 
-        ConstraintLayout.LayoutParams avatarLayout = new ConstraintLayout.LayoutParams(dpToPx(getContext(), 30), dpToPx(getContext(), 30));
+        ConstraintLayout.LayoutParams avatarLayout = new ConstraintLayout.LayoutParams(Converter.dpToPx(getContext(), 30), Converter.dpToPx(getContext(), 30));
         avatarLayout.leftToLeft = messageFrame.getId();
         avatarLayout.topToTop = messageFrame.getId();
         avatar.setLayoutParams(avatarLayout);
 
-        ConstraintLayout.LayoutParams nameLayout = new ConstraintLayout.LayoutParams(0, dpToPx(getContext(), 30));
-        nameLayout.leftMargin = dpToPx(getContext(), 5);
+        ConstraintLayout.LayoutParams nameLayout = new ConstraintLayout.LayoutParams(0, Converter.dpToPx(getContext(), 30));
+        nameLayout.leftMargin = Converter.dpToPx(getContext(), 5);
         nameLayout.topToTop = messageFrame.getId();
         nameLayout.leftToRight = avatar.getId();
         nameLayout.rightToRight = messageFrame.getId();
@@ -130,21 +131,7 @@ public class chat extends Fragment {
 
         return messageFrame;
     }
-    public static Bitmap base64ToBitmap(String base64String) {
-        try {
-            // Декодируем Base64 в массив байтов
-            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
-            // Конвертируем байты в Bitmap
-            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    public static int dpToPx(Context context, float dp) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return Math.round(dp * density);
-    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
