@@ -74,8 +74,11 @@ public class dialog_game extends DialogFragment {
         Log.d("AutoComplete", "Data size: " + csvDataName.size());
         ArrayAdapter<String> adapter = new ArrayAdapter (requireContext(), R.layout.adapter, csvDataName);
         autoComplete.setAdapter(adapter);
-//        autoComplete.setDropDownWidth(Converter.dpToPx(getContext(), 50));
-//        autoComplete.setDropDownHeight(Converter.dpToPx(getContext(), 100));
+
+        autoComplete.setDropDownWidth(Converter.dpToPx(getContext(), 350));
+        autoComplete.setDropDownHeight(Converter.dpToPx(getContext(), 260));
+        autoComplete.setDropDownHorizontalOffset(-175);
+
         autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
