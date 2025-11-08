@@ -32,7 +32,7 @@ public class dialog_done extends DialogFragment {
 
         Bundle game = getArguments();
         if (game != null) {
-            String QUESTION = "Оставьте отзыв на игру: " + game.getString("game");
+            String QUESTION = "Оставьте отзыв: " + "\n" + game.getString("game");
             binding.question.setText(QUESTION);
         }
 

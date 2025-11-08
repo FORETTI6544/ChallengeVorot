@@ -59,7 +59,7 @@ public class dialog_swap extends DialogFragment {
                     String to = user.getTag();
                     Bundle result = new Bundle();
                     result.putString("result", to);
-                    getParentFragmentManager().setFragmentResult("drop_result", result);
+                    getParentFragmentManager().setFragmentResult("swap_result", result);
                     dismiss();
                 }
             });

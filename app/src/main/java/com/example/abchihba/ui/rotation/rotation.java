@@ -159,21 +159,32 @@ public class rotation extends Fragment {
 
     public ConstraintLayout createUserFrame(Users user) {
 
-        ConstraintLayout status = new ConstraintLayout(getContext());
-        if ("playing".equals(user.getStatus())) {
-            status.setBackgroundResource(R.drawable.prohodit);
-        } else if ("done".equals(user.getStatus())) {
-            status.setBackgroundResource(R.drawable.proshol);
-            statusCounter += 1;
-        } else if ("drop".equals(user.getStatus())) {
-            status.setBackgroundResource(R.drawable.dropnul);
-            statusCounter += 1;
 
-        } else if ("new".equals(user.getStatus())) {
-            status.setBackgroundResource(R.drawable.design_window);
-            statusCounter += 1;
-        } else {
-            status.setBackgroundResource(R.drawable.design_window);
+        long currentTime = System.currentTimeMillis() / 1000;
+        if (user.getTime()!=0 && user.getTime()+4017600<currentTime) {
+            viewModel.dropGame(user.getTag());
+        }
+
+        ConstraintLayout status = new ConstraintLayout(getContext());
+        switch (user.getStatus()){
+            case "playing" :
+                status.setBackgroundResource(R.drawable.prohodit);
+                break;
+            case "done" :
+                status.setBackgroundResource(R.drawable.proshol);
+                statusCounter += 1;
+                break;
+            case "drop" :
+                status.setBackgroundResource(R.drawable.dropnul);
+                statusCounter += 1;
+                break;
+            case "new" :
+                status.setBackgroundResource(R.drawable.design_window);
+                statusCounter += 1;
+                break;
+            default:
+                status.setBackgroundResource(R.drawable.design_window);
+                break;
         }
         if (user.getReadiness()) {
             readinessCounter += 1;
@@ -202,21 +213,11 @@ public class rotation extends Fragment {
                     dialog_game.show(getParentFragmentManager(), "dialog_game");
 
                     getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
-                        String newGame = result.getString("new_game");
+                        String game = result.getString("new_game");
                         String preview = result.getString("preview");
-                        if (newGame != null) {
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            String tagValue = user.getTag();
-                            if (tagValue == null || tagValue.isEmpty()) {
-                                Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
-                            }
-                            db.collection("users").document(tagValue)
-                                    .update("game", newGame);
-                            db.collection("users").document(tagValue)
-                                    .update("status", "playing");
-                            db.collection("users").document(tagValue)
-                                    .update("preview", preview);
-                            Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
+                        if (game != null) {
+                            viewModel.setGame(user.getTag(), game, preview);
+                            Toast.makeText(getContext(), "Загадано: " + game, Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

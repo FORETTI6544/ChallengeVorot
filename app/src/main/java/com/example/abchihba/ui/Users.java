@@ -10,10 +10,20 @@ public class Users {
     private String tag;
     private String to;
     private Boolean readiness;
+    private long time;
 
     public Users(){
     }
-    public Users(String name, String avatar, String genre, String game, String preview, String status, String tag, String to, Boolean readiness){
+    public Users(String name,
+                 String avatar,
+                 String genre,
+                 String game,
+                 String preview,
+                 String status,
+                 String tag,
+                 String to,
+                 Boolean readiness,
+                 long time){
         this.name = name;
         this.avatar = avatar;
         this.genre = genre;
@@ -23,24 +33,21 @@ public class Users {
         this.tag = tag;
         this.to = to;
         this.readiness = readiness;
+        this.time = time;
     }
 
     public String getName() {
         return name;
     }
-
     public String getAvatar() {
         return avatar;
     }
-
     public String getGame() {
         return game;
     }
-
     public String getPreview() {
         return preview;
     }
-
     public String getStatus(){
         return status;
     }
@@ -50,11 +57,13 @@ public class Users {
     public String getTo() {
         return to;
     }
-
     public String getGenre() {
         return genre;
     }
     public Boolean getReadiness() {
         return readiness;
+    }
+    public long getTime() {
+        return time;
     }
 }

@@ -57,10 +57,6 @@ public class profile extends Fragment {
         viewModel.getGenre().observe(getViewLifecycleOwner(), genre -> binding.genre.setText("Жанр: " + genre));
         viewModel.getGame().observe(getViewLifecycleOwner(), game -> {
             binding.game.setText(game);
-
-
-
-
         });
         viewModel.getPreview().observe(getViewLifecycleOwner(), preview -> {
             ImageView gamePreview = binding.gamePreview;
@@ -101,55 +97,7 @@ public class profile extends Fragment {
                 getParentFragmentManager().setFragmentResultListener("done_result", this, (requestKey, result) -> {
                     String review = result.getString("review");
                     String rating = result.getString("rating");
-                    Calendar calendar = Calendar.getInstance();
-                    String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-                    if (day.length() == 1) {
-                        day = "0" + day;
-                    }
-                    String month = String.valueOf(calendar.get(Calendar.MONTH)+1);
-                    if (month.length() == 1) {
-                        month = "0" + month;
-                    }
-                    String year = String.valueOf(calendar.get(Calendar.YEAR));
-                    String date = day + "." + month + "." + year;
-                    if (review != null && !review.isEmpty() && rating != null && !rating.isEmpty()) {
-                        List<Reviews> reviewsList = viewModel.getReviews().getValue();
-                        String queue = "1";
-                        if (reviewsList != null) {
-                            queue = String.valueOf(reviewsList.size() + 1);
-                        }
-
-
-                        viewModel.addReview(viewModel.getTag().getValue()
-                                , viewModel.getGame().getValue(), viewModel.getPreview().getValue(),
-                                review, rating, queue, date);
-
-                        viewModel.setStatus("done");
-                        if ("1".equals(viewModel.getRerolls().getValue())) {
-                            viewModel.setRerolls("2");
-                        } else if ("0".equals(viewModel.getRerolls().getValue())) {
-                            viewModel.setRerolls("1");
-                        }
-                        String newbalance = "0";
-                        boolean flag = true;
-                        if (viewModel.getRoomUsers().getValue() != null) {
-                            List<Users> users = viewModel.getRoomUsers().getValue();
-                            for (Users user : users) {
-                                if (Objects.equals(user.getStatus(), "done")){
-                                    flag = false;
-                                }
-                            }
-                        }
-
-                        if (viewModel.getBalance().getValue() != null) {
-                            if (flag) {
-                                newbalance = String.valueOf(Integer.parseInt(viewModel.getBalance().getValue()) + 30);
-                            } else {
-                                newbalance = String.valueOf(Integer.parseInt(viewModel.getBalance().getValue()) + 20);
-                            }
-                        }
-                        viewModel.setBalance(newbalance);
-                    }
+                    viewModel.doneAndReview(review, rating);
                 });
 
 
@@ -184,10 +132,8 @@ public class profile extends Fragment {
 
             getParentFragmentManager().setFragmentResultListener("drop_result", this, (requestKey, result) -> {
                 String yesOrNo = result.getString("result");
-                if (yesOrNo != null && !yesOrNo.isEmpty()) {
-
-                    viewModel.setStatus("drop");
-                    viewModel.setBalance("0");
+                if (yesOrNo != null && yesOrNo.equals("yes")) {
+                    viewModel.dropGame(viewModel.getTag().getValue());
                 }
             });
 

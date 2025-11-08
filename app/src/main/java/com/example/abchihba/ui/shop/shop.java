@@ -59,6 +59,9 @@ public class shop extends Fragment {
         for (Items item : items) {
             linearLayout.addView(createItemFrame(item));
         }
+        viewModel.getRoomUsers().observe(getViewLifecycleOwner(), users -> {
+
+        });
 
         return root;
     }
@@ -143,13 +146,17 @@ public class shop extends Fragment {
                         DialogFragment dialog_swap = new dialog_swap();
                         dialog_swap.show(getParentFragmentManager(), "dialog_swap");
 
-                        getParentFragmentManager().setFragmentResultListener("drop_result", this, (requestKey, result) -> {
+                        getParentFragmentManager().setFragmentResultListener("swap_result", this, (requestKey, result) -> {
                             if (!result.isEmpty()) {
                                 String swap = result.getString("result");
                                 for (Users user : users) {
                                     if (Objects.equals(user.getTag(), swap)) {
                                         if (user.getStatus().equals("done")) {
                                             Toast.makeText(requireContext(), "Этот пользователь уже прошел свою игру", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if (user.getStatus().equals("drop")) {
+                                            Toast.makeText(requireContext(), "Этот пользователь уже дропнул свою игру", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                     }

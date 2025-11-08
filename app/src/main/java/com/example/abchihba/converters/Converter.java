@@ -30,4 +30,8 @@ public class Converter {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         return sdf.format(new Date(time * 1000L));
     }
+    public static String dateFormat(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd:MM:yyyyг.", Locale.getDefault());
+        return sdf.format(new Date(time * 1000L));
+    }
 }
