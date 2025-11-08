@@ -412,7 +412,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                             String tag = document.getId();
                             String to = document.getString("to");
                             Boolean readiness = document.getBoolean("readiness");
-                            long time = Long.parseLong(document.getString("time"));
+                            long time = (long) document.get("started");
 
                             Users user = new Users(name, avatar, genre, game, preview, status, tag, to, readiness, time);
 
@@ -447,7 +447,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                                 String tag = document.getId();
                                 String to = document.getString("to");
                                 Boolean readiness = document.getBoolean("readiness");
-                                long time = Long.parseLong(document.getString("time"));
+                                long time = (long) document.get("started");
 
                                 Users user = new Users(name, avatar, genre, game, preview, status, tag, to, readiness, time);
                                 users.add(user);
@@ -475,7 +475,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         batch.update(db.collection("users").document(userTag), "status", "playing");
         batch.update(db.collection("users").document(userTag), "game", game);
         batch.update(db.collection("users").document(userTag), "preview", preview);
-        batch.update(db.collection("users").document(userTag), "time", String.valueOf(time));
+        batch.update(db.collection("users").document(userTag), "started", time);
         batch.commit();
     }
 
@@ -583,7 +583,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             }
         }
         batch.update(db.collection("users").document(this.tag.getValue()), "balance", newBalance);
-        batch.update(db.collection("users").document(this.tag.getValue()), "time", "0");
+        batch.update(db.collection("users").document(this.tag.getValue()), "started", 0);
         batch.commit();
     }
 
@@ -643,7 +643,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             if (!Objects.equals(nextGame.getValue(), "Игра отсутствует")) {
                 long time = System.currentTimeMillis() / 1000;
                 batch.update(db.collection("users").document(user.getTag()), "status", "playing");
-                batch.update(db.collection("users").document(user.getTag()), "time", String.valueOf(time));
+                batch.update(db.collection("users").document(user.getTag()), "started", time);
             } else {
                 batch.update(db.collection("users").document(user.getTag()), "status", "Новая ротация");
             }
@@ -768,7 +768,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         WriteBatch batch = db.batch();
         batch.update(db.collection("users").document(userTag), "status", "drop");
         batch.update(db.collection("users").document(userTag), "balance", "0");
-        batch.update(db.collection("users").document(userTag), "time", "0");
+        batch.update(db.collection("users").document(userTag), "started", 0);
         batch.commit();
     }
 }
