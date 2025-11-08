@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
@@ -412,7 +413,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                             String tag = document.getId();
                             String to = document.getString("to");
                             Boolean readiness = document.getBoolean("readiness");
-                            long time = (long) document.get("started");
+                            Long time = document.getLong("started");
 
                             Users user = new Users(name, avatar, genre, game, preview, status, tag, to, readiness, time);
 
@@ -447,7 +448,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                                 String tag = document.getId();
                                 String to = document.getString("to");
                                 Boolean readiness = document.getBoolean("readiness");
-                                long time = (long) document.get("started");
+                                Long time = document.getLong("started");
 
                                 Users user = new Users(name, avatar, genre, game, preview, status, tag, to, readiness, time);
                                 users.add(user);
