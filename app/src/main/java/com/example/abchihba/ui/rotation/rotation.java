@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,6 @@ import com.example.abchihba.ui.ViewModel;
 import com.example.abchihba.ui.dialog.dialog_game;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.ShapeAppearanceModel;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Base64;
 import java.util.HashMap;
@@ -179,11 +177,11 @@ public class rotation extends Fragment {
                 statusCounter += 1;
                 break;
             case "new" :
-                status.setBackgroundResource(R.drawable.design_window);
+                status.setBackgroundResource(R.drawable.frame_secondary);
                 statusCounter += 1;
                 break;
             default:
-                status.setBackgroundResource(R.drawable.design_window);
+                status.setBackgroundResource(R.drawable.frame_secondary);
                 break;
         }
         if (user.getReadiness()) {
@@ -223,7 +221,7 @@ public class rotation extends Fragment {
                 }
             });
         } else {
-            userView.setBackgroundResource(R.drawable.design_window);
+            userView.setBackgroundResource(R.drawable.frame_secondary);
             userLayout.setMargins(0, 0, 30, 0);
         }
 

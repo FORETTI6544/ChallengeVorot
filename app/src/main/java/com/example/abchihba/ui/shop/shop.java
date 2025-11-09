@@ -303,7 +303,7 @@ public class shop extends Fragment {
 
     public ConstraintLayout createItemFrame(Items item) {
         ConstraintLayout itemView = new ConstraintLayout(getContext());
-        itemView.setBackgroundResource(R.drawable.design_window);
+        itemView.setBackgroundResource(R.drawable.frame_secondary);
         itemView.setPadding(30, 20, 30, 20);
 
         ConstraintLayout.LayoutParams itemLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
@@ -319,7 +319,7 @@ public class shop extends Fragment {
         Button buyBtn = new Button(getContext());
         buyBtn.setText("Купить");
         buyBtn.setTextSize(18);
-        buyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.secondaryText));
+        buyBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.textPrimary));
         buyBtn.setTypeface(null, Typeface.BOLD);
         buyBtn.setBackgroundResource(R.drawable.button_buy);
         buyBtn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);

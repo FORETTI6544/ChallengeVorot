@@ -82,7 +82,7 @@ public class WheelView extends View {
             canvas.drawArc(rect, startAngle, anglePerItem, true, paint);
 
             // Устанавливаем параметры для текста
-            paint.setColor(ContextCompat.getColor(getContext(), R.color.secondaryText)); // Цвет текста
+            paint.setColor(ContextCompat.getColor(getContext(), R.color.textPrimary)); // Цвет текста
             paint.setTextSize(50);
             paint.setTypeface(Typeface.DEFAULT_BOLD);;
             paint.setTextAlign(Paint.Align.LEFT);

@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             BottomNavigationView navView = findViewById(R.id.nav_view);
-            navView.setBackgroundResource(R.drawable.design_window);
+            navView.setBackgroundResource(R.drawable.frame_secondary);
             ConstraintLayout.LayoutParams navLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
             navLayout.setMargins(10, 0, 10, 20);
             navView.setPadding(20, 0, 20, 0);

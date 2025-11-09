@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android">
-    <ripple android:color="@color/backgroundFrame">
+    <ripple android:color="@color/primary">
         <item>
             <shape android:shape="rectangle">
-                <gradient
-                    android:startColor="#6BC043"
-                    android:endColor="#2B4615"
-                    android:angle="-90"/>
+                <solid android:color="#a6f090"/>
                 <corners android:radius="60dp"/>
             </shape>
         </item>

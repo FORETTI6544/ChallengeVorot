@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="Apacity0">#00000000</color>
+    <color name="transparent">#00000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FFFF0000</color>
-    <color name="primary">#FF2B2D30</color>
-    <color name="secondary">#FF1E1F22</color>
-    <color name="tertiary">#383838</color>
-    <color name="backgroundPrimary">#292929</color>
-    <color name="backgroundFrame">#232323</color>
-    <color name="text">#EFEFEF</color>
-    <color name="secondaryText">#AFAFAF</color>
+    <color name="primary">#222225</color>
+    <color name="secondary">#2a2a2e</color>
+    <color name="tertiary">#383841</color>
+    <color name="background">#161619</color>
+    <color name="textPrimary">#EFEFEF</color>
+    <color name="textSecondary">#8F8F8F</color>
 </resources>

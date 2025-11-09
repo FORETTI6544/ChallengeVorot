@@ -52,7 +52,7 @@ public class dialog_swap extends DialogFragment {
             userLayout.setMargins(0, 10, 0, 10);
             userView.setLayoutParams(userLayout);
             userView.setPadding(20, 20, 20, 20);
-            userView.setBackgroundResource(R.drawable.design_window);
+            userView.setBackgroundResource(R.drawable.frame_secondary);
             userView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -48,7 +48,7 @@ public class review extends Fragment {
             for (int i = reviews.size() - 1; i >= 0; i--) {
                 Reviews review = reviews.get(i);
                 ConstraintLayout reviewFrame = new ConstraintLayout(getContext());
-                reviewFrame.setBackgroundResource(R.drawable.design_window);
+                reviewFrame.setBackgroundResource(R.drawable.frame_secondary);
                 reviewFrame.setPadding(30, 20, 30, 20);
                 ConstraintLayout.LayoutParams frameLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
                 frameLayout.setMargins(15, 20, 15, 20);

@@ -56,7 +56,7 @@ public class chooseRoom extends Fragment {
     public ConstraintLayout createRoomFrame(Rooms room){
         ConstraintLayout roomFrame = new ConstraintLayout(getContext());
         roomFrame.setId(View.generateViewId());
-        roomFrame.setBackgroundResource(R.drawable.design_window);
+        roomFrame.setBackgroundResource(R.drawable.frame_secondary);
         roomFrame.setPadding(20,20,20,20);
 
         TextView roomName = new TextView(getContext());

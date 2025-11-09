@@ -396,6 +396,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void loadAllUsers() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.clearPersistence();
         db.collection("users")
                 .addSnapshotListener((querySnapshot, e) -> {
                     if (e != null) {

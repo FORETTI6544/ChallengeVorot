@@ -13,7 +13,7 @@
         android:text="Выберите пользователя с которым хотите поменяться играми!"
         android:textAlignment="center"
         android:textSize="30sp"
-        android:textColor="@color/text"
+        android:textColor="@color/textPrimary"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

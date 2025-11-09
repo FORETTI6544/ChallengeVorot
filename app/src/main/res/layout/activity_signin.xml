@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sign_in_activity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/Theme.Abchihba">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/text_signin"
@@ -22,8 +21,6 @@
 
     <EditText
         android:id="@+id/emailin"
-        android:textColor="@color/text"
-        android:shadowColor="@color/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
@@ -56,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Войти"
+        android:text="Вход"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +63,8 @@
         android:id="@+id/texttosignup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Зарегистрироваться"
+        android:layout_marginTop="15dp"
+        android:text="Регистрация"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

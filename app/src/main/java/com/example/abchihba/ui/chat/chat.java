@@ -1,17 +1,12 @@
 package com.example.abchihba.ui.chat;
 import com.example.abchihba.converters.Converter;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -23,22 +18,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.abchihba.Chat;
 import com.example.abchihba.R;
 import com.example.abchihba.databinding.FragmentChatBinding;
-import com.example.abchihba.ui.Reviews;
 import com.example.abchihba.ui.Users;
 import com.example.abchihba.ui.ViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.ShapeAppearanceModel;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.rpc.context.AttributeContext;
-import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 public class chat extends Fragment {
 
@@ -84,7 +70,7 @@ public class chat extends Fragment {
         ConstraintLayout messageFrame = new ConstraintLayout(getContext());
         messageFrame.setId(View.generateViewId());
         messageFrame.setPadding(Converter.dpToPx(getContext(), 5), Converter.dpToPx(getContext(), 5), Converter.dpToPx(getContext(), 5), Converter.dpToPx(getContext(), 5));
-        messageFrame.setBackgroundResource(R.drawable.design_window);
+        messageFrame.setBackgroundResource(R.drawable.frame_secondary);
 
         ShapeableImageView avatar = new ShapeableImageView(getContext());
         ShapeAppearanceModel shape = ShapeAppearanceModel.builder()
@@ -95,7 +81,7 @@ public class chat extends Fragment {
 
         TextView name = new TextView(getContext());
         name.setId(View.generateViewId());
-        name.setTextColor(getResources().getColor(R.color.text));
+        name.setTextColor(getResources().getColor(R.color.textPrimary));
         name.setTypeface(null, Typeface.BOLD);
         name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         name.setTextAlignment(TextView.TEXT_ALIGNMENT_VIEW_START);
@@ -103,13 +89,13 @@ public class chat extends Fragment {
 
         TextView message = new TextView(getContext());
         message.setId(View.generateViewId());
-        message.setTextColor(getResources().getColor(R.color.secondaryText));
+        message.setTextColor(getResources().getColor(R.color.textPrimary));
         message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         message.setText(msg.getMessage());
 
         TextView time = new TextView(getContext());
         time.setId(View.generateViewId());
-        time.setTextColor(getResources().getColor(R.color.secondaryText));
+        time.setTextColor(getResources().getColor(R.color.textPrimary));
         time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
         time.setTextAlignment(TextView.TEXT_ALIGNMENT_TEXT_END);
         time.setText(Converter.timeFormat(msg.getTime()));

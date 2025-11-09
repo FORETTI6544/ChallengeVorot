@@ -12,7 +12,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
         android:text="Комната"
-        android:textColor="@color/text"
+        android:textColor="@color/textPrimary"
         android:textAlignment="center"
         android:textSize="30sp"
         android:textStyle="bold"/>
@@ -26,7 +26,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_margin="10dp"
         android:hint="Пароль"
-        android:textColorHint="@color/text"/>
+        android:textColorHint="@color/textPrimary"/>
     <Button
         android:id="@+id/enter"
         android:layout_width="150dp"
@@ -38,6 +38,6 @@
         android:layout_margin="10dp"
         android:text="Войти"
         android:textStyle="bold"
-        android:textColor="@color/secondaryText"/>
+        android:textColor="@color/textPrimary"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android">
-<ripple android:color="@color/text">
+<ripple android:color="@color/textPrimary">
     <item
         android:width="100dp"
         android:height="100dp">
         <shape android:shape="oval">
-            <gradient android:startColor="#BD2E2E"
-                android:endColor="#571515"
-                android:angle="-90"/>
-            <stroke android:color="@color/text"
+            <solid android:color="#F95C5C"/>
+            <stroke android:color="@color/textPrimary"
                 android:width="6dp"/>
         </shape>
     </item>

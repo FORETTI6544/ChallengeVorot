@@ -1,10 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Theme.MaterialComponents.DayNight.NoActionBar -->
+    <!-- Base application theme. -->
     <style name="Theme.Abchihba" parent="Theme.AppCompat.DayNight.NoActionBar">
 
-        <item name="android:windowBackground">@color/white</item>
-        <item name="backgroundColor">@color/white</item>
-        <item name="background">@color/white</item>
-        <item name="android:textColor">@color/text</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textColorHint">@color/textPrimary</item>
+        <item name="android:buttonStyle">@style/ButtonStyle</item>
+        <item name="autoCompleteTextViewStyle">@style/AutoCompleteTextViewStyle</item>
+        <item name="editTextStyle">@style/EditTextStyle</item>
     </style>
+
 </resources>

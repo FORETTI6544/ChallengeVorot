@@ -18,17 +18,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.abchihba.R;
 import com.example.abchihba.databinding.FragmentProfileBinding;
-import com.example.abchihba.ui.Reviews;
-import com.example.abchihba.ui.Users;
 import com.example.abchihba.ui.ViewModel;
 import com.example.abchihba.ui.dialog.dialog_drop;
 import com.example.abchihba.ui.dialog.dialog_done;
 import com.example.abchihba.ui.dialog.dialog_info;
 import com.google.android.material.imageview.ShapeableImageView;
-
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
 
 import com.squareup.picasso.Picasso;
 
@@ -71,7 +65,7 @@ public class profile extends Fragment {
                 done = new Button(getContext());
                 done.setId(View.generateViewId());
                 done.setText("Прошел");
-                done.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondaryText));
+                done.setTextColor(ContextCompat.getColor(requireContext(), R.color.textPrimary));
                 done.setTextSize(20);
                 done.setTypeface(null, Typeface.BOLD);
                 done.setBackgroundResource(R.drawable.proshol);
@@ -104,7 +98,7 @@ public class profile extends Fragment {
                 drop = new Button(getContext());
                 drop.setId(View.generateViewId());
                 drop.setText("ДРОПНУТЬ");
-                drop.setTextColor(ContextCompat.getColor(requireContext(), R.color.secondaryText));
+                drop.setTextColor(ContextCompat.getColor(requireContext(), R.color.textPrimary));
                 drop.setTextSize(20);
                 drop.setTypeface(null, Typeface.BOLD);
                 drop.setBackgroundResource(R.drawable.dropnul);
