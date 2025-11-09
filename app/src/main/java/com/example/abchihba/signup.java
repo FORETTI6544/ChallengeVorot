@@ -54,15 +54,18 @@ public class signup extends AppCompatActivity {
                 user.put("email", email.getText().toString());
                 user.put("password", password.getText().toString());
                 user.put("name", "Изменить имя");
+                user.put("avatar", "0");
                 user.put("allow", "yes");
                 user.put("rerolls", "2");
                 user.put("balance", "0");
                 user.put("genre", "Отсутствует");
                 user.put("game", "Игра отсутствует");
-                user.put("status", "drop");
+                user.put("status", "new");
                 user.put("to", "0");
                 user.put("preview", "0");
-                user.put("ready", "no");
+                user.put("readiness", false);
+                user.put("room", "0");
+                user.put("started", 0);
 
 
                 db.collection("users")
