@@ -60,7 +60,7 @@ public class shop extends Fragment {
             linearLayout.addView(createItemFrame(item));
         }
         viewModel.getRoomUsers().observe(getViewLifecycleOwner(), users -> {
-
+            viewModel.updateFlags();
         });
 
         return root;
@@ -72,12 +72,12 @@ public class shop extends Fragment {
         int intPrice = Integer.parseInt(price);
         int intBalance = Integer.parseInt(viewModel.getBalance().getValue());
 
-        //======================ПРОВЕРКА ТИПА СЛЕДУЮЩЕЙ РОТАЦИИ=====================================
-        if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
-            //==================ПРОВЕРКА БАЛАНСА====================================================
-            if (intBalance >= intPrice) {
-                //==============СЛЕДУЮЩАЯ РОТАЦИЯ===================================================
-                if (Objects.equals(name, "Phanthom Lancer")) {
+
+        //==================ПРОВЕРКА БАЛАНСА========================================================
+        if (intBalance >= intPrice) {
+            //======================ТИП СЛЕДУЮЩЕЙ РОТАЦИИ НЕ УКАЗАН=================================
+            if (Objects.equals(name, "Phanthom Lancer")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     DialogFragment dialog_game = new dialog_game();
                     Bundle genre = new Bundle();
                     genre.putString("genre", "Phanthom Lancer");
@@ -92,36 +92,68 @@ public class shop extends Fragment {
                             viewModel.setBalance(String.valueOf(intBalance - intPrice));
                         }
                     });
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-                if (Objects.equals(name, "Рогаликук")) {
+            }
+            if (Objects.equals(name, "Рогаликук")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
                     viewModel.setNextRotationType(name);
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-                if (Objects.equals(name, "Фильмокук")) {
+            }
+            if (Objects.equals(name, "Фильмокук")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
                     viewModel.setNextRotationType(name);
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-                if (Objects.equals(name, "Сериалокук")) {
+            }
+            if (Objects.equals(name, "Сериалокук")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
                     viewModel.setNextRotationType(name);
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-                if (Objects.equals(name, "Геймпадокук")) {
+            }
+            if (Objects.equals(name, "Геймпадокук")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
                     viewModel.setNextRotationType(name);
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-                if (Objects.equals(name, "Выжикук")) {
+            }
+            if (Objects.equals(name, "Выжикук")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
                     viewModel.setNextRotationType(name);
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-                if (Objects.equals(name, "Музыкук")) {
+            }
+            if (Objects.equals(name, "Музыкук")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
                     viewModel.setNextRotationType(name);
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-                if (Objects.equals(name, "Анимекук")) {
+            }
+            if (Objects.equals(name, "Анимекук")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     viewModel.setBalance(String.valueOf(intBalance - intPrice));
                     viewModel.setNextRotationType(name);
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-                if (Objects.equals(name, "Тематическая ротация")) {
+            }
+            if (Objects.equals(name, "Тематическая ротация")) {
+                if (Objects.equals(viewModel.getNextRotationType().getValue(), "Отсутствует")) {
                     DialogFragment dialog_theme = new dialog_theme();
                     dialog_theme.show(getParentFragmentManager(), "dialog_theme");
                     getParentFragmentManager().setFragmentResultListener("theme_result", getViewLifecycleOwner(), (requestKey, result) -> {
@@ -131,174 +163,182 @@ public class shop extends Fragment {
                             viewModel.setBalance(String.valueOf(intBalance - intPrice));
                         }
                     });
+                } else {
+                    Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
                 }
-
-                //=============ЕЩЕ НИ ОДНА ИГРА НЕ ЗАГАДАНА=============================================
-                if (viewModel.nobodySpecifiedGame.getValue()) {
-                }
-                //=============ВСЕ ИГРЫ ЗАГАДАНЫ========================================================
+            }
+            //=============ВСЕ ИГРЫ ЗАГАДАНЫ========================================================
+            if (Objects.equals(name, "Свап играми")) {
                 if (viewModel.everybodySpecifiedGame.getValue()) {
-                    if (Objects.equals(name, "Свап играми")) {
-                        if (Objects.equals(viewModel.getStatus().getValue(), "done")) {
-                            Toast.makeText(requireContext(), "Вы уже прошли свою игру", Toast.LENGTH_SHORT).show();
-                            return;
+                    if (Objects.equals(viewModel.getStatus().getValue(), "done")) {
+                        Toast.makeText(requireContext(), "Вы уже прошли свою игру", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    DialogFragment dialog_swap = new dialog_swap();
+                    dialog_swap.show(getParentFragmentManager(), "dialog_swap");
+
+                    getParentFragmentManager().setFragmentResultListener("swap_result", this, (requestKey, result) -> {
+                        if (!result.isEmpty()) {
+                            String swap = result.getString("result");
+                            for (Users user : users) {
+                                if (Objects.equals(user.getTag(), swap)) {
+                                    if (user.getStatus().equals("done")) {
+                                        Toast.makeText(requireContext(), "Этот пользователь уже прошел свою игру", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    if (user.getStatus().equals("drop")) {
+                                        Toast.makeText(requireContext(), "Этот пользователь уже дропнул свою игру", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
+                            }
+
+
+                            String my_genre = viewModel.getGenre().getValue();
+                            String my_game = viewModel.getGame().getValue();
+                            String my_preview = viewModel.getPreview().getValue();
+
+                            String genre = "";
+                            String game = "";
+                            String preview = "";
+
+                            for (Users user : users) {
+                                if (Objects.equals(user.getTag(), swap)) {
+                                    genre = user.getGenre();
+                                    game = user.getGame();
+                                    preview = user.getPreview();
+                                }
+                            }
+                            db.collection("users").document(swap)
+                                    .update("genre", my_genre);
+                            db.collection("users").document(swap)
+                                    .update("game", my_game);
+                            db.collection("users").document(swap)
+                                    .update("preview", my_preview);
+                            db.collection("users").document(viewModel.getTag().getValue())
+                                    .update("genre", genre);
+                            db.collection("users").document(viewModel.getTag().getValue())
+                                    .update("game", game);
+                            db.collection("users").document(viewModel.getTag().getValue())
+                                    .update("preview", preview);
+                            viewModel.setBalance(String.valueOf(intBalance - intPrice));
                         }
-                        DialogFragment dialog_swap = new dialog_swap();
-                        dialog_swap.show(getParentFragmentManager(), "dialog_swap");
-
-                        getParentFragmentManager().setFragmentResultListener("swap_result", this, (requestKey, result) -> {
-                            if (!result.isEmpty()) {
-                                String swap = result.getString("result");
-                                for (Users user : users) {
-                                    if (Objects.equals(user.getTag(), swap)) {
-                                        if (user.getStatus().equals("done")) {
-                                            Toast.makeText(requireContext(), "Этот пользователь уже прошел свою игру", Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                        if (user.getStatus().equals("drop")) {
-                                            Toast.makeText(requireContext(), "Этот пользователь уже дропнул свою игру", Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                    }
-                                }
-
-
-                                String my_genre = viewModel.getGenre().getValue();
-                                String my_game = viewModel.getGame().getValue();
-                                String my_preview = viewModel.getPreview().getValue();
-
-                                String genre = "";
-                                String game = "";
-                                String preview = "";
-
-                                for (Users user : users) {
-                                    if (Objects.equals(user.getTag(), swap)) {
-                                        genre = user.getGenre();
-                                        game = user.getGame();
-                                        preview = user.getPreview();
-                                    }
-                                }
-                                db.collection("users").document(swap)
-                                        .update("genre", my_genre);
-                                db.collection("users").document(swap)
-                                        .update("game", my_game);
-                                db.collection("users").document(swap)
-                                        .update("preview", my_preview);
-                                db.collection("users").document(viewModel.getTag().getValue())
-                                        .update("genre", genre);
-                                db.collection("users").document(viewModel.getTag().getValue())
-                                        .update("game", game);
-                                db.collection("users").document(viewModel.getTag().getValue())
-                                        .update("preview", preview);
-                                viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                            }
-                        });
-                    }
+                    });
+                } else {
+                    Toast.makeText(requireContext(), "Ещё не все игры загаданы!", Toast.LENGTH_SHORT).show();
                 }
-                //=============У ВЫПАВШЕГО ЧЕЛОВЕКА ЕЩЕ НЕ ЗАГАДАНА ИГРА================================
+            }
+            //=============У ВЫПАВШЕГО ЧЕЛОВЕКА ЕЩЕ НЕ ЗАГАДАНА ИГРА================================
+            if (Objects.equals(name, "Загадываешь игру без колеса жанров.")) {
                 if (viewModel.targetUserGameIsEmpty.getValue()) {
-                    if (Objects.equals(name, "Загадываешь игру без колеса жанров.")) {
-                        DialogFragment dialog_game = new dialog_game();
-                        Bundle genre = new Bundle();
-                        genre.putString("genre", "Свободный");
-                        dialog_game.setArguments(genre);
-                        dialog_game.show(getParentFragmentManager(), "dialog_game");
-                        getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
-                            String newGame = result.getString("new_game");
-                            String preview = result.getString("preview");
-                            if (newGame != null) {
-                                db.collection("users").document(viewModel.getTo().getValue())
-                                        .update("genre", "Свободный");
-                                String tagValue = viewModel.getTo().getValue();
-                                if (tagValue == null || tagValue.isEmpty()) {
-                                    Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
-                                } else {
-                                    db.collection("users").document(tagValue)
-                                            .update("game", newGame);
-                                    db.collection("users").document(tagValue)
-                                            .update("status", "playing");
-                                    db.collection("users").document(tagValue)
-                                            .update("preview", preview);
-                                    Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
-                                }
+                    DialogFragment dialog_game = new dialog_game();
+                    Bundle genre = new Bundle();
+                    genre.putString("genre", "Свободный");
+                    dialog_game.setArguments(genre);
+                    dialog_game.show(getParentFragmentManager(), "dialog_game");
+                    getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
+                        String newGame = result.getString("new_game");
+                        String preview = result.getString("preview");
+                        if (newGame != null) {
+                            db.collection("users").document(viewModel.getTo().getValue())
+                                    .update("genre", "Свободный");
+                            String tagValue = viewModel.getTo().getValue();
+                            if (tagValue == null || tagValue.isEmpty()) {
+                                Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
+                            } else {
+                                db.collection("users").document(tagValue)
+                                        .update("game", newGame);
+                                db.collection("users").document(tagValue)
+                                        .update("status", "playing");
+                                db.collection("users").document(tagValue)
+                                        .update("preview", preview);
+                                Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
                             }
-                            viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                        });
-                    }
-                    if (Objects.equals(name, "100%")) {
-                        DialogFragment dialog_game = new dialog_game();
-                        Bundle genre = new Bundle();
-                        genre.putString("genre", "100%");
-                        dialog_game.setArguments(genre);
-                        dialog_game.show(getParentFragmentManager(), "dialog_game");
-                        getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
-                            String newGame = result.getString("new_game");
-                            String preview = result.getString("preview");
-                            if (newGame != null) {
-                                db.collection("users").document(viewModel.getTo().getValue())
-                                        .update("genre", "100%");
-                                String tagValue = viewModel.getTo().getValue();
-                                if (tagValue == null || tagValue.isEmpty()) {
-                                    Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
-                                } else {
-                                    db.collection("users").document(tagValue)
-                                            .update("game", newGame);
-                                    db.collection("users").document(tagValue)
-                                            .update("status", "playing");
-                                    db.collection("users").document(tagValue)
-                                            .update("preview", preview);
-                                    Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                        });
-                    }
-                }
-                //=============У МЕНЯ ЕЩЕ НЕТ ЖАНРА=====================================================
-                if (viewModel.iDontHaveGenre.getValue()) {
-                    if (Objects.equals(name, "Выбор жанра")) {
-                        DialogFragment dialog_genre = new dialog_genre();
-                        dialog_genre.show(getParentFragmentManager(), "dialog_genre");
-                        getParentFragmentManager().setFragmentResultListener("edit_genre_result", getViewLifecycleOwner(), (requestKey, result) -> {
-                            String newGenre = result.getString("new_genre");
-                            if (newGenre != null && !newGenre.equals("Жанр")) {
-                                viewModel.setGenre(newGenre);
-                                viewModel.setAllow("no");
-                                viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                            }
-                        });
-                    }
-                }
-                //=============У МЕНЯ СТАТУС ПРОХОДИТ===================================================
-                if (viewModel.myStatusIsPlaying.getValue()) {
-                    if (Objects.equals(name, "Скип")) {
-                        viewModel.setStatus("done");
+                        }
                         viewModel.setBalance(String.valueOf(intBalance - intPrice));
-                    }
+                    });
+                } else {
+                    Toast.makeText(requireContext(), "Игра уже загадана!", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(requireContext(), "Недостаточно средств", Toast.LENGTH_SHORT).show();
+            }
+            if (Objects.equals(name, "100%")) {
+                if (viewModel.targetUserGameIsEmpty.getValue()) {
+                    DialogFragment dialog_game = new dialog_game();
+                    Bundle genre = new Bundle();
+                    genre.putString("genre", "100%");
+                    dialog_game.setArguments(genre);
+                    dialog_game.show(getParentFragmentManager(), "dialog_game");
+                    getParentFragmentManager().setFragmentResultListener("edit_game_result", getViewLifecycleOwner(), (requestKey, result) -> {
+                        String newGame = result.getString("new_game");
+                        String preview = result.getString("preview");
+                        if (newGame != null) {
+                            db.collection("users").document(viewModel.getTo().getValue())
+                                    .update("genre", "100%");
+                            String tagValue = viewModel.getTo().getValue();
+                            if (tagValue == null || tagValue.isEmpty()) {
+                                Log.e("ViewModel", "Tag is null or empty. Cannot update Firestore document.");
+                            } else {
+                                db.collection("users").document(tagValue)
+                                        .update("game", newGame);
+                                db.collection("users").document(tagValue)
+                                        .update("status", "playing");
+                                db.collection("users").document(tagValue)
+                                        .update("preview", preview);
+                                Toast.makeText(getContext(), "Загадано: " + newGame, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                    });
+                } else {
+                    Toast.makeText(requireContext(), "Игра уже загадана!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            //=============У МЕНЯ ЕЩЕ НЕТ ЖАНРА=====================================================
+            if (Objects.equals(name, "Выбор жанра")) {
+                if (viewModel.iDontHaveGenre.getValue()) {
+                    DialogFragment dialog_genre = new dialog_genre();
+                    dialog_genre.show(getParentFragmentManager(), "dialog_genre");
+                    getParentFragmentManager().setFragmentResultListener("edit_genre_result", getViewLifecycleOwner(), (requestKey, result) -> {
+                        String newGenre = result.getString("new_genre");
+                        if (newGenre != null && !newGenre.equals("Жанр")) {
+                            viewModel.setGenre(newGenre);
+                            viewModel.setAllow("no");
+                            viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                        }
+                    });
+                } else {
+                    Toast.makeText(requireContext(), "У вас уже есть жанр", Toast.LENGTH_SHORT).show();
+                }
+            }
+            //=============У МЕНЯ СТАТУС ПРОХОДИТ===================================================
+            if (Objects.equals(name, "Скип")) {
+                if (viewModel.myStatusIsPlaying.getValue()) {
+                    viewModel.setStatus("done");
+                    viewModel.setBalance(String.valueOf(intBalance - intPrice));
+                } else {
+                    Toast.makeText(requireContext(), "Вы уже закончили игру, либо она вам еще не загадана!", Toast.LENGTH_SHORT).show();
+                }
             }
         } else {
-            Toast.makeText(requireContext(), "Кто то уже купил предмет для следующей ротации", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Недостаточно средств", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void createItems() {
-        items.add(new Items("Phanthom Lancer", "Все проходят одну и ту же игру, выбирает купивший. Можно купить только до начала новой ротации.", "100"));
+        items.add(new Items("Phanthom Lancer", "Все проходят одну и ту же игру, выбирает купивший. Покупается на следующую ротацию.", "100"));
         items.add(new Items("Свап играми", "Меняешься играми с выбранным человеком. Можно купить только если у всех загаданы игры.", "60"));
-        items.add(new Items("Рогаликук", "Загадываем рогалики, каждый делает 100 забегов, специально сливать нельзя. Можно купить только до начала новой ротации.", "120"));
-        items.add(new Items("Фильмокук", "Все участники вместо игр смотрят фильмы. Можно купить только до начала новой ротации.", "80"));
-        items.add(new Items("Геймпадокук", "Загадываем и проходим игры на геймпаде. Можно купить только до начала новой ротации.", "40"));
-        items.add(new Items("Выжикук", "Загадываем сурвайвл, выживаем 50 дней. Можно купить только до начала новой ротации.", "130"));
-        items.add(new Items("Сериалокук", "Все участники вместо игр смотрят сериалы или мульт-сериалы. Можно купить только до начала новой ротации.", "100"));
+        items.add(new Items("Рогаликук", "Загадываем рогалики, каждый делает 100 забегов, специально сливать нельзя. Покупается на следующую ротацию.", "120"));
+        items.add(new Items("Фильмокук", "Все участники вместо игр смотрят фильмы. Покупается на следующую ротацию.", "80"));
+        items.add(new Items("Геймпадокук", "Загадываем и проходим игры на геймпаде. Покупается на следующую ротацию.", "40"));
+        items.add(new Items("Выжикук", "Загадываем сурвайвл, выживаем 50 дней. Покупается на следующую ротацию.", "130"));
+        items.add(new Items("Сериалокук", "Все участники вместо игр смотрят сериалы или мульт-сериалы. Покупается на следующую ротацию.", "100"));
         items.add(new Items("Загадываешь игру без колеса жанров.", "Можно купить если ещё не загадал игру.", "60"));
         items.add(new Items("Выбор жанра", "Выбрать какой жанр тебе загадают. Можно купить если тебе ещё не загадали игру.", "60"));
         items.add(new Items("100%", "Загадать прохождение игры на 100%. Можно купить если ты ещё не загадал игру.", "250"));
-        items.add(new Items("Тематическая ротация", "Игры на определённый тему. Тему выбираешь сам. Можно купить только до начала новой ротации.", "100"));
+        items.add(new Items("Тематическая ротация", "Игры на определённый тему. Тему выбираешь сам. Покупается на следующую ротацию.", "100"));
         items.add(new Items("Скип", "Скипнуть свою игру. Можно купить если ещё не прошёл свою игру.", "60"));
-        items.add(new Items("Музыкук", "Вместо игр все слушают музыку. Нужно прослушать все альбомы определённого артиста. Можно купить только до начала новой ротации.", "100"));
-        items.add(new Items("Анимекук", "Вместо игр все смотрят аниме. Можно купить только до начала новой ротации.", "100"));
+        items.add(new Items("Музыкук", "Вместо игр все слушают музыку. Нужно прослушать все альбомы определённого артиста. Покупается на следующую ротацию.", "100"));
+        items.add(new Items("Анимекук", "Вместо игр все смотрят аниме. Покупается на следующую ротацию.", "100"));
     }
 
     public ConstraintLayout createItemFrame(Items item) {

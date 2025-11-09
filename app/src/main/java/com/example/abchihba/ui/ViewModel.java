@@ -49,7 +49,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private final MutableLiveData<List<Reviews>> reviewsList;
     private final MutableLiveData<List<Rooms>> roomsList;
     public final MutableLiveData<Boolean> rotationStarted;
-    public final MutableLiveData<Boolean> nobodySpecifiedGame;
     public final MutableLiveData<Boolean> everybodySpecifiedGame;
     public final MutableLiveData<Boolean> targetUserGameIsEmpty;
     public final MutableLiveData<Boolean> iDontHaveGenre;
@@ -97,8 +96,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         roomUsersList = new MutableLiveData<>();
 
-        nobodySpecifiedGame = new MutableLiveData<>();
-        nobodySpecifiedGame.setValue(true);
         everybodySpecifiedGame = new MutableLiveData<>();
         everybodySpecifiedGame.setValue(false);
         targetUserGameIsEmpty = new MutableLiveData<>();
@@ -428,7 +425,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public LiveData<List<Users>> getAllUsers() {
         return allUsersList;
     }
-
     public void loadRoomUsers() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
@@ -539,7 +535,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                             counter += 1;
                         }
                     }
-
                     reviewsList.setValue(reviews);
                 });
         return reviewsList;
@@ -772,5 +767,32 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         batch.update(db.collection("users").document(userTag), "balance", "0");
         batch.update(db.collection("users").document(userTag), "started", 0);
         batch.commit();
+    }
+    public void updateFlags() {
+        boolean localEverybodySpecifiedGame = true;
+        boolean localTargetUserGameIsEmpty = false;
+        boolean localIDontHaveGenre = false;
+        boolean localMyStatusPlaying = false;
+
+        for (Users user : this.roomUsersList.getValue()) {
+            if (user.getGame().equals("Игра отсутствует")){
+                localEverybodySpecifiedGame = false;
+            }
+            if (Objects.equals(user.getTo(), this.to.getValue())) {
+                if (user.getGame().equals("Игра отсутствует")) {
+                    localTargetUserGameIsEmpty = true;
+                }
+            }
+        }
+        if (Objects.equals(this.genre.getValue(), "Отсутствует")) {
+            localIDontHaveGenre = true;
+        }
+        if (Objects.equals(this.status.getValue(), "playing")) {
+            localMyStatusPlaying = true;
+        }
+        everybodySpecifiedGame.setValue(localEverybodySpecifiedGame);
+        targetUserGameIsEmpty.setValue(localTargetUserGameIsEmpty);
+        iDontHaveGenre.setValue(localIDontHaveGenre);
+        myStatusIsPlaying.setValue(localMyStatusPlaying);
     }
 }
