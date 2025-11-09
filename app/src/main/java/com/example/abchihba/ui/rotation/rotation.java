@@ -197,7 +197,7 @@ public class rotation extends Fragment {
         ConstraintLayout.LayoutParams userLayout = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
 
         if (viewModel.getTo().getValue().equals(user.getTag()) && ("Игра отсутствует".equals(user.getGame())) && !"Отсутствует".equals(user.getGenre())) {
-            userView.setBackgroundResource(R.drawable.proshol);
+            userView.setBackgroundResource(R.drawable.frame_tertiary);
             userLayout.setMargins(0, 0, 0, 0);
             userView.setOnClickListener(new View.OnClickListener() {
                 @Override
