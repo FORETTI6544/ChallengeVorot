@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/ProfileWithRoomFragment"
+        android:icon="@drawable/ic_profile"
+        android:title="Профиль" />
+    <item
+        android:id="@+id/RotationFragment"
+        android:icon="@drawable/ic_rotation"
+        android:title="Ротация" />
+    <item
+        android:id="@+id/WheelFragment"
+        android:icon="@drawable/ic_wheel"
+        android:title="Колесо" />
+    <item
+        android:id="@+id/MarketFragment"
+        android:icon="@drawable/ic_market"
+        android:title="Магазин" />
+    <item
+        android:id="@+id/ReviewsFragment"
+        android:icon="@drawable/ic_reviews"
+        android:title="Отзывы" />
+
+</menu>
