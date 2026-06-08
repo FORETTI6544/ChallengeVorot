@@ -1,6 +1,6 @@
 package com.foretti.challengevorot.models;
 
-public class Users {
+public class User {
     private String name;
     private String avatar;
     private String genre;
@@ -10,16 +10,16 @@ public class Users {
     private String askTo;
     private Boolean readiness;
 
-    public Users(){
+    public User(){
     }
-    public Users(String name,
-                 String avatar,
-                 String genre,
-                 String game,
-                 String gameStatus,
-                 String id,
-                 String askTo,
-                 Boolean readiness){
+    public User(String name,
+                String avatar,
+                String genre,
+                String game,
+                String gameStatus,
+                String id,
+                String askTo,
+                Boolean readiness){
         this.name = name;
         this.avatar = avatar;
         this.genre = genre;
