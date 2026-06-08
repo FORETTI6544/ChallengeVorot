@@ -29,6 +29,7 @@ public class WebSocketManager {
     private WebSocket webSocket;
     private final OkHttpClient client;
     private RoomsCallback roomsCallback;
+    private UserCallback userCallback;
     private boolean isConnected = false;
 
 
@@ -101,6 +102,12 @@ public class WebSocketManager {
                     }
                     roomsCallback.onRoomsUpdated(rooms);
                 }
+                break;
+            case "user_update":
+                if (userCallback != null) {
+                    userCallback.onUserUpdated(json.getString("name"), json.getString("avatar"), json.getInt("balance"));
+                }
+                break;
         }
     }
 
@@ -116,10 +123,19 @@ public class WebSocketManager {
         this.roomsCallback = null;
     }
 
+    public interface UserCallback {
+        void onUserUpdated(String name, String avatar, Integer balance);
+    }
+    public void setUserCallback(UserCallback callback) {
+        this.userCallback = callback;
+    }
+    public void clearUserCallback() {
+        this.userCallback = null;
+    }
 
     public void send(String message) {
         if (webSocket != null) {
-            Log.d("WSMessage", message);
+            Log.d("WSMessageSend", message);
             webSocket.send(message);
         }
     }

@@ -12,9 +12,9 @@ public class ProfileViewModel extends androidx.lifecycle.ViewModel {
     private final MutableLiveData<String> userID;
     private final MutableLiveData<List<Room>> rooms;
 
-    public ProfileViewModel(String id) {
+    public ProfileViewModel() {
         userID = new MutableLiveData<>();
-        userID.setValue(id);
+        userID.setValue("");
         rooms = new MutableLiveData<>();
         rooms.setValue(new ArrayList<>());
     }
@@ -29,5 +29,8 @@ public class ProfileViewModel extends androidx.lifecycle.ViewModel {
 
     public void setRooms(List<Room> r) {
         rooms.postValue(r);
+    }
+    public void setUserID(String id) {
+        userID.postValue(id);
     }
 }

@@ -93,6 +93,7 @@ public class LoginFragment extends Fragment {
                         public void onConnected() {
                             // Соединение установлено - переходим к фрагменту
                             Log.d("ConnectingWebSocket", "Connected");
+                            WebSocketManager.getInstance().send("{\"type\":\"get_user\"}");
                             requireActivity().runOnUiThread(() -> {
                                 btnLogin.setEnabled(true);
                                 Toast.makeText(requireContext(), "Вход выполнен!", Toast.LENGTH_SHORT).show();

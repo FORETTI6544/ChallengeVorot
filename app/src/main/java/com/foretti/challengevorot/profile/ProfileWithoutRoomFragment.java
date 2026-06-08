@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,11 +28,10 @@ public class ProfileWithoutRoomFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
+        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         Bundle args = getArguments();
         if (args != null) {
-            viewModel = new ProfileViewModel(args.getString("userId"));
+            viewModel.setUserID(args.getString("userId"));
         }
 
     }
