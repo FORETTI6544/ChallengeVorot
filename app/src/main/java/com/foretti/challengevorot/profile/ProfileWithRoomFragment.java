@@ -60,9 +60,30 @@ public class ProfileWithRoomFragment extends Fragment {
                     .error(R.drawable.heart_inactive)
                     .into(gamePreview);
         });
+        activityViewModel.getGameStatus().observe(getViewLifecycleOwner(), status -> {
+            if (status.equals("playing")) {
+                view.findViewById(R.id.done_btn).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.drop_btn).setVisibility(View.VISIBLE);
+
+            } else {
+                view.findViewById(R.id.done_btn).setVisibility(View.GONE);
+                view.findViewById(R.id.drop_btn).setVisibility(View.GONE);
+            }
+        });
 
 
-
+        view.findViewById(R.id.done_btn).setOnClickListener(v -> {
+            String gameName = activityViewModel.getGame().getValue();
+            new MakeReviewDialog(requireContext(), gameName, (rating, text) -> {
+            }).show();
+        });
+        view.findViewById(R.id.drop_btn).setOnClickListener(v -> {
+            String gameName = activityViewModel.getGame().getValue();
+            new ConfirmDropDialog(requireContext(), gameName, () -> {
+                // Можно добавить дополнительные действия после подтверждения
+            }).show();
+        });
         super.onViewCreated(view, savedInstanceState);
     }
+
 }

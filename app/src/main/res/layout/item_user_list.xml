@@ -9,21 +9,42 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/frame_tertiary"
-        android:padding="12dp"
+        android:background="@drawable/frame_secondary"
         android:layout_marginVertical="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/statusCircle"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:background="@drawable/frame_done"
+            app:layout_constraintRight_toRightOf="@id/container"
+            app:layout_constraintTop_toTopOf="@id/container"
+            app:layout_constraintBottom_toBottomOf="@id/container"
+            />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/statusCircleCutter"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:background="@drawable/frame_secondary"
+            app:layout_constraintRight_toRightOf="@id/container"
+            app:layout_constraintTop_toTopOf="@id/container"
+            app:layout_constraintBottom_toBottomOf="@id/container"
+            android:layout_marginRight="5dp"
+            />
+
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userAvatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_margin="8dp"
             android:scaleType="centerCrop"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.Pill"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/userName"
@@ -32,8 +53,9 @@
             android:text="@color/textPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:layout_marginLeft="8dp"
             app:layout_constraintStart_toEndOf="@id/userAvatar"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/userAvatar" />
 
         <TextView
             android:id="@+id/userGame"
@@ -41,18 +63,10 @@
             android:layout_height="wrap_content"
             android:text="@color/textSecondary"
             android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/userAvatar"
+            app:layout_constraintStart_toStartOf="@id/userName"
             app:layout_constraintTop_toBottomOf="@id/userName"/>
 
-        <View
-            android:id="@+id/statusCircle"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginEnd="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.Pill"  />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </LinearLayout>

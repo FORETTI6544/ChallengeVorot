@@ -84,6 +84,7 @@ public class RotationFragment extends Fragment {
         Button btnReady = view.findViewById(R.id.btnReady);
         activityViewModel.getReadiness().observe(getViewLifecycleOwner(), isReady -> {
             btnReady.setText(isReady ? "Отменить" : "Готов");
+            btnReady.setBackgroundResource(isReady ? R.drawable.frame_drop : R.drawable.frame_done);
             btnReady.setOnClickListener(v -> {
                 WebSocketManager.getInstance().send("{\"type\":\"set_readiness\",\"readiness\":" + !isReady + "}");
             });

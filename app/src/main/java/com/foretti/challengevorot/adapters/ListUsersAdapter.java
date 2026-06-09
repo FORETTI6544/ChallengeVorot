@@ -76,23 +76,25 @@ public class ListUsersAdapter extends RecyclerView.Adapter<ListUsersAdapter.User
                             clickListener.onUserClick(user);
                         }
                     });
+                } else {
+                    holder.container.setBackgroundResource(R.drawable.frame_secondary);
                 }
-                holder.statusCircle.setVisibility(View.GONE);
+                holder.statusCircle.setBackgroundResource(R.drawable.frame_secondary);
                 break;
             case "playing":
-                holder.container.setBackgroundResource(R.drawable.frame_primary);
+                holder.container.setBackgroundResource(R.drawable.frame_secondary);
                 holder.statusCircle.setVisibility(View.VISIBLE);
-                holder.statusCircle.setBackgroundColor(holder.itemView.getContext().getColor(R.color.yellow));
+                holder.statusCircle.setBackgroundResource(R.drawable.frame_playing);
                 break;
             case "done":
-                holder.container.setBackgroundResource(R.drawable.frame_primary);
+                holder.container.setBackgroundResource(R.drawable.frame_secondary);
                 holder.statusCircle.setVisibility(View.VISIBLE);
-                holder.statusCircle.setBackgroundColor(holder.itemView.getContext().getColor(R.color.green));
+                holder.statusCircle.setBackgroundResource(R.drawable.frame_done);
                 break;
             case "drop":
-                holder.container.setBackgroundResource(R.drawable.frame_primary);
+                holder.container.setBackgroundResource(R.drawable.frame_secondary);
                 holder.statusCircle.setVisibility(View.VISIBLE);
-                holder.statusCircle.setBackgroundColor(holder.itemView.getContext().getColor(R.color.red));
+                holder.statusCircle.setBackgroundResource(R.drawable.frame_drop);
                 break;
         }
 
@@ -123,5 +125,6 @@ public class ListUsersAdapter extends RecyclerView.Adapter<ListUsersAdapter.User
             userGame = itemView.findViewById(R.id.userGame);
             statusCircle = itemView.findViewById(R.id.statusCircle);
         }
+
     }
 }

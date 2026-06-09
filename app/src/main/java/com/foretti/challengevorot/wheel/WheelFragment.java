@@ -43,11 +43,27 @@ public class WheelFragment extends Fragment {
         WheelView wheelView = view.findViewById(R.id.wheelView);
         TextView selectedGenre = view.findViewById(R.id.selectedGenre);
         Button spinBtn = view.findViewById(R.id.spinBtn);
+        Button leftHeartBtn = view.findViewById(R.id.left_heart);
+        Button rightHeartBtn = view.findViewById(R.id.right_heart);
+
+
+        activityViewModel.getAllowWheelSpinning().observe(getViewLifecycleOwner(), allow -> {
+            if (allow) {
+                leftHeartBtn.setClickable(false);
+                rightHeartBtn.setClickable(false);
+                spinBtn.setClickable(true);
+                spinBtn.setBackgroundResource(R.drawable.spin_btn_active);
+            } else {
+                leftHeartBtn.setClickable(true);
+                rightHeartBtn.setClickable(true);
+                spinBtn.setClickable(false);
+                spinBtn.setBackgroundResource(R.drawable.spin_btn_inactive);
+            }
+        });
 
         wheelViewModel.getGenres().observe(getViewLifecycleOwner(), genres -> {
             wheelView.setGenres(genres);
         });
-
         WebSocketManager.getInstance().setGenresCallback(new WebSocketManager.GenresCallback() {
             @Override
             public void onGenresRecieved(List<String> genres) {

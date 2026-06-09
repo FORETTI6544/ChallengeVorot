@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.foretti.challengevorot.models.Game;
+import com.foretti.challengevorot.models.Review;
 import com.foretti.challengevorot.models.Room;
 import com.foretti.challengevorot.models.User;
 
@@ -37,6 +38,8 @@ public class WebSocketManager {
     private GamesCallback gamesCallback;
     private GenresCallback genresCallback;
     private SpinningResultCallback spinningResultCallback;
+    private ReviewsCallback reviewsCallback;
+
     private boolean isConnected = false;
 
 
@@ -147,8 +150,11 @@ public class WebSocketManager {
                     usersListCallback.onUsersUpdated(users);
                 }
                 break;
-            case "rotation_status_update":
-                rotationStatusCallback.onRotationStatusUpdated(json.getBoolean("rotation_status"));
+            case "room_update":
+                JSONObject roomData = json.getJSONObject("roomData");
+
+
+                rotationStatusCallback.onRotationStatusUpdated(roomData.getBoolean("rotation_status"));
                 break;
             case "game_search":
                 if (gamesCallback != null) {
@@ -177,11 +183,33 @@ public class WebSocketManager {
                 break;
             case "spinning_result":
                 if (spinningResultCallback != null) {
-                    JSONObject result = json.getJSONObject("genre");
-                    String genre = result.getString("name");
+                    String genre = json.getString("genre");
                     spinningResultCallback.onSpinningResult(genre);
                 }
                 break;
+            case "reviews_list":
+                if (reviewsCallback != null) {
+                    JSONArray reviewsArray = json.getJSONArray("reviews");
+                    List<Review> reviews = new ArrayList<>();
+                    for (int i = 0; i < reviewsArray.length(); i++) {
+                        try {
+                            JSONObject reviewObj = reviewsArray.getJSONObject(i);
+                            Review review = new Review();
+                            review.userName = reviewObj.getString("user_name");
+                            review.userAvatar = reviewObj.getString("user_avatar");
+                            review.gameName = reviewObj.getString("game_name");
+                            review.gamePreview = reviewObj.optString("game_preview", "");
+                            review.rating = reviewObj.getInt("rating");
+                            review.text = reviewObj.getString("review_text");
+                            reviews.add(review);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    reviewsCallback.onReviewsReceived(reviews);
+                }
+                break;
+
         }
     }
     public interface GenresCallback {
@@ -257,6 +285,18 @@ public class WebSocketManager {
 
     public void clearSpinningResultCallback() {
         this.spinningResultCallback = null;
+    }
+
+    public interface ReviewsCallback {
+        void onReviewsReceived(List<Review> reviews);
+    }
+
+    public void setReviewsCallback(ReviewsCallback callback) {
+        this.reviewsCallback = callback;
+    }
+
+    public void clearReviewsCallback() {
+        this.reviewsCallback = null;
     }
 
     public void send(String message) {
