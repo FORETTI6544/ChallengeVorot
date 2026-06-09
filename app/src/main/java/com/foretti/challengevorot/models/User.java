@@ -1,14 +1,14 @@
 package com.foretti.challengevorot.models;
 
 public class User {
-    private String name;
-    private String avatar;
-    private String genre;
-    private String game;
-    private String gameStatus;
-    private String id;
-    private String askTo;
-    private Boolean readiness;
+    public String name;
+    public String avatar;
+    public String genre;
+    public String game;
+    public String gameStatus;
+    public String id;
+    public String askTo;
+    public Boolean readiness;
 
     public User(){
     }
@@ -28,30 +28,5 @@ public class User {
         this.id = id;
         this.askTo = askTo;
         this.readiness = readiness;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public String getAvatar() {
-        return avatar;
-    }
-    public String getGame() {
-        return game;
-    }
-    public String getGameStatus(){
-        return gameStatus;
-    }
-    public String getId() {
-        return id;
-    }
-    public String getAskTo() {
-        return askTo;
-    }
-    public String getGenre() {
-        return genre;
-    }
-    public Boolean getReadiness() {
-        return readiness;
     }
 }

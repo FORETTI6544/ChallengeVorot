@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/frame_tertiary"
+        android:padding="12dp"
+        android:layout_marginVertical="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/userAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.Pill"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@color/textPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/userAvatar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/userGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@color/textSecondary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/userAvatar"
+            app:layout_constraintTop_toBottomOf="@id/userName"/>
+
+        <View
+            android:id="@+id/statusCircle"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.Pill"  />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

@@ -6,7 +6,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.foretti.challengevorot.models.Game;
 import com.foretti.challengevorot.models.Room;
+import com.foretti.challengevorot.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +32,9 @@ public class WebSocketManager {
     private final OkHttpClient client;
     private RoomsCallback roomsCallback;
     private UserCallback userCallback;
+    private UsersListCallback usersListCallback;
+    private RotationStatusCallback rotationStatusCallback;
+    private GamesCallback gamesCallback;
     private boolean isConnected = false;
 
 
@@ -105,12 +110,78 @@ public class WebSocketManager {
                 break;
             case "user_update":
                 if (userCallback != null) {
-                    userCallback.onUserUpdated(json.getString("name"), json.getString("avatar"), json.getInt("balance"));
+                    userCallback.onUserUpdated(
+                            json.getString("name"),
+                            json.getString("avatar"),
+                            json.getInt("balance"),
+                            json.getString("ask_to"),
+                            json.getBoolean("readiness"),
+                            json.getString("genre"),
+                            json.getString("game"),
+                            json.getString("game_preview"),
+                            json.getString("game_status"),
+                            json.getInt("game_started_date"),
+                            json.getBoolean("allow_wheel_spinning"),
+                            json.getInt("rerolls_count"));
+                }
+                break;
+            case "users_list":
+                if (usersListCallback != null) {
+                    JSONArray usersArray = json.getJSONArray("users");
+                    List<User> users = new ArrayList<>();
+                    for (int i = 0; i < usersArray.length(); i++) {
+                        JSONObject userObj = usersArray.getJSONObject(i);
+                        User user = new User();
+                        user.name = userObj.getString("name");
+                        user.avatar = userObj.optString("avatar", "");
+                        user.genre = userObj.optString("genre", "");
+                        user.game = userObj.optString("game", "");
+                        user.gameStatus = userObj.optString("game_status", "");
+                        user.id = userObj.getString("id");
+                        user.askTo = userObj.optString("ask_to", "");
+                        user.readiness = userObj.optBoolean("readiness", false);
+                        users.add(user);
+                    }
+                    usersListCallback.onUsersUpdated(users);
+                }
+                break;
+            case "rotation_status_update":
+                rotationStatusCallback.onRotationStatusUpdated(json.getBoolean("rotation_status"));
+                break;
+            case "game_search":
+                if (gamesCallback != null) {
+                    JSONArray gamesArray = json.getJSONArray("games");
+                    List<Game> games = new ArrayList<>();
+                    for (int i = 0; i < gamesArray.length(); i++) {
+                        JSONObject gameObj = gamesArray.getJSONObject(i);
+                        Game game = new Game();
+                        game.game_name = gameObj.getString("game_name");
+                        game.appid = gameObj.getString("appid");
+                        games.add(game);
+                    }
+                    gamesCallback.onGamesFound(games);
                 }
                 break;
         }
     }
-
+    public interface GamesCallback {
+        void onGamesFound(List<Game> games);
+    }
+    public void setGamesCallback(GamesCallback callback) {
+        this.gamesCallback = callback;
+    }
+    public void clearGamesCallback() {
+        this.gamesCallback = null;
+    }
+    public interface RotationStatusCallback {
+        void onRotationStatusUpdated(Boolean rotationStatus);
+    }
+    public void setRotationStatusCallback(RotationStatusCallback callback) {
+        this.rotationStatusCallback = callback;
+    }
+    public void clearRotationStatusCallback() {
+        this.rotationStatusCallback = null;
+    }
     public interface RoomsCallback {
         void onRoomsUpdated(List<Room> rooms);
     }
@@ -124,7 +195,9 @@ public class WebSocketManager {
     }
 
     public interface UserCallback {
-        void onUserUpdated(String name, String avatar, Integer balance);
+        void onUserUpdated(String name, String avatar, Integer balance, String askto, Boolean readiness,
+                           String genre, String game, String gamepreview, String gamestatus,
+                           Integer gamestarteddate, Boolean allowwheelspinning, Integer rerollscount);
     }
     public void setUserCallback(UserCallback callback) {
         this.userCallback = callback;
@@ -133,6 +206,17 @@ public class WebSocketManager {
         this.userCallback = null;
     }
 
+    public interface UsersListCallback {
+        void onUsersUpdated(List<User> users);
+    }
+
+
+    public void setUsersListCallback(UsersListCallback callback) {
+        this.usersListCallback = callback;
+    }
+    public void clearUsersListCallback() {
+        this.usersListCallback = null;
+    }
     public void send(String message) {
         if (webSocket != null) {
             Log.d("WSMessageSend", message);
