@@ -35,6 +35,8 @@ public class WebSocketManager {
     private UsersListCallback usersListCallback;
     private RotationStatusCallback rotationStatusCallback;
     private GamesCallback gamesCallback;
+    private GenresCallback genresCallback;
+    private SpinningResultCallback spinningResultCallback;
     private boolean isConnected = false;
 
 
@@ -162,7 +164,32 @@ public class WebSocketManager {
                     gamesCallback.onGamesFound(games);
                 }
                 break;
+            case "genres_list":
+                if (genresCallback != null) {
+                    JSONArray genresArray = json.getJSONArray("genres");
+                    List<String> genresList = new ArrayList<>();
+                    for (int i = 0; i < genresArray.length(); i++) {
+                        genresList.add(genresArray.getString(i));
+                    }
+                    genresCallback.onGenresRecieved(genresList);
+                }
+                break;
+            case "spinning_result":
+                if (spinningResultCallback != null) {
+                    String result = json.getString("genre");
+                    spinningResultCallback.onSpinningResult(result);
+                }
+                break;
         }
+    }
+    public interface GenresCallback {
+        void onGenresRecieved(List<String> genres);
+    }
+    public void setGenresCallback(GenresCallback callback) {
+        this.genresCallback = callback;
+    }
+    public void clearGenresCallback() {
+        this.genresCallback = null;
     }
     public interface GamesCallback {
         void onGamesFound(List<Game> games);
@@ -217,6 +244,19 @@ public class WebSocketManager {
     public void clearUsersListCallback() {
         this.usersListCallback = null;
     }
+
+    public interface SpinningResultCallback {
+        void onSpinningResult(String genre);
+    }
+
+    public void setSpinningResultCallback(SpinningResultCallback callback) {
+        this.spinningResultCallback = callback;
+    }
+
+    public void clearSpinningResultCallback() {
+        this.spinningResultCallback = null;
+    }
+
     public void send(String message) {
         if (webSocket != null) {
             Log.d("WSMessageSend", message);
