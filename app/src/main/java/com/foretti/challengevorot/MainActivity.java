@@ -28,6 +28,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.foretti.challengevorot.converters.Converter;
 import com.foretti.challengevorot.network.WebSocketManager;
+import com.foretti.challengevorot.profile.ChangeNameDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -128,23 +129,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showChangeNameDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Сменить имя");
-
-        final EditText input = new EditText(this);
-        input.setText(username.getText());
-        builder.setView(input);
-
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            String newName = input.getText().toString();
-            if (!newName.isEmpty()) {
-                WebSocketManager.getInstance().send("{\"type\":\"set_name\",\"name\":\"" + newName + "\"}");
-            }
-        });
-
-        builder.setNegativeButton("Отмена", null);
-        builder.show();
+        ChangeNameDialog dialog = new ChangeNameDialog(this);
+        dialog.show(username.getText().toString());
     }
+
 
     private void updateMenuVisibility(int destinationId) {
         if (destinationId == R.id.ProfileWithRoomFragment ||

@@ -71,6 +71,8 @@ public class ListUsersAdapter extends RecyclerView.Adapter<ListUsersAdapter.User
             case "new":
                 if (!user.genre.equals("Отсутствует") && user.id.equals(askTo)) {
                     holder.container.setBackgroundResource(R.drawable.frame_tertiary);
+                    holder.statusCircle.setBackgroundResource(R.drawable.frame_tertiary);
+                    holder.statusCircleCutter.setBackgroundResource(R.drawable.frame_tertiary);
                     holder.itemView.setOnClickListener(v -> {
                         if (clickListener != null) {
                             clickListener.onUserClick(user);
@@ -78,8 +80,10 @@ public class ListUsersAdapter extends RecyclerView.Adapter<ListUsersAdapter.User
                     });
                 } else {
                     holder.container.setBackgroundResource(R.drawable.frame_secondary);
+                    holder.statusCircle.setBackgroundResource(R.drawable.frame_secondary);
+                    holder.statusCircleCutter.setBackgroundResource(R.drawable.frame_secondary);
+
                 }
-                holder.statusCircle.setBackgroundResource(R.drawable.frame_secondary);
                 break;
             case "playing":
                 holder.container.setBackgroundResource(R.drawable.frame_secondary);
@@ -114,7 +118,8 @@ public class ListUsersAdapter extends RecyclerView.Adapter<ListUsersAdapter.User
         ShapeableImageView avatar;
         TextView userName;
         TextView userGame;
-        View statusCircle;
+        ConstraintLayout statusCircle;
+        ConstraintLayout statusCircleCutter;
         ConstraintLayout container;
 
         public UserViewHolder(@NonNull View itemView) {
@@ -124,6 +129,7 @@ public class ListUsersAdapter extends RecyclerView.Adapter<ListUsersAdapter.User
             userName = itemView.findViewById(R.id.userName);
             userGame = itemView.findViewById(R.id.userGame);
             statusCircle = itemView.findViewById(R.id.statusCircle);
+            statusCircleCutter = itemView.findViewById(R.id.statusCircleCutter);
         }
 
     }

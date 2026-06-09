@@ -4,44 +4,28 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/frame_secondary">
 
     <TextView
-        android:id="@+id/textGameName"
+        android:id="@+id/textChangeNameTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/textPrimary"
         android:layout_marginBottom="16dp"
-        android:text="Название игры" />
-
-    <SeekBar
-        android:id="@+id/ratingBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="5"
-        android:layout_marginBottom="8dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Оценка: 5"
-        android:id="@+id/textRating"
-        android:textSize="14sp"
-        android:textColor="@color/textSecondary"
-        android:layout_marginBottom="16dp" />
+        android:text="Сменить имя" />
 
     <EditText
-        android:id="@+id/editTextReview"
+        android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Введите ваш отзыв..."
-        android:inputType="textMultiLine"
-        android:minHeight="100dp"
+        android:hint="Введите новое имя"
         android:textColor="@color/textPrimary"
-        android:textColorHint="@color/textSecondary" />
+        android:textColorHint="@color/textSecondary"
+        android:background="@drawable/frame_primary"
+        android:padding="12dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,20 +34,20 @@
         android:gravity="end">
 
         <Button
-            android:id="@+id/btnCancelReview"
+            android:id="@+id/btnCancelName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="@null"
             android:background="@drawable/frame_drop"
+            app:backgroundTint="@null"
             android:text="Отмена" />
 
         <Button
-            android:id="@+id/btnSubmitReview"
+            android:id="@+id/btnConfirmName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="@null"
             android:background="@drawable/frame_done"
-            android:text="Отправить"
+            app:backgroundTint="@null"
+            android:text="OK"
             android:layout_marginStart="8dp" />
 
     </LinearLayout>
