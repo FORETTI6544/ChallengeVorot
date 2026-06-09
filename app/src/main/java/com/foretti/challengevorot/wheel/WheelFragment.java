@@ -1,10 +1,13 @@
 package com.foretti.challengevorot.wheel;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.foretti.challengevorot.ActivityViewmodel;
 import com.foretti.challengevorot.R;
 import com.foretti.challengevorot.network.WebSocketManager;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -26,20 +30,24 @@ public class WheelFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_wheel, container, false);
+        return root;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
         activityViewModel = new ViewModelProvider(requireActivity()).get(ActivityViewmodel.class);
         wheelViewModel = new ViewModelProvider(this).get(WheelViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_wheel, container, false);
 
-        WheelView wheelView = root.findViewById(R.id.wheelView);
-        TextView selectedGenre = root.findViewById(R.id.selectedGenre);
-        Button spinBtn = root.findViewById(R.id.spinBtn);
 
-        // Подписываемся на обновление жанров из базы данных
+        WheelView wheelView = view.findViewById(R.id.wheelView);
+        TextView selectedGenre = view.findViewById(R.id.selectedGenre);
+        Button spinBtn = view.findViewById(R.id.spinBtn);
+
         wheelViewModel.getGenres().observe(getViewLifecycleOwner(), genres -> {
             wheelView.setGenres(genres);
         });
 
-        // Запрашиваем жанры при создании фрагмента
         WebSocketManager.getInstance().setGenresCallback(new WebSocketManager.GenresCallback() {
             @Override
             public void onGenresRecieved(List<String> genres) {
@@ -48,31 +56,32 @@ public class WheelFragment extends Fragment {
         });
         WebSocketManager.getInstance().send("{\"type\":\"get_genres\"}");
 
-        // Подписываемся на результат вращения от сервера через WebSocket
         WebSocketManager.getInstance().setSpinningResultCallback(new WebSocketManager.SpinningResultCallback() {
             @Override
             public void onSpinningResult(String genre) {
-                if (!wheelView.isSpinning()) {
-                    wheelView.spinToGenre(genre);
-                    wheelViewModel.setIsSpinning(true);
-                }
+                WheelView wheelView = view.findViewById(R.id.wheelView);
+
+                wheelView.post(() -> {
+                    if (!isAdded() || getView() == null) return;
+                    if (!wheelView.isSpinning()) {
+                        wheelView.spinToGenre(genre);
+                        wheelViewModel.setIsSpinning(true);
+                    }
+                });
             }
         });
-
-        // Обновляем отображение выбранного жанра
         wheelView.getGenre().observe(getViewLifecycleOwner(), genre -> {
             selectedGenre.setText(genre);
         });
 
-        // Обработка клика по кнопке вращения
         spinBtn.setOnClickListener(v -> {
-            if (!wheelView.isSpinning()) {
+            if (!wheelView.isSpinning()&&activityViewModel.getAllowWheelSpinning().getValue()) {
                 // Запрашиваем результат вращения у сервера
                 WebSocketManager.getInstance().send("{\"type\":\"spin_wheel\"}");
             }
         });
 
-        return root;
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

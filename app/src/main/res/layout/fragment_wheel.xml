@@ -1,37 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    tools:context=".wheel.WheelFragment">
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/wheelPanel"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/wheel_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.foretti.challengevorot.wheel.WheelView
+            android:id="@+id/wheelView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/arrow"
+        app:layout_constraintLeft_toLeftOf="@+id/wheelPanel"
+        app:layout_constraintRight_toRightOf="@id/wheelPanel"
+        app:layout_constraintBottom_toTopOf="@id/wheelPanel"
+        android:layout_marginBottom="-80dp"
+        />
+
+    <Button
+        android:id="@+id/spinBtn"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="50dp"
+        android:text="SPIN"
+        android:textColor="@color/textPrimary"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-black"
+        android:textAlignment="center"
+        android:background="@drawable/spin_btn_inactive"
+        app:backgroundTint="@null"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wheelPanel" />
 
     <TextView
         android:id="@+id/selectedGenre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        android:text="Выбранный жанр"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/textPrimary" />
-
-    <com.foretti.challengevorot.wheel.WheelView
-        android:id="@+id/wheelView"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginBottom="24dp" />
+        android:text="Жанр"
+        app:layout_constraintBottom_toTopOf="@+id/wheelPanel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
-        android:id="@+id/spinBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="12dp"
-        android:text="Вращать"
-        android:textSize="16sp"
-        android:background="@drawable/frame_primary"
-        android:textColor="@color/textPrimary"
-        android:elevation="4dp" />
+        android:id="@+id/right_heart"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/heart_inactive"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/spinBtn"
+        app:layout_constraintStart_toEndOf="@+id/spinBtn" />
+    <Button
+        android:id="@+id/left_heart"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/heart_inactive"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/spinBtn"
+        app:layout_constraintEnd_toStartOf="@+id/spinBtn" />
 
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

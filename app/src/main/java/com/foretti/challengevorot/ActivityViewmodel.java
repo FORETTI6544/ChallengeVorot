@@ -38,7 +38,7 @@ public class ActivityViewmodel extends androidx.lifecycle.ViewModel {
         game = new MutableLiveData<>();
         game.setValue("");
         gamePreview = new MutableLiveData<>();
-        gamePreview.setValue("");
+        gamePreview.setValue("0");
         gameStatus = new MutableLiveData<>();
         gameStatus.setValue("");
         gameStartedDate = new MutableLiveData<>();

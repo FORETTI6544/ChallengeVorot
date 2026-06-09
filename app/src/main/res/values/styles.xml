@@ -20,7 +20,17 @@
     <style name="ButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_default</item>
     </style>
+    <style name="HeartButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/heart_inactive</item>
+    </style>
 
+    <style name="SpinButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/spin_btn_active</item>
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
     <style name="AutoCompleteTextViewStyle" parent="Widget.AppCompat.AutoCompleteTextView">
         <item name="android:popupBackground">@drawable/frame_primary</item>
     </style>

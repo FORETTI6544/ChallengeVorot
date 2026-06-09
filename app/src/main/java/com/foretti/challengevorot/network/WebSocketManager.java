@@ -169,15 +169,17 @@ public class WebSocketManager {
                     JSONArray genresArray = json.getJSONArray("genres");
                     List<String> genresList = new ArrayList<>();
                     for (int i = 0; i < genresArray.length(); i++) {
-                        genresList.add(genresArray.getString(i));
+                        JSONObject genre = genresArray.getJSONObject(i);
+                        genresList.add(genre.getString("name"));
                     }
                     genresCallback.onGenresRecieved(genresList);
                 }
                 break;
             case "spinning_result":
                 if (spinningResultCallback != null) {
-                    String result = json.getString("genre");
-                    spinningResultCallback.onSpinningResult(result);
+                    JSONObject result = json.getJSONObject("genre");
+                    String genre = result.getString("name");
+                    spinningResultCallback.onSpinningResult(genre);
                 }
                 break;
         }
