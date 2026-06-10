@@ -8,4 +8,5 @@
         <item name="autoCompleteTextViewStyle">@style/AutoCompleteTextViewStyle</item>
         <item name="editTextStyle">@style/EditTextStyle</item>
 
-    </style></resources>
+    </style>
+</resources>

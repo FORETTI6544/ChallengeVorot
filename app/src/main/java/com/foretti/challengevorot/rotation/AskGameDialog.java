@@ -2,6 +2,8 @@ package com.foretti.challengevorot.rotation;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -54,16 +56,16 @@ public class AskGameDialog {
         // Настраиваем адаптер для автодополнения
         adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
         autoCompleteGame.setAdapter(adapter);
-        autoCompleteGame.setThreshold(3);
+        autoCompleteGame.setThreshold(2);
 
         // Устанавливаем клик на элемент списка
         autoCompleteGame.setOnItemClickListener((parent, view, position, id) -> {
             String selectedItem = (String) parent.getItemAtPosition(position);
-            // Находим игру по названию и заполняем поле preview
             for (Game game : gameList) {
                 if (game.game_name.equals(selectedItem)) {
                     autoCompleteGame.setText(game.game_name);
-                    editTextPreview.setText(game.appid); // appid записываем во второе поле
+                    editTextPreview.setText(game.preview_image);
+                    suggestionsContainer.setVisibility(View.GONE);
                     break;
                 }
             }
@@ -76,23 +78,28 @@ public class AskGameDialog {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() >= 3) {
+                if (s.length() >= 2) {
                     // Отправляем запрос на сервер
                     WebSocketManager.getInstance().send("{\"type\":\"search_games\",\"query\":\"" + s.toString() + "\"}");
 
                     // Устанавливаем callback
                     WebSocketManager.getInstance().setGamesCallback(games -> {
-                        gameList.clear();
-                        gameList.addAll(games);
+                        // Обновление UI должно происходить на основном потоке
+                        if (context instanceof android.app.Activity) {
+                            ((android.app.Activity) context).runOnUiThread(() -> {
+                                gameList.clear();
+                                gameList.addAll(games);
 
-                        List<String> gameNames = new ArrayList<>();
-                        for (Game game : games) {
-                            gameNames.add(game.game_name);
+                                List<String> gameNames = new ArrayList<>();
+                                for (Game game : games) {
+                                    gameNames.add(game.game_name);
+                                }
+
+                                adapter.clear();
+                                adapter.addAll(gameNames);
+                                adapter.notifyDataSetChanged();
+                            });
                         }
-
-                        adapter.clear();
-                        adapter.addAll(gameNames);
-                        adapter.notifyDataSetChanged();
                     });
                 }
             }
@@ -116,4 +123,5 @@ public class AskGameDialog {
 
         dialog.show();
     }
+
 }

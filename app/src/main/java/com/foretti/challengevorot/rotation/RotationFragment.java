@@ -33,6 +33,7 @@ public class RotationFragment extends Fragment {
     private RotationViewModel viewModel;
     private ChainUsersAdapter chainAdapter;
     private ListUsersAdapter usersAdapter;
+    private Button btnChat;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,6 +82,15 @@ public class RotationFragment extends Fragment {
             }
         });
 
+        btnChat = view.findViewById(R.id.btnChat);
+        btnChat.setVisibility(View.VISIBLE);
+        btnChat.setOnClickListener(v -> {
+            // Открываем чат
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.nav_host_fragment, new ChatFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
         Button btnReady = view.findViewById(R.id.btnReady);
         activityViewModel.getReadiness().observe(getViewLifecycleOwner(), isReady -> {
             btnReady.setText(isReady ? "Отменить" : "Готов");

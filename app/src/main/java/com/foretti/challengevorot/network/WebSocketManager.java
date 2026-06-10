@@ -6,7 +6,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.foretti.challengevorot.models.ChatMessage;
+import com.foretti.challengevorot.models.ChatUser;
 import com.foretti.challengevorot.models.Game;
+import com.foretti.challengevorot.models.MarketItem;
 import com.foretti.challengevorot.models.Review;
 import com.foretti.challengevorot.models.Room;
 import com.foretti.challengevorot.models.User;
@@ -39,6 +42,9 @@ public class WebSocketManager {
     private GenresCallback genresCallback;
     private SpinningResultCallback spinningResultCallback;
     private ReviewsCallback reviewsCallback;
+    private MarketCallback marketCallback;
+    private ChatCallback chatCallback;
+
 
     private boolean isConnected = false;
 
@@ -156,20 +162,22 @@ public class WebSocketManager {
 
                 rotationStatusCallback.onRotationStatusUpdated(roomData.getBoolean("rotation_status"));
                 break;
-            case "game_search":
+            case "game_search_result":
                 if (gamesCallback != null) {
                     JSONArray gamesArray = json.getJSONArray("games");
                     List<Game> games = new ArrayList<>();
                     for (int i = 0; i < gamesArray.length(); i++) {
                         JSONObject gameObj = gamesArray.getJSONObject(i);
                         Game game = new Game();
-                        game.game_name = gameObj.getString("game_name");
-                        game.appid = gameObj.getString("appid");
+                        game.game_name = gameObj.getString("name");
+                        game.appid = gameObj.getString("steam_app_id");
+                        game.preview_image = gameObj.optString("preview_image", "");
                         games.add(game);
                     }
                     gamesCallback.onGamesFound(games);
                 }
                 break;
+
             case "genres_list":
                 if (genresCallback != null) {
                     JSONArray genresArray = json.getJSONArray("genres");
@@ -209,6 +217,50 @@ public class WebSocketManager {
                     reviewsCallback.onReviewsReceived(reviews);
                 }
                 break;
+            case "market_list":
+                if (marketCallback != null) {
+                    JSONArray itemsArray = json.getJSONArray("items");
+                    List<MarketItem> items = new ArrayList<>();
+                    for (int i = 0; i < itemsArray.length(); i++) {
+                        JSONObject itemObj = itemsArray.getJSONObject(i);
+                        MarketItem item = new MarketItem();
+                        item.name = itemObj.getString("name");
+                        item.description = itemObj.optString("desc", "");
+                        item.price = itemObj.getInt("price");
+
+                        items.add(item);
+                    }
+                    marketCallback.onMarketReceived(items);
+                }
+                break;
+            case "chat_update":
+                if (chatCallback != null) {
+                    JSONArray usersArray = json.getJSONArray("chat_users_list");
+                    List<ChatUser> users = new ArrayList<>();
+                    for (int i = 0; i < usersArray.length(); i++) {
+                        JSONObject userObj = usersArray.getJSONObject(i);
+                        ChatUser user = new ChatUser();
+                        user.id = userObj.getString("id");
+                        user.name = userObj.getString("name");
+                        user.avatar = userObj.optString("avatar", "");
+                        users.add(user);
+                    }
+
+                    JSONArray messagesArray = json.getJSONArray("chat_message");
+                    List<ChatMessage> messages = new ArrayList<>();
+                    for (int i = 0; i < messagesArray.length(); i++) {
+                        JSONObject msgObj = messagesArray.getJSONObject(i);
+                        ChatMessage message = new ChatMessage();
+                        message.userId = msgObj.getString("id");
+                        message.timestamp = msgObj.getLong("timestamp");
+                        message.message = msgObj.getString("message");
+                        messages.add(message);
+                    }
+                    chatCallback.onChatReceived(messages, users);
+                }
+                break;
+
+
 
         }
     }
@@ -298,6 +350,30 @@ public class WebSocketManager {
     public void clearReviewsCallback() {
         this.reviewsCallback = null;
     }
+    public interface MarketCallback {
+        void onMarketReceived(List<MarketItem> items);
+    }
+
+    public void setMarketCallback(MarketCallback callback) {
+        this.marketCallback = callback;
+    }
+
+    public void clearMarketCallback() {
+        this.marketCallback = null;
+    }
+    public interface ChatCallback {
+        void onChatReceived(List<ChatMessage> messages, List<ChatUser> users);
+    }
+
+    // Добавить методы установки и очистки callback:
+    public void setChatCallback(ChatCallback callback) {
+        this.chatCallback = callback;
+    }
+
+    public void clearChatCallback() {
+        this.chatCallback = null;
+    }
+
 
     public void send(String message) {
         if (webSocket != null) {
