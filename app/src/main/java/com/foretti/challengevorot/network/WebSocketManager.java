@@ -30,10 +30,11 @@ import okio.ByteString;
 
 public class WebSocketManager {
     private static final String TAG = "WebSocketManager";
-    private static final String wsUrl = "ws://192.168.191.226:3500";
+    private static final String wsUrl = "ws://192.168.0.106:8888";
     private static WebSocketManager instance;
     private WebSocket webSocket;
     private final OkHttpClient client;
+    private ConnectCallback connectCallback;
     private RoomsCallback roomsCallback;
     private UserCallback userCallback;
     private UsersListCallback usersListCallback;
@@ -44,9 +45,8 @@ public class WebSocketManager {
     private ReviewsCallback reviewsCallback;
     private MarketCallback marketCallback;
     private ChatCallback chatCallback;
-
-
     private boolean isConnected = false;
+    private boolean isAuthenticated = false;
 
 
     public static synchronized WebSocketManager getInstance() {
@@ -63,6 +63,9 @@ public class WebSocketManager {
         void onError(String error);
     }
     public void connect(String userID, ConnectCallback callback) {
+        this.connectCallback = callback;
+        this.isAuthenticated = false;
+
         Request request = new Request.Builder()
                 .url(wsUrl)
                 .build();
@@ -70,31 +73,60 @@ public class WebSocketManager {
         webSocket = client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(@NonNull WebSocket webSocket, @NonNull Response response) {
-                String authMessage = "{\"type\":\"auth\",\"userId\":\"" + userID + "\"}";
+                String authMessage = "{\"type\":\"auth\",\"user_id\":\"" + userID + "\"}";
                 webSocket.send(authMessage);
-                if (callback != null) {
-                    try {
-                        callback.onConnected();
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
             }
 
             @Override
             public void onMessage(@NonNull WebSocket webSocket, @NonNull String text) {
                 Log.d("WSMessage", text);
                 try {
-                    parseAndNotify(text);
+                    JSONObject json = new JSONObject(text);
+                    String type = json.getString("type");
+
+                    // ✅ ИСПРАВЛЕННАЯ ПРОВЕРКА
+                    String status = json.optString("status");
+                    if ("auth".equals(type) && "auth_success".equals(status)) {
+                        isAuthenticated = true;
+                        Log.d(TAG, "✅ Authentication successful!");
+                        if (connectCallback != null) {
+                            connectCallback.onConnected();
+                        }
+                        return;
+                    }
+
+                    // Если есть ошибка
+                    if (json.has("error")) {
+                        String error = json.getString("error");
+                        if (connectCallback != null) {
+                            connectCallback.onError(error);
+                        }
+                        return;
+                    }
+
+                    // Только если аутентифицированы - обрабатываем сообщения
+                    if (isAuthenticated) {
+                        parseAndNotify(text);
+                    }
+
                 } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    Log.e(TAG, "JSON parsing error", e);
                 }
             }
 
             @Override
+            public void onClosed(@NonNull WebSocket webSocket, int code, @NonNull String reason) {
+                Log.d(TAG, "WebSocket closed: " + reason);
+                isAuthenticated = false;
+            }
+
+            @Override
             public void onFailure(@NonNull WebSocket webSocket, @NonNull Throwable t, @Nullable Response response) {
-                // Ошибка соединения
                 Log.e("WS", "Connection failed", t);
+                isAuthenticated = false;
+                if (connectCallback != null) {
+                    connectCallback.onError(t.getMessage());
+                }
             }
         });
     }
@@ -122,14 +154,14 @@ public class WebSocketManager {
             case "user_update":
                 if (userCallback != null) {
                     userCallback.onUserUpdated(
-                            json.getString("name"),
+                            json.getString("username"),
                             json.getString("avatar"),
                             json.getInt("balance"),
                             json.getString("ask_to"),
                             json.getBoolean("readiness"),
                             json.getString("genre"),
                             json.getString("game"),
-                            json.getString("game_preview"),
+                            json.getString("game_cover"),
                             json.getString("game_status"),
                             json.getInt("game_started_date"),
                             json.getBoolean("allow_wheel_spinning"),

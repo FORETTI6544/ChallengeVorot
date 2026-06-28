@@ -18,7 +18,7 @@ import okhttp3.Response;
 import java.io.IOException;
 
 public class AuthRepository {
-    String Url = "http://192.168.191.226:3500";
+    String Url = "http://192.168.0.106:8888";
 
     private static final String TAG = "AuthRepository";
     private static AuthRepository instance;
@@ -44,7 +44,7 @@ public class AuthRepository {
     // POST запрос для логина
     public void login(String email, String password, AuthCallback callback) {
         String url = Url + "/posts/login";
-        String json = "{\"user\":\"" + email + "\",\"pass\":\"" + password + "\"}";
+        String json = "{\"user\":\"" + email + "\",\"password\":\"" + password + "\"}";
         Log.d("JSON", json);
         RequestBody body = RequestBody.create(json, JSON);
         Request request = new Request.Builder()
@@ -85,7 +85,7 @@ public class AuthRepository {
     // POST запрос для регистрации
     public void register(String name, String email, String password, AuthCallback callback) {
         String url = Url + "/posts/register";
-        String json = "{\"name\":\"" + name + "\",\"email\":\"" + email + "\",\"pass\":\"" + password + "\"}";
+        String json = "{\"username\":\"" + name + "\",\"email\":\"" + email + "\",\"password\":\"" + password + "\"}";
         Log.d("JSON", json);
 
         RequestBody body = RequestBody.create(json, JSON);

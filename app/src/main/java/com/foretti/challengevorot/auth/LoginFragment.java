@@ -84,16 +84,17 @@ public class LoginFragment extends Fragment {
             @Override
             public void onSuccess(JSONObject response) {
                 try {
-                    String id = response.getString("id");
-                    boolean inRoom = response.getBoolean("inroom");
+                    String id = response.getString("user_id");
+                    boolean inRoom = response.getBoolean("in_room");
 
                     // Подключаемся к WebSocket с callback
                     WebSocketManager.getInstance().connect(id, new WebSocketManager.ConnectCallback() {
                         @Override
                         public void onConnected() {
-                            // Соединение установлено - переходим к фрагменту
-                            Log.d("ConnectingWebSocket", "Connected");
+                            Log.d("WSConnect", "✅ Connected and authenticated!");
+
                             WebSocketManager.getInstance().send("{\"type\":\"get_user\"}");
+
                             requireActivity().runOnUiThread(() -> {
                                 btnLogin.setEnabled(true);
                                 Toast.makeText(requireContext(), "Вход выполнен!", Toast.LENGTH_SHORT).show();
