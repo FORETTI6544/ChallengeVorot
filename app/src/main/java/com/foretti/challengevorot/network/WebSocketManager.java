@@ -30,7 +30,7 @@ import okio.ByteString;
 
 public class WebSocketManager {
     private static final String TAG = "WebSocketManager";
-    private static final String wsUrl = "ws://192.168.0.106:8888";
+    private static final String wsUrl = "ws://185.254.158.107:8888";
     private static WebSocketManager instance;
     private WebSocket webSocket;
     private final OkHttpClient client;
@@ -175,12 +175,12 @@ public class WebSocketManager {
                     for (int i = 0; i < usersArray.length(); i++) {
                         JSONObject userObj = usersArray.getJSONObject(i);
                         User user = new User();
-                        user.name = userObj.getString("name");
+                        user.name = userObj.getString("username");
                         user.avatar = userObj.optString("avatar", "");
                         user.genre = userObj.optString("genre", "");
                         user.game = userObj.optString("game", "");
                         user.gameStatus = userObj.optString("game_status", "");
-                        user.id = userObj.getString("id");
+                        user.id = userObj.getString("user_id");
                         user.askTo = userObj.optString("ask_to", "");
                         user.readiness = userObj.optBoolean("readiness", false);
                         users.add(user);
@@ -189,10 +189,10 @@ public class WebSocketManager {
                 }
                 break;
             case "room_update":
-                JSONObject roomData = json.getJSONObject("roomData");
+                Boolean roomData = json.getBoolean("rotation_status");
 
 
-                rotationStatusCallback.onRotationStatusUpdated(roomData.getBoolean("rotation_status"));
+                rotationStatusCallback.onRotationStatusUpdated(roomData);
                 break;
             case "game_search_result":
                 if (gamesCallback != null) {
@@ -202,7 +202,7 @@ public class WebSocketManager {
                         JSONObject gameObj = gamesArray.getJSONObject(i);
                         Game game = new Game();
                         game.game_name = gameObj.getString("name");
-                        game.appid = gameObj.getString("steam_app_id");
+                        game.appid = gameObj.getString("app_id");
                         game.preview_image = gameObj.optString("preview_image", "");
                         games.add(game);
                     }

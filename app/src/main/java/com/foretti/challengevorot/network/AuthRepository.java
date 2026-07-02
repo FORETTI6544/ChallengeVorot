@@ -18,7 +18,7 @@ import okhttp3.Response;
 import java.io.IOException;
 
 public class AuthRepository {
-    String Url = "http://192.168.0.106:8888";
+    String Url = "http://185.254.158.107:8888";
 
     private static final String TAG = "AuthRepository";
     private static AuthRepository instance;
