@@ -36,4 +36,17 @@ public class ChatViewModel extends ViewModel {
     public LiveData<List<ChatUser>> getChatUsers() {
         return chatUsers;
     }
+    public void addMessage(ChatMessage message) {
+        // Получаем текущий список (если он null, создаем новый)
+        List<ChatMessage> currentMessages = this.messages.getValue();
+        if (currentMessages == null) {
+            currentMessages = new ArrayList<>();
+        }
+
+        // Добавляем новый элемент
+        currentMessages.add(message);
+
+        // Оповещаем LiveData (используем postValue, если вызов может быть из фонового потока)
+        this.messages.postValue(currentMessages);
+    }
 }

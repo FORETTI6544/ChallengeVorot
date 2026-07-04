@@ -1,20 +1,13 @@
 package com.foretti.challengevorot.models;
 
+import java.time.Instant;
+
 public class ChatMessage {
+    public Long id;
+    public String room_name;
     public String userId;
-    public String userName;
-    public String userAvatar;
-    public String message;
-    public long timestamp;
-
-    public ChatMessage() {
-    }
-
-    public ChatMessage(String userId, String userName, String userAvatar, String message, long timestamp) {
-        this.userId = userId;
-        this.userName = userName;
-        this.userAvatar = userAvatar;
-        this.message = message;
-        this.timestamp = timestamp;
-    }
+    public String type;
+    public String content;
+    public String attachment_base64;
+    public Instant created_at;
 }

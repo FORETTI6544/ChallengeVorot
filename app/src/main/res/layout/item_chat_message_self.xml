@@ -1,43 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="8dp">
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/chatAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:scaleType="centerCrop"
-        app:shapeAppearance="@style/ShapeAppearanceOverlay.Pill"
-        android:src="@drawable/ic_rotation" />
+    android:padding="8dp"
+    android:gravity="end">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/chatUserName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@color/textPrimary"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+        android:layout_marginStart="8dp"
+        android:orientation="vertical"
+        android:gravity="end">
 
         <LinearLayout
             android:id="@+id/messageContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:background="@drawable/frame_secondary"
+            android:background="@drawable/frame_tertiary"
             android:padding="8dp"
-            android:gravity="start">
+            android:gravity="end">
 
             <TextView
                 android:id="@+id/chatMessageText"

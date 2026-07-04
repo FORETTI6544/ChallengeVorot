@@ -114,10 +114,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        WebSocketManager.getInstance().setUserCallback((username, avatar, balance,
+        WebSocketManager.getInstance().setUserCallback((userId, username, avatar, balance,
                                                         askTo, readiness, genre, game, gamePreview,
                                                         gameStatus, gameStartedDate, allowWheelSpinning, rerollsCount) -> {
-            viewmodel.setUser(username, avatar, balance,
+            viewmodel.setUser(userId, username, avatar, balance,
                     askTo, readiness, genre, game, gamePreview,
                     gameStatus, gameStartedDate, allowWheelSpinning, rerollsCount);
         });

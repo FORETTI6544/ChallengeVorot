@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class WebSocketManager {
     private ReviewsCallback reviewsCallback;
     private MarketCallback marketCallback;
     private ChatCallback chatCallback;
+    private NewMessageCallback newMessageCallback;
     private boolean isConnected = false;
     private boolean isAuthenticated = false;
 
@@ -55,13 +57,17 @@ public class WebSocketManager {
         }
         return instance;
     }
+
     private WebSocketManager() {
         client = new OkHttpClient();
     }
+
     public interface ConnectCallback {
         void onConnected() throws JSONException;
+
         void onError(String error);
     }
+
     public void connect(String userID, ConnectCallback callback) {
         this.connectCallback = callback;
         this.isAuthenticated = false;
@@ -130,6 +136,7 @@ public class WebSocketManager {
             }
         });
     }
+
     public void parseAndNotify(String text) throws JSONException {
         JSONObject json = new JSONObject(text);
         String type = json.getString("type");
@@ -154,6 +161,7 @@ public class WebSocketManager {
             case "user_update":
                 if (userCallback != null) {
                     userCallback.onUserUpdated(
+                            json.getString("user_id"),
                             json.getString("username"),
                             json.getString("avatar"),
                             json.getInt("balance"),
@@ -216,7 +224,7 @@ public class WebSocketManager {
                     List<String> genresList = new ArrayList<>();
                     for (int i = 0; i < genresArray.length(); i++) {
                         JSONObject genre = genresArray.getJSONObject(i);
-                        genresList.add(genre.getString("name"));
+                        genresList.add(genre.getString("genre"));
                     }
                     genresCallback.onGenresRecieved(genresList);
                 }
@@ -265,84 +273,113 @@ public class WebSocketManager {
                     marketCallback.onMarketReceived(items);
                 }
                 break;
-            case "chat_update":
+            case "chat_history":
                 if (chatCallback != null) {
-                    JSONArray usersArray = json.getJSONArray("chat_users_list");
+                    JSONArray usersArray = json.getJSONArray("users");
                     List<ChatUser> users = new ArrayList<>();
                     for (int i = 0; i < usersArray.length(); i++) {
                         JSONObject userObj = usersArray.getJSONObject(i);
                         ChatUser user = new ChatUser();
-                        user.id = userObj.getString("id");
-                        user.name = userObj.getString("name");
+                        user.id = userObj.getString("user_id");
+                        user.name = userObj.getString("username");
                         user.avatar = userObj.optString("avatar", "");
                         users.add(user);
                     }
 
-                    JSONArray messagesArray = json.getJSONArray("chat_message");
+                    JSONArray messagesArray = json.getJSONArray("messages");
                     List<ChatMessage> messages = new ArrayList<>();
                     for (int i = 0; i < messagesArray.length(); i++) {
                         JSONObject msgObj = messagesArray.getJSONObject(i);
                         ChatMessage message = new ChatMessage();
-                        message.userId = msgObj.getString("id");
-                        message.timestamp = msgObj.getLong("timestamp");
-                        message.message = msgObj.getString("message");
+                        message.id = msgObj.getLong("id");
+                        message.userId = msgObj.optString("user_id");
+                        message.type = msgObj.optString("type");
+                        message.content = msgObj.optString("content");
+                        message.attachment_base64 = msgObj.optString("attachment_base64");
+                        message.created_at = Instant.parse(msgObj.optString("created_at"));
                         messages.add(message);
                     }
                     chatCallback.onChatReceived(messages, users);
                 }
                 break;
-
+            case "new_message":
+                if (newMessageCallback != null) {
+                    JSONObject msgObj = json.getJSONObject("message");
+                    ChatMessage message = new ChatMessage();
+                    message.id = msgObj.getLong("id");
+                    message.userId = msgObj.optString("user_id");
+                    message.type = msgObj.optString("type");
+                    message.content = msgObj.optString("content");
+                    message.attachment_base64 = msgObj.optString("attachment_base64");
+                    message.created_at = Instant.parse(msgObj.optString("created_at"));
+                    newMessageCallback.onNewMessageRecieved(message);
+                }
+                break;
 
 
         }
     }
+
     public interface GenresCallback {
         void onGenresRecieved(List<String> genres);
     }
+
     public void setGenresCallback(GenresCallback callback) {
         this.genresCallback = callback;
     }
+
     public void clearGenresCallback() {
         this.genresCallback = null;
     }
+
     public interface GamesCallback {
         void onGamesFound(List<Game> games);
     }
+
     public void setGamesCallback(GamesCallback callback) {
         this.gamesCallback = callback;
     }
+
     public void clearGamesCallback() {
         this.gamesCallback = null;
     }
+
     public interface RotationStatusCallback {
         void onRotationStatusUpdated(Boolean rotationStatus);
     }
+
     public void setRotationStatusCallback(RotationStatusCallback callback) {
         this.rotationStatusCallback = callback;
     }
+
     public void clearRotationStatusCallback() {
         this.rotationStatusCallback = null;
     }
+
     public interface RoomsCallback {
         void onRoomsUpdated(List<Room> rooms);
     }
+
     // Установка callback (не подписка, а установка)
     public void setRoomsCallback(RoomsCallback callback) {
         this.roomsCallback = callback;
     }
+
     // Удаление callback
     public void clearRoomsCallback() {
         this.roomsCallback = null;
     }
 
     public interface UserCallback {
-        void onUserUpdated(String name, String avatar, Integer balance, String askto, Boolean readiness,
+        void onUserUpdated(String userID, String name, String avatar, Integer balance, String askto, Boolean readiness,
                            String genre, String game, String gamepreview, String gamestatus,
                            Integer gamestarteddate, Boolean allowwheelspinning, Integer rerollscount);
     }
+
     public void setUserCallback(UserCallback callback) {
         this.userCallback = callback;
     }
+
     public void clearUserCallback() {
         this.userCallback = null;
     }
@@ -355,6 +392,7 @@ public class WebSocketManager {
     public void setUsersListCallback(UsersListCallback callback) {
         this.usersListCallback = callback;
     }
+
     public void clearUsersListCallback() {
         this.usersListCallback = null;
     }
@@ -382,6 +420,7 @@ public class WebSocketManager {
     public void clearReviewsCallback() {
         this.reviewsCallback = null;
     }
+
     public interface MarketCallback {
         void onMarketReceived(List<MarketItem> items);
     }
@@ -393,19 +432,25 @@ public class WebSocketManager {
     public void clearMarketCallback() {
         this.marketCallback = null;
     }
+
     public interface ChatCallback {
         void onChatReceived(List<ChatMessage> messages, List<ChatUser> users);
     }
-
-    // Добавить методы установки и очистки callback:
     public void setChatCallback(ChatCallback callback) {
         this.chatCallback = callback;
     }
-
     public void clearChatCallback() {
         this.chatCallback = null;
     }
-
+    public interface NewMessageCallback {
+        void onNewMessageRecieved(ChatMessage message);
+    }
+    public void setNewMessageCallback(NewMessageCallback callback) {
+        this.newMessageCallback = callback;
+    }
+    public void clearNewMessageCallback() {
+        this.newMessageCallback = null;
+    }
 
     public void send(String message) {
         if (webSocket != null) {
@@ -413,6 +458,7 @@ public class WebSocketManager {
             webSocket.send(message);
         }
     }
+
     public void disconnect() {
         if (webSocket != null) {
             webSocket.close(1000, "Normal closure");

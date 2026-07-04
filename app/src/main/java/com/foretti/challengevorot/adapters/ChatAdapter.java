@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,22 +15,36 @@ import com.foretti.challengevorot.converters.Converter;
 import com.foretti.challengevorot.models.ChatMessage;
 import com.google.android.material.imageview.ShapeableImageView;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int VIEW_TYPE_MESSAGE = 0;
-    private static final int VIEW_TYPE_DATE = 1;
+    private static final int VIEW_TYPE_TEXT_OTHER = 0;
+    private static final int VIEW_TYPE_TEXT_SELF = 1;
+    private static final int VIEW_TYPE_IMAGE_OTHER = 2;
+    private static final int VIEW_TYPE_IMAGE_SELF = 3;
+    private static final int VIEW_TYPE_DATE = 4;
 
     private List<ChatMessage> messages = new ArrayList<>();
     private Map<String, String> userNames = new HashMap<>();
     private Map<String, String> userAvatars = new HashMap<>();
     private String currentUserId;
+
+    private OnScrollListener scrollListener;
+
+    public interface OnScrollListener {
+        void onScrollToTop();
+        void onScrollToBottom();
+    }
+
+    public void setOnScrollListener(OnScrollListener listener) {
+        this.scrollListener = listener;
+    }
 
     public void setCurrentUserId(String currentUserId) {
         this.currentUserId = currentUserId;
@@ -43,24 +58,36 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         ChatMessage message = messages.get(position);
-        // Если message равен null или пустой строке - это дата
-        if (message == null || message.message == null || message.message.isEmpty()) {
+
+        if (message == null || "DATE".equals(message.type)) {
             return VIEW_TYPE_DATE;
         }
-        return VIEW_TYPE_MESSAGE;
+
+        boolean isSelf = currentUserId != null && currentUserId.equals(message.userId);
+
+        if ("IMAGE".equals(message.type)) {
+            return isSelf ? VIEW_TYPE_IMAGE_SELF : VIEW_TYPE_IMAGE_OTHER;
+        } else {
+            return isSelf ? VIEW_TYPE_TEXT_SELF : VIEW_TYPE_TEXT_OTHER;
+        }
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_MESSAGE) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_chat_message, parent, false);
-            return new MessageViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_chat_date, parent, false);
-            return new DateViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch (viewType) {
+            case VIEW_TYPE_TEXT_SELF:
+                return new MessageViewHolder(inflater.inflate(R.layout.item_chat_message_self, parent, false), viewType);
+            case VIEW_TYPE_TEXT_OTHER:
+                return new MessageViewHolder(inflater.inflate(R.layout.item_chat_message, parent, false), viewType);
+            case VIEW_TYPE_IMAGE_SELF:
+                return new MessageViewHolder(inflater.inflate(R.layout.item_attach_message_self, parent, false), viewType);
+            case VIEW_TYPE_IMAGE_OTHER:
+                return new MessageViewHolder(inflater.inflate(R.layout.item_attach_message, parent, false), viewType);
+            default:
+                return new DateViewHolder(inflater.inflate(R.layout.item_chat_date, parent, false));
         }
     }
 
@@ -68,50 +95,104 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ChatMessage message = messages.get(position);
 
-        if (holder.getItemViewType() == VIEW_TYPE_MESSAGE) {
+        if (holder instanceof MessageViewHolder) {
             MessageViewHolder msgHolder = (MessageViewHolder) holder;
-            bindMessage(msgHolder, message);
-        } else {
+            bindMessage(msgHolder, message, holder.getItemViewType());
+        } else if (holder instanceof DateViewHolder) {
             DateViewHolder dateHolder = (DateViewHolder) holder;
             bindDate(dateHolder, message);
         }
     }
 
-    private void bindMessage(MessageViewHolder holder, ChatMessage message) {
-        String userName = userNames.getOrDefault(message.userId, message.userName != null ? message.userName : "Unknown");
-        String userAvatar = userAvatars.getOrDefault(message.userId, "");
+    private void bindMessage(MessageViewHolder holder, ChatMessage message, int viewType) {
+        // Устанавливаем время
+        if (holder.tvTime != null) {
+            String time = formatTime(message.created_at);
+            holder.tvTime.setText(time);
+        }
 
-        holder.tvName.setText(userName);
-        holder.tvMessage.setText(message.message);
+        // Определяем, является ли сообщение с картинкой
+        boolean isImageMessage = (viewType == VIEW_TYPE_IMAGE_SELF || viewType == VIEW_TYPE_IMAGE_OTHER);
 
-        // Формат времени
-        String time = formatTime(message.timestamp);
-        holder.tvTime.setText(time);
-
-        // Аватарка
-        if (userAvatar != null && !userAvatar.isEmpty()) {
-            Bitmap bitmap = Converter.base64ToBitmap(userAvatar);
-            if (bitmap != null) {
-                holder.avatar.setImageBitmap(bitmap);
+        // 1. Обработка текстового содержимого (только для текстовых сообщений)
+        if (!isImageMessage) {
+            // Это текстовое сообщение - показываем текст
+            if (holder.tvMessage != null) {
+                holder.tvMessage.setVisibility(View.VISIBLE);
+                if (message.content != null && !message.content.isEmpty()) {
+                    holder.tvMessage.setText(message.content);
+                } else {
+                    holder.tvMessage.setText("");
+                }
+            }
+        } else {
+            // Это сообщение с картинкой - скрываем TextView с текстом (если он есть)
+            if (holder.tvMessage != null) {
+                holder.tvMessage.setVisibility(View.GONE);
             }
         }
 
-        // Определяем, правое ли сообщение (отправлено текущим пользователем)
-        if (currentUserId != null && currentUserId.equals(message.userId)) {
-            holder.container.setBackgroundResource(R.drawable.frame_done);
-            holder.tvName.setTextColor(holder.itemView.getContext().getColor(R.color.textPrimary));
-            holder.tvMessage.setTextColor(holder.itemView.getContext().getColor(R.color.textPrimary));
-            holder.tvTime.setTextColor(holder.itemView.getContext().getColor(R.color.textSecondary));
+        // 2. Обработка картинок
+        if (isImageMessage) {
+            if (holder.ivAttachedImage != null) {
+                String imageBase64 = message.attachment_base64;
+                // Проверяем, что это действительно base64 изображение
+                if (imageBase64 != null && !imageBase64.isEmpty() &&
+                        !"IMAGE".equals(imageBase64) && imageBase64.length() > 50) {
+                    Bitmap bitmap = Converter.base64ToBitmap(imageBase64);
+                    if (bitmap != null) {
+                        holder.ivAttachedImage.setImageBitmap(bitmap);
+                        holder.ivAttachedImage.setVisibility(View.VISIBLE);
+                    } else {
+                        // Если не удалось декодировать, показываем placeholder
+                        holder.ivAttachedImage.setImageResource(R.drawable.send_message);
+                        holder.ivAttachedImage.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    // Если нет изображения, показываем placeholder
+                    holder.ivAttachedImage.setImageResource(R.drawable.send_message);
+                    holder.ivAttachedImage.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+        // 3. Обработка профиля чужого пользователя
+        if (viewType == VIEW_TYPE_TEXT_OTHER || viewType == VIEW_TYPE_IMAGE_OTHER) {
+            // Устанавливаем имя пользователя
+            if (holder.tvName != null) {
+                String userName = userNames.get(message.userId);
+                holder.tvName.setText(userName != null ? userName : "Пользователь");
+                holder.tvName.setVisibility(View.VISIBLE);
+            }
+
+            // Устанавливаем аватар
+            if (holder.avatar != null) {
+                String userAvatar = userAvatars.getOrDefault(message.userId, "");
+                if (!userAvatar.isEmpty()) {
+                    Bitmap bitmap = Converter.base64ToBitmap(userAvatar);
+                    if (bitmap != null) {
+                        holder.avatar.setImageBitmap(bitmap);
+                    } else {
+                        holder.avatar.setImageResource(R.drawable.ic_rotation);
+                    }
+                } else {
+                    holder.avatar.setImageResource(R.drawable.ic_rotation);
+                }
+                holder.avatar.setVisibility(View.VISIBLE);
+            }
         } else {
-            holder.container.setBackgroundResource(R.drawable.frame_secondary);
-            holder.tvName.setTextColor(holder.itemView.getContext().getColor(R.color.textPrimary));
-            holder.tvMessage.setTextColor(holder.itemView.getContext().getColor(R.color.textSecondary));
-            holder.tvTime.setTextColor(holder.itemView.getContext().getColor(R.color.textSecondary));
+            // Для своих сообщений скрываем аватар и имя (если они есть)
+            if (holder.avatar != null) {
+                holder.avatar.setVisibility(View.GONE);
+            }
+            if (holder.tvName != null) {
+                holder.tvName.setVisibility(View.GONE);
+            }
         }
     }
 
     private void bindDate(DateViewHolder holder, ChatMessage message) {
-        String date = formatDate(message.timestamp);
+        String date = formatDate(message.created_at);
         holder.tvDate.setText(date);
     }
 
@@ -120,21 +201,17 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return messages.size();
     }
 
-    /**
-     * Обновляет сообщения и автоматически добавляет даты между сообщениями из разных дней
-     */
     public void updateMessages(List<ChatMessage> newMessages) {
         List<ChatMessage> messagesWithDates = new ArrayList<>();
         String lastDate = null;
 
         for (ChatMessage msg : newMessages) {
-            String currentDate = formatDate(msg.timestamp);
+            String currentDate = formatDate(msg.created_at);
 
-            // Если это первое сообщение или дата изменилась - добавляем дату
             if (lastDate == null || !lastDate.equals(currentDate)) {
                 ChatMessage dateMessage = new ChatMessage();
-                dateMessage.timestamp = msg.timestamp;
-                dateMessage.message = null; // Помечаем как дату
+                dateMessage.created_at = msg.created_at;
+                dateMessage.type = "DATE";
                 messagesWithDates.add(dateMessage);
                 lastDate = currentDate;
             }
@@ -146,32 +223,23 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    /**
-     * Добавляет сообщение и проверяет, нужно ли добавить дату
-     */
     public void addMessage(ChatMessage message) {
-        // Проверяем, нужно ли добавить дату перед новым сообщением
         if (!messages.isEmpty()) {
             ChatMessage lastMessage = messages.get(messages.size() - 1);
-            // Если последний элемент - это сообщение (не дата)
-            if (lastMessage.message != null) {
-                String lastDate = formatDate(lastMessage.timestamp);
-                String currentDate = formatDate(message.timestamp);
+            String lastDate = formatDate(lastMessage.created_at);
+            String currentDate = formatDate(message.created_at);
 
-                if (!lastDate.equals(currentDate)) {
-                    // Добавляем дату
-                    ChatMessage dateMessage = new ChatMessage();
-                    dateMessage.timestamp = message.timestamp;
-                    dateMessage.message = null;
-                    this.messages.add(dateMessage);
-                    notifyItemInserted(messages.size() - 1);
-                }
+            if (!lastDate.equals(currentDate)) {
+                ChatMessage dateMessage = new ChatMessage();
+                dateMessage.created_at = message.created_at;
+                dateMessage.type = "DATE";
+                this.messages.add(dateMessage);
+                notifyItemInserted(messages.size() - 1);
             }
         } else {
-            // Первое сообщение - добавляем дату
             ChatMessage dateMessage = new ChatMessage();
-            dateMessage.timestamp = message.timestamp;
-            dateMessage.message = null;
+            dateMessage.created_at = message.created_at;
+            dateMessage.type = "DATE";
             this.messages.add(dateMessage);
             notifyItemInserted(0);
         }
@@ -180,30 +248,52 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyItemInserted(messages.size() - 1);
     }
 
-    private String formatTime(long timestamp) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        return sdf.format(new Date(timestamp * 1000L));
+    private String formatTime(Instant created_at) {
+        if (created_at == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm")
+                .withZone(ZoneId.systemDefault());
+        return formatter.format(created_at);
     }
 
-    private String formatDate(long timestamp) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
-        return sdf.format(new Date(timestamp * 1000L));
+    private String formatDate(Instant created_at) {
+        if (created_at == null) return "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+                .withZone(ZoneId.systemDefault());
+        return formatter.format(created_at);
+    }
+
+    public int getLastPosition() {
+        return messages.size() - 1;
     }
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView avatar;
+        ImageView ivAttachedImage;
         TextView tvName;
         TextView tvMessage;
         TextView tvTime;
-        android.widget.LinearLayout container;
+        View container;
 
-        public MessageViewHolder(@NonNull View itemView) {
+        public MessageViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
-            avatar = itemView.findViewById(R.id.chatAvatar);
-            tvName = itemView.findViewById(R.id.chatUserName);
-            tvMessage = itemView.findViewById(R.id.chatMessageText);
+
+            // Общие элементы для всех типов
             tvTime = itemView.findViewById(R.id.chatMessageTime);
             container = itemView.findViewById(R.id.messageContainer);
+
+            // tvMessage может отсутствовать в layout для картинок
+            tvMessage = itemView.findViewById(R.id.chatMessageText);
+
+            // Элементы для чужих сообщений
+            if (viewType == VIEW_TYPE_TEXT_OTHER || viewType == VIEW_TYPE_IMAGE_OTHER) {
+                avatar = itemView.findViewById(R.id.chatAvatar);
+                tvName = itemView.findViewById(R.id.chatUserName);
+            }
+
+            // ImageView для картинок (есть только в layout для картинок)
+            if (viewType == VIEW_TYPE_IMAGE_SELF || viewType == VIEW_TYPE_IMAGE_OTHER) {
+                ivAttachedImage = itemView.findViewById(R.id.chatAttachedImage);
+            }
         }
     }
 

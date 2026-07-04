@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="4dp"
+    android:gravity="bottom">
+
+    <!-- Пустой элемент, чтобы выдавливать сообщение вправо -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Контейнер сообщения -->
+    <LinearLayout
+        android:id="@+id/messageContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:maxWidth="260dp"
+        android:background="@drawable/frame_done"
+        android:orientation="vertical"
+        android:padding="6dp">
+
+        <!-- Контейнер для картинки со скруглением и временем поверх нее -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/transparent">
+
+                <ImageView
+                    android:id="@+id/chatAttachedImage"
+                    android:layout_width="220dp"
+                    android:layout_height="180dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/send_message" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Время поверх картинки в нижнем правом углу -->
+            <TextView
+                android:id="@+id/chatMessageTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_margin="8dp"
+                android:background="#80000000"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                android:text="12:34" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

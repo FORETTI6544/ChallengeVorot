@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class ActivityViewmodel extends androidx.lifecycle.ViewModel {
+    MutableLiveData<String> userID;
     MutableLiveData<String> username;
     MutableLiveData<String> avatar;
     MutableLiveData<Integer> balance;
@@ -23,6 +24,8 @@ public class ActivityViewmodel extends androidx.lifecycle.ViewModel {
 
 
     public ActivityViewmodel() {
+        userID = new MutableLiveData<>();
+        userID.setValue("");
         username = new MutableLiveData<>();
         username.setValue("");
         avatar = new MutableLiveData<>();
@@ -48,6 +51,10 @@ public class ActivityViewmodel extends androidx.lifecycle.ViewModel {
         rerollsCount = new MutableLiveData<>();
         rerollsCount.setValue(0);
 
+    }
+
+    public LiveData<String> getUserID() {
+        return userID;
     }
 
     public LiveData<String> getUsername() {
@@ -91,9 +98,10 @@ public class ActivityViewmodel extends androidx.lifecycle.ViewModel {
     public void setAvatar(MutableLiveData<String> avatar) {
         this.avatar = avatar;
     }
-    public void setUser(String name, String avatar, Integer balance, String askto, Boolean readiness,
+    public void setUser(String userID, String name, String avatar, Integer balance, String askto, Boolean readiness,
                         String genre, String game, String gamepreview, String gamestatus,
                         Integer gamestarteddate, Boolean allowwheelspinning, Integer rerollscount) {
+        this.userID.postValue(userID);
         this.username.postValue(name);
         this.avatar.postValue(avatar);
         this.balance.postValue(balance);
