@@ -119,7 +119,18 @@ public class RotationFragment extends Fragment {
             viewModel.setRotationStatus(rotationStatus);
         });
         WebSocketManager.getInstance().send("{\"type\":\"get_rotation_status\"}");
-
+        WebSocketManager.getInstance().setRoomUserUpdateCallback(user -> {
+            List<User> users = viewModel.getUsers().getValue();
+            if (users != null) {
+                for (int i = 0; i < users.size(); i++) {
+                    if (Objects.equals(users.get(i).id, user.id)) {
+                        users.set(i, user);
+                        break;
+                    }
+                }
+                viewModel.setUsers(users);
+            }
+        });
     }
 
     @Override

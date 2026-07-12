@@ -47,6 +47,7 @@ public class WebSocketManager {
     private MarketCallback marketCallback;
     private ChatCallback chatCallback;
     private NewMessageCallback newMessageCallback;
+    private RoomUserUpdateCallback roomUserUpdateCallback;
     private boolean isConnected = false;
     private boolean isAuthenticated = false;
 
@@ -176,6 +177,20 @@ public class WebSocketManager {
                             json.getInt("rerolls_count"));
                 }
                 break;
+            case "room_user_update":
+                if (roomUserUpdateCallback != null) {
+                    JSONObject userObj = json.getJSONObject("user");
+                    User user = new User();
+                    user.id = userObj.getString("user_id");
+                    user.name = userObj.getString("username");
+                    user.avatar = userObj.optString("avatar", "");
+                    user.genre = userObj.optString("genre", "");
+                    user.game = userObj.optString("game", "");
+                    user.gameStatus = userObj.optString("game_status", "");
+                    user.askTo = userObj.optString("ask_to", "");
+                    user.readiness = userObj.optBoolean("readiness", false);
+                    roomUserUpdateCallback.onRoomUserChanged(user);
+                }
             case "users_list":
                 if (usersListCallback != null) {
                     JSONArray usersArray = json.getJSONArray("users");
@@ -450,6 +465,15 @@ public class WebSocketManager {
     }
     public void clearNewMessageCallback() {
         this.newMessageCallback = null;
+    }
+    public interface RoomUserUpdateCallback {
+        void onRoomUserChanged(User user);
+    }
+    public void setRoomUserUpdateCallback(RoomUserUpdateCallback callback) {
+        this.roomUserUpdateCallback = callback;
+    }
+    public void clearRoomUserUpdateCallback() {
+        this.roomUserUpdateCallback = null;
     }
 
     public void send(String message) {
