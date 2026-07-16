@@ -16,10 +16,14 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewViewHolder> {
     private List<Review> reviews = new ArrayList<>();
+    private Map<String, String> userNames = new HashMap<>();
+    private Map<String, String> userAvatars = new HashMap<>();
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
         TextView tvUserName, tvGameName, tvReviewText, tvRating, tvGamePreviewText;
@@ -49,8 +53,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
         Review review = reviews.get(position);
-        holder.tvUserName.setText(review.userName);
-        holder.tvUserAvatar.setImageBitmap(Converter.base64ToBitmap(review.userAvatar));
+        holder.tvUserName.setText(userNames.get(review.userId));
+        holder.tvUserAvatar.setImageBitmap(Converter.base64ToBitmap(userAvatars.get(review.userId)));
         holder.tvGameName.setText(review.gameName);
         holder.tvReviewText.setText(review.text);
         holder.tvRating.setText("Оценка: " + review.rating + "/10");
@@ -78,5 +82,9 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
     public void updateReviews(List<Review> newReviews) {
         this.reviews = newReviews;
         notifyDataSetChanged();
+    }
+    public void setUsersInfo(Map<String, String> names, Map<String, String> avatars) {
+        this.userNames = names;
+        this.userAvatars = avatars;
     }
 }

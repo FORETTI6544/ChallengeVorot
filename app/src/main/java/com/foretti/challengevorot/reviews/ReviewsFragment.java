@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.foretti.challengevorot.R;
 import com.foretti.challengevorot.adapters.ReviewsAdapter;
+import com.foretti.challengevorot.models.ChatMessage;
+import com.foretti.challengevorot.models.ChatUser;
 import com.foretti.challengevorot.models.Review;
+import com.foretti.challengevorot.models.ReviewsUser;
 import com.foretti.challengevorot.network.WebSocketManager;
 
 import org.json.JSONArray;
@@ -23,10 +26,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReviewsFragment extends Fragment {
     private ReviewsViewModel viewModel;
+    private Map<String, String> userNames = new HashMap<>();
+    private Map<String, String> userAvatars = new HashMap<>();
     private ReviewsAdapter adapter;
 
     @Nullable
@@ -40,6 +47,7 @@ public class ReviewsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(ReviewsViewModel.class);
+        setupObservers();
         adapter = new ReviewsAdapter();
 
         RecyclerView reviewsRecyclerView = view.findViewById(R.id.reviewsRecyclerView);
@@ -54,8 +62,33 @@ public class ReviewsFragment extends Fragment {
         });
 
         WebSocketManager.getInstance().send("{\"type\":\"get_reviews\"}");
-        WebSocketManager.getInstance().setReviewsCallback(reviews -> {
-            viewModel.setReviews(reviews);
+        WebSocketManager.getInstance().setReviewsCallback((users, reviews) -> {
+            viewModel.setReviews(users, reviews);
+        });
+    }
+
+    private void setupObservers() {
+        // Наблюдаем за сообщениями
+        viewModel.getReviews().observe(getViewLifecycleOwner(), new Observer<List<Review>>() {
+            @Override
+            public void onChanged(List<Review> reviews) {
+                adapter.updateReviews(reviews);
+            }
+        });
+
+        // Наблюдаем за пользователями
+        viewModel.getReviewsUsers().observe(getViewLifecycleOwner(), new Observer<List<ReviewsUser>>() {
+            @Override
+            public void onChanged(List<ReviewsUser> users) {
+                userNames.clear();
+                userAvatars.clear();
+                for (ReviewsUser user : users) {
+                    userNames.put(user.userId, user.userName);
+                    userAvatars.put(user.userId, user.userAvatar);
+                }
+                adapter.setUsersInfo(userNames, userAvatars);
+                adapter.notifyDataSetChanged();
+            }
         });
     }
 

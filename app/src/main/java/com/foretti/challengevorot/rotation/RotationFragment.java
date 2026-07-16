@@ -51,10 +51,10 @@ public class RotationFragment extends Fragment {
         chainAdapter = new ChainUsersAdapter(null);
         usersAdapter = new ListUsersAdapter(null, requireContext());
         usersAdapter.setOnUserClickListener(user -> {
-            AskGameDialog dialog = new AskGameDialog(requireContext(), user, (game, gamePreview) -> {
+            AskGameDialog dialog = new AskGameDialog(requireContext(), user, (game, game_cover) -> {
                 // Отправляем данные через WebSocket
                 WebSocketManager.getInstance().send(
-                        "{\"type\":\"ask_game\",\"ask_to\":\"" + activityViewModel.getAskTo().getValue() + "\",\"game\":\"" + game + "\",\"gamePreview\":\"" + gamePreview + "\"}"
+                        "{\"type\":\"ask_game\",\"ask_to\":\"" + activityViewModel.getAskTo().getValue() + "\",\"game\":\"" + game + "\",\"game_cover\":\"" + game_cover + "\"}"
                 );
             });
             dialog.show();

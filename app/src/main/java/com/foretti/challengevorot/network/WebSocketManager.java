@@ -11,6 +11,7 @@ import com.foretti.challengevorot.models.ChatUser;
 import com.foretti.challengevorot.models.Game;
 import com.foretti.challengevorot.models.MarketItem;
 import com.foretti.challengevorot.models.Review;
+import com.foretti.challengevorot.models.ReviewsUser;
 import com.foretti.challengevorot.models.Room;
 import com.foretti.challengevorot.models.User;
 
@@ -252,16 +253,30 @@ public class WebSocketManager {
                 break;
             case "reviews_list":
                 if (reviewsCallback != null) {
+                    JSONArray reviewsUsersArray = json.getJSONArray("users");
                     JSONArray reviewsArray = json.getJSONArray("reviews");
+                    List<ReviewsUser> users = new ArrayList<>();
+                    for (int i = 0; i < reviewsUsersArray.length(); i++) {
+                        try {
+                            JSONObject reviewsUserObj = reviewsUsersArray.getJSONObject(i);
+                            ReviewsUser user = new ReviewsUser();
+                            user.userId = reviewsUserObj.getString("user_id");
+                            user.userName = reviewsUserObj.optString("username");
+                            user.userAvatar = reviewsUserObj.getString("avatar");
+                            users.add(user);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     List<Review> reviews = new ArrayList<>();
                     for (int i = 0; i < reviewsArray.length(); i++) {
                         try {
                             JSONObject reviewObj = reviewsArray.getJSONObject(i);
                             Review review = new Review();
-                            review.userName = reviewObj.getString("user_name");
-                            review.userAvatar = reviewObj.getString("user_avatar");
-                            review.gameName = reviewObj.getString("game_name");
-                            review.gamePreview = reviewObj.optString("game_preview", "");
+                            review.id = reviewObj.getInt("id");
+                            review.userId = reviewObj.getString("user_id");
+                            review.gameName = reviewObj.getString("game");
+                            review.gamePreview = reviewObj.optString("game_cover", "");
                             review.rating = reviewObj.getInt("rating");
                             review.text = reviewObj.getString("review_text");
                             reviews.add(review);
@@ -269,7 +284,7 @@ public class WebSocketManager {
                             e.printStackTrace();
                         }
                     }
-                    reviewsCallback.onReviewsReceived(reviews);
+                    reviewsCallback.onReviewsReceived(users, reviews);
                 }
                 break;
             case "market_list":
@@ -425,7 +440,7 @@ public class WebSocketManager {
     }
 
     public interface ReviewsCallback {
-        void onReviewsReceived(List<Review> reviews);
+        void onReviewsReceived(List<ReviewsUser> users, List<Review> reviews);
     }
 
     public void setReviewsCallback(ReviewsCallback callback) {
