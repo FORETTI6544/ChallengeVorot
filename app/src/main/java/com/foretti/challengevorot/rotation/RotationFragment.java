@@ -112,7 +112,7 @@ public class RotationFragment extends Fragment {
         });
 
         WebSocketManager.getInstance().setUsersListCallback(users -> {
-                viewModel.setUsers(users);
+            viewModel.setUsers(users);
         });
         WebSocketManager.getInstance().send("{\"type\":\"get_users\"}");
         WebSocketManager.getInstance().setRotationStatusCallback(rotationStatus -> {
@@ -148,20 +148,24 @@ public class RotationFragment extends Fragment {
 
         Map<String, User> userMap = new HashMap<>();
         for (User user : allUsers) {
-                userMap.put(user.id, user);
+            userMap.put(user.id, user);
         }
 
         String firstUser = "";
         firstUser = allUsers.get(0).id;
         String currentUser = firstUser;
         String nextUser = userMap.get(currentUser).askTo;
-        for (int i = 0; i < userMap.size()+1; i++) {
-            chain.add(userMap.get(currentUser));
-            Log.d( "buildChain", currentUser);
+        for (int i = 0; i < userMap.size() + 1; i++) {
+            if (!Objects.equals(Objects.requireNonNull(userMap.get(currentUser)).askTo, "0")) {
+                chain.add(userMap.get(currentUser));
+                Log.d("buildChain", currentUser);
+                nextUser = userMap.get(currentUser).askTo;
+            } else {
+                break;
+            }
             currentUser = nextUser;
-            nextUser = userMap.get(currentUser).askTo;
         }
-        Log.d( "buildChain", String.valueOf(chain.size()));
+        Log.d("buildChain", String.valueOf(chain.size()));
         return chain;
     }
 }

@@ -5,11 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,8 +25,10 @@ public class ProfileWithoutRoomFragment extends Fragment {
     private String userID;
     ProfileViewModel viewModel;
     private RecyclerView rvRooms;
+    private Button createRoomBtn;
     private RoomsAdapter roomsAdapter;
     private WebSocketManager.RoomsCallback roomsCallback;
+    private WebSocketManager.JoinRoomCallback joinRoomCallback;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +59,33 @@ public class ProfileWithoutRoomFragment extends Fragment {
         rvRooms.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvRooms.setAdapter(roomsAdapter);
 
+        createRoomBtn = view.findViewById(R.id.createRoomBtn);
+        createRoomBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCreateRoomDialog();
+            }
+        });
+
         roomsCallback = rooms -> viewModel.setRooms(rooms);
         WebSocketManager.getInstance().setRoomsCallback(roomsCallback);
         WebSocketManager.getInstance().send("{\"type\":\"get_rooms\"}");
+
+        NavController navController = Navigation.findNavController(requireView());
+        joinRoomCallback = () -> {
+            requireActivity().runOnUiThread(() -> {
+                navController.navigate(R.id.ProfileWithRoomFragment);
+            });
+        };
+        WebSocketManager.getInstance().setJoinRoomCallback(joinRoomCallback);
 
         viewModel.getRooms().observe(getViewLifecycleOwner(), rooms -> {
             roomsAdapter.updateRooms(rooms);
         });
     }
+    private void showCreateRoomDialog() {
+        CreateRoomDialog dialog = new CreateRoomDialog(getContext());
+        dialog.show();
+    }
+
 }

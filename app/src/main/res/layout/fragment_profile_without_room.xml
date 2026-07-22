@@ -7,10 +7,23 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRooms"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/createRoomBtn"
+        app:layout_constraintVertical_bias="0"/>
+    <Button
+        android:id="@+id/createRoomBtn"
+        android:layout_width="match_parent"
+        android:textColor="@color/textPrimary"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:text="Создать новую комнату"
+        android:background="@drawable/frame_done"
+        app:backgroundTint="@null"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="5dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

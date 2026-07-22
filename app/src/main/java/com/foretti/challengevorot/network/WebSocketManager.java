@@ -49,6 +49,7 @@ public class WebSocketManager {
     private ChatCallback chatCallback;
     private NewMessageCallback newMessageCallback;
     private RoomUserUpdateCallback roomUserUpdateCallback;
+    private JoinRoomCallback joinRoomCallback;
     private boolean isConnected = false;
     private boolean isAuthenticated = false;
 
@@ -345,7 +346,11 @@ public class WebSocketManager {
                     newMessageCallback.onNewMessageRecieved(message);
                 }
                 break;
-
+            case "join_room":
+                if (joinRoomCallback != null) {
+                    joinRoomCallback.onRoomJoined();
+                }
+                break;
 
         }
     }
@@ -353,11 +358,9 @@ public class WebSocketManager {
     public interface GenresCallback {
         void onGenresRecieved(List<String> genres);
     }
-
     public void setGenresCallback(GenresCallback callback) {
         this.genresCallback = callback;
     }
-
     public void clearGenresCallback() {
         this.genresCallback = null;
     }
@@ -365,11 +368,9 @@ public class WebSocketManager {
     public interface GamesCallback {
         void onGamesFound(List<Game> games);
     }
-
     public void setGamesCallback(GamesCallback callback) {
         this.gamesCallback = callback;
     }
-
     public void clearGamesCallback() {
         this.gamesCallback = null;
     }
@@ -377,11 +378,9 @@ public class WebSocketManager {
     public interface RotationStatusCallback {
         void onRotationStatusUpdated(Boolean rotationStatus);
     }
-
     public void setRotationStatusCallback(RotationStatusCallback callback) {
         this.rotationStatusCallback = callback;
     }
-
     public void clearRotationStatusCallback() {
         this.rotationStatusCallback = null;
     }
@@ -389,13 +388,9 @@ public class WebSocketManager {
     public interface RoomsCallback {
         void onRoomsUpdated(List<Room> rooms);
     }
-
-    // Установка callback (не подписка, а установка)
     public void setRoomsCallback(RoomsCallback callback) {
         this.roomsCallback = callback;
     }
-
-    // Удаление callback
     public void clearRoomsCallback() {
         this.roomsCallback = null;
     }
@@ -405,11 +400,9 @@ public class WebSocketManager {
                            String genre, String game, String gamepreview, String gamestatus,
                            Integer gamestarteddate, Boolean allowwheelspinning, Integer rerollscount);
     }
-
     public void setUserCallback(UserCallback callback) {
         this.userCallback = callback;
     }
-
     public void clearUserCallback() {
         this.userCallback = null;
     }
@@ -417,12 +410,9 @@ public class WebSocketManager {
     public interface UsersListCallback {
         void onUsersUpdated(List<User> users);
     }
-
-
     public void setUsersListCallback(UsersListCallback callback) {
         this.usersListCallback = callback;
     }
-
     public void clearUsersListCallback() {
         this.usersListCallback = null;
     }
@@ -430,11 +420,9 @@ public class WebSocketManager {
     public interface SpinningResultCallback {
         void onSpinningResult(String genre);
     }
-
     public void setSpinningResultCallback(SpinningResultCallback callback) {
         this.spinningResultCallback = callback;
     }
-
     public void clearSpinningResultCallback() {
         this.spinningResultCallback = null;
     }
@@ -442,11 +430,9 @@ public class WebSocketManager {
     public interface ReviewsCallback {
         void onReviewsReceived(List<ReviewsUser> users, List<Review> reviews);
     }
-
     public void setReviewsCallback(ReviewsCallback callback) {
         this.reviewsCallback = callback;
     }
-
     public void clearReviewsCallback() {
         this.reviewsCallback = null;
     }
@@ -454,11 +440,9 @@ public class WebSocketManager {
     public interface MarketCallback {
         void onMarketReceived(List<MarketItem> items);
     }
-
     public void setMarketCallback(MarketCallback callback) {
         this.marketCallback = callback;
     }
-
     public void clearMarketCallback() {
         this.marketCallback = null;
     }
@@ -472,6 +456,7 @@ public class WebSocketManager {
     public void clearChatCallback() {
         this.chatCallback = null;
     }
+
     public interface NewMessageCallback {
         void onNewMessageRecieved(ChatMessage message);
     }
@@ -481,6 +466,7 @@ public class WebSocketManager {
     public void clearNewMessageCallback() {
         this.newMessageCallback = null;
     }
+
     public interface RoomUserUpdateCallback {
         void onRoomUserChanged(User user);
     }
@@ -489,6 +475,16 @@ public class WebSocketManager {
     }
     public void clearRoomUserUpdateCallback() {
         this.roomUserUpdateCallback = null;
+    }
+
+    public interface JoinRoomCallback {
+        void onRoomJoined();
+    }
+    public void setJoinRoomCallback(JoinRoomCallback callback) {
+        this.joinRoomCallback = callback;
+    }
+    public void clearJoinRoomCallback(JoinRoomCallback callback) {
+        this.joinRoomCallback = null;
     }
 
     public void send(String message) {
